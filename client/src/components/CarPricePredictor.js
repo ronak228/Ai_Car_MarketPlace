@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
+import PredictionStorage from '../utils/predictionStorage';
 
 const CarPricePredictor = () => {
   const [formData, setFormData] = useState({
@@ -207,6 +209,63 @@ const CarPricePredictor = () => {
         modelPerformance,
         featuresUsed
       });
+
+      // Save prediction to storage
+      const predictionData = {
+        company: formData.company,
+        model: formData.model,
+        year: formData.year,
+        kms_driven: formData.kms_driven,
+        fuel_type: formData.fuel_type,
+        transmission: formData.transmission,
+        owner: formData.owner,
+        car_condition: formData.car_condition,
+        insurance_status: formData.insurance_status,
+        previous_accidents: formData.previous_accidents,
+        num_doors: formData.num_doors,
+        engine_size: formData.engine_size,
+        power: formData.power,
+        city: formData.city,
+        emission_norm: formData.emission_norm,
+        insurance_eligible: formData.insurance_eligible,
+        maintenance_level: formData.maintenance_level,
+        predictedPrice: Math.round(basePrice),
+        confidence: confidenceScore,
+        modelUsed,
+        modelPerformance,
+        featuresUsed,
+        priceRange: advanced.priceRange,
+        marketTrend: advanced.marketTrend,
+        modelComparison: advanced.modelComparison
+      };
+
+      const savedPrediction = PredictionStorage.savePrediction(predictionData);
+      if (savedPrediction) {
+        // Show success message
+        await Swal.fire({
+          title: 'Prediction Saved! 🎉',
+          html: `
+            <div class="text-start">
+              <p><strong>Car:</strong> ${formData.company} ${formData.model}</p>
+              <p><strong>Predicted Price:</strong> ₹${Math.round(basePrice).toLocaleString()}</p>
+              <p><strong>Confidence:</strong> ${confidenceScore}%</p>
+              <p><strong>Model Used:</strong> ${modelUsed}</p>
+            </div>
+            <p class="mt-3 text-success">This prediction has been automatically saved to your dashboard!</p>
+          `,
+          icon: 'success',
+          confirmButtonText: 'View Dashboard',
+          confirmButtonColor: '#28a745',
+          showCancelButton: true,
+          cancelButtonText: 'Stay Here',
+          cancelButtonColor: '#6c757d'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Navigate to dashboard
+            window.location.href = '/dashboard';
+          }
+        });
+      }
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to get prediction. Please try again.');
     } finally {

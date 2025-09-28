@@ -5,9 +5,11 @@ const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'YOUR_SUPABASE_URL';
 const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
 
 // Check if we should use local authentication instead
-const useLocalAuth = process.env.REACT_APP_USE_LOCAL_AUTH === 'true';
+const useLocalAuth = process.env.REACT_APP_USE_LOCAL_AUTH === 'true' || 
+                    supabaseUrl === 'YOUR_SUPABASE_URL' || 
+                    supabaseAnonKey === 'YOUR_SUPABASE_ANON_KEY';
 
-if ((supabaseUrl === 'YOUR_SUPABASE_URL' || supabaseAnonKey === 'YOUR_SUPABASE_ANON_KEY') && !useLocalAuth) {
+if (useLocalAuth) {
   console.warn(`
     ---------------------------------------------------
     !!! IMPORTANT: SUPABASE CREDENTIALS ARE MISSING !!!
@@ -34,30 +36,48 @@ if (useLocalAuth || supabaseUrl === 'YOUR_SUPABASE_URL' || supabaseAnonKey === '
     auth: {
       signUp: async (credentials) => {
         // Simulate successful signup
+        const userId = 'local-user-' + Date.now();
+        const token = 'local-token-' + Date.now();
+        
+        // Store user data in localStorage for persistence
+        const userData = {
+          id: userId,
+          email: credentials.email,
+          user_metadata: { full_name: credentials.options?.data?.full_name || credentials.email.split('@')[0] },
+          email_confirmed_at: null,
+          created_at: new Date().toISOString()
+        };
+        
+        localStorage.setItem('mock_user', JSON.stringify(userData));
+        localStorage.setItem('mock_token', token);
+        
         return {
           data: {
-            user: {
-              id: 'local-user-' + Date.now(),
-              email: credentials.email,
-              user_metadata: { full_name: credentials.options?.data?.full_name || credentials.email.split('@')[0] },
-              email_confirmed_at: null,
-              created_at: new Date().toISOString()
-            }
+            user: userData
           },
           error: null
         };
       },
       signInWithPassword: async (credentials) => {
         // Simulate successful signin
+        const userId = 'local-user-' + Date.now();
+        const token = 'local-token-' + Date.now();
+        
+        const userData = {
+          id: userId,
+          email: credentials.email,
+          user_metadata: { full_name: credentials.email.split('@')[0] }
+        };
+        
+        localStorage.setItem('mock_user', JSON.stringify(userData));
+        localStorage.setItem('mock_token', token);
+        
         return {
           data: {
-            user: {
-              id: 'local-user-' + Date.now(),
-              email: credentials.email,
-              user_metadata: { full_name: credentials.email.split('@')[0] }
-            },
+            user: userData,
             session: {
-              access_token: 'local-token-' + Date.now()
+              access_token: token,
+              refresh_token: 'local-refresh-' + Date.now()
             }
           },
           error: null
@@ -75,24 +95,92 @@ if (useLocalAuth || supabaseUrl === 'YOUR_SUPABASE_URL' || supabaseAnonKey === '
       },
       verifyOtp: async (credentials) => {
         // Simulate successful OTP verification
+        const userId = 'local-user-' + Date.now();
+        const token = 'local-token-' + Date.now();
+        
+        const userData = {
+          id: userId,
+          email: credentials.email,
+          user_metadata: { full_name: credentials.email.split('@')[0] }
+        };
+        
+        localStorage.setItem('mock_user', JSON.stringify(userData));
+        localStorage.setItem('mock_token', token);
+        
         return {
           data: {
-            user: {
-              id: 'local-user-' + Date.now(),
-              email: credentials.email,
-              user_metadata: { full_name: credentials.email.split('@')[0] }
-            },
+            user: userData,
             session: {
-              access_token: 'local-token-' + Date.now()
+              access_token: token,
+              refresh_token: 'local-refresh-' + Date.now()
             }
           },
           error: null
         };
       },
-      getUser: async () => {
-        return { data: { user: null }, error: null };
+      getSession: async () => {
+        // Check for stored session
+        const storedUser = localStorage.getItem('mock_user');
+        const storedToken = localStorage.getItem('mock_token');
+        
+        if (storedUser && storedToken) {
+          try {
+            const userData = JSON.parse(storedUser);
+            return {
+              data: {
+                session: {
+                  access_token: storedToken,
+                  refresh_token: 'local-refresh-' + Date.now(),
+                  user: userData
+                }
+              },
+              error: null
+            };
+          } catch (error) {
+            return { data: { session: null }, error: null };
+          }
+        }
+        
+        return { data: { session: null }, error: null };
+      },
+      onAuthStateChange: (callback) => {
+        // Simulate auth state change listener
+        const checkAuthState = () => {
+          const storedUser = localStorage.getItem('mock_user');
+          const storedToken = localStorage.getItem('mock_token');
+          
+          if (storedUser && storedToken) {
+            try {
+              const userData = JSON.parse(storedUser);
+              callback('SIGNED_IN', {
+                access_token: storedToken,
+                refresh_token: 'local-refresh-' + Date.now(),
+                user: userData
+              });
+            } catch (error) {
+              callback('SIGNED_OUT', null);
+            }
+          } else {
+            callback('SIGNED_OUT', null);
+          }
+        };
+        
+        // Check immediately
+        checkAuthState();
+        
+        // Return unsubscribe function
+        return {
+          data: {
+            subscription: {
+              unsubscribe: () => {}
+            }
+          }
+        };
       },
       signOut: async () => {
+        // Clear stored data
+        localStorage.removeItem('mock_user');
+        localStorage.removeItem('mock_token');
         return { error: null };
       }
     }

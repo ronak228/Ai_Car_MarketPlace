@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../supabaseClient';
+import { useAuth } from '../contexts/AuthContext';
 
 const OTPVerification = ({ email, verificationType = 'signup', onVerificationComplete, onBack }) => {
   const navigate = useNavigate();
+  const { verifyOtp, signInWithOtp } = useAuth();
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -46,73 +47,8 @@ const OTPVerification = ({ email, verificationType = 'signup', onVerificationCom
     try {
       console.log('Verifying OTP:', { email, otp, verificationType });
       
-      // Check if we're using local authentication
-      const useLocalAuth = process.env.REACT_APP_USE_LOCAL_AUTH === 'true';
-      const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'YOUR_SUPABASE_URL';
-      const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
-      
-      if (useLocalAuth || supabaseUrl === 'YOUR_SUPABASE_URL' || supabaseAnonKey === 'YOUR_SUPABASE_ANON_KEY') {
-        // Local authentication - accept any 6-digit code
-        console.log('Using local authentication - accepting OTP');
-        
-        // Simulate verification delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const mockUser = {
-          id: 'local-user-' + Date.now(),
-          email: email,
-          user_metadata: { full_name: email.split('@')[0] }
-        };
-        
-        setSuccess('Verification successful! Redirecting to dashboard...');
-        setTimeout(() => {
-          onVerificationComplete(mockUser);
-        }, 2000);
-        return;
-      }
-      
-      // Try multiple verification approaches for real Supabase
-      let response;
-      let error;
-
-      // First try: Use the specified verification type
-      response = await supabase.auth.verifyOtp({
-        email: email,
-        token: otp,
-        type: verificationType === 'signup' ? 'signup' : 'signin'
-      });
-
-      error = response.error;
-
-      // If that fails, try alternative types
-      if (error) {
-        console.log('First verification attempt failed, trying alternatives');
-        
-        // Try 'email' type
-        response = await supabase.auth.verifyOtp({
-          email: email,
-          token: otp,
-          type: 'email'
-        });
-        
-        error = response.error;
-      }
-
-      // If still fails, try 'magiclink' type
-      if (error) {
-        console.log('Second verification attempt failed, trying magiclink');
-        
-        response = await supabase.auth.verifyOtp({
-          email: email,
-          token: otp,
-          type: 'magiclink'
-        });
-        
-        error = response.error;
-      }
-
-      const { data } = response;
-      console.log('OTP verification response:', { data, error });
+      // Use the authentication context to verify OTP
+      const { data, error } = await verifyOtp(email, otp, verificationType === 'signup' ? 'signup' : 'email');
 
       if (error) {
         setAttempts(attempts + 1);
@@ -126,22 +62,32 @@ const OTPVerification = ({ email, verificationType = 'signup', onVerificationCom
           throw new Error('This OTP has already been used. Please request a new one.');
         } else if (error.message.includes('not found')) {
           throw new Error('OTP not found. Please check the code and try again.');
+        } else {
+          throw new Error(`Verification failed: ${error.message}`);
         }
-        
-        throw new Error(`Verification failed: ${error.message}`);
       }
 
-      if (data.user) {
-        setSuccess('Verification successful! Redirecting to dashboard...');
+      if (data?.user) {
+        console.log('OTP verification successful:', data.user);
+        
+        // Determine the verification type for success message
+        const successMessage = verificationType === 'signup' 
+          ? 'Account created successfully! Redirecting to dashboard...'
+          : 'Sign in successful! Redirecting to dashboard...';
+        
+        setSuccess(successMessage);
+        
+        // Call the completion handler after a short delay
         setTimeout(() => {
           onVerificationComplete(data.user);
         }, 2000);
       } else {
-        throw new Error('Verification completed but no user data received.');
+        throw new Error('Verification failed. Please try again.');
       }
+
     } catch (err) {
       console.error('OTP verification error:', err);
-      setError(err.message || 'Invalid OTP. Please try again.');
+      setError(err.message || 'Verification failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -150,83 +96,23 @@ const OTPVerification = ({ email, verificationType = 'signup', onVerificationCom
   const handleResendOTP = async () => {
     setIsLoading(true);
     setError('');
+    setSuccess('');
+    setOtp('');
     setAttempts(0);
+    setTimeLeft(60);
+    setCanResend(false);
 
     try {
-      console.log('Resending OTP to:', email);
+      const { error } = await signInWithOtp(email);
       
-      // Check if we're using local authentication
-      const useLocalAuth = process.env.REACT_APP_USE_LOCAL_AUTH === 'true';
-      const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'YOUR_SUPABASE_URL';
-      const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
-      
-      if (useLocalAuth || supabaseUrl === 'YOUR_SUPABASE_URL' || supabaseAnonKey === 'YOUR_SUPABASE_ANON_KEY') {
-        // Local authentication - simulate OTP resend
-        console.log('Using local authentication - simulating OTP resend');
-        
-        // Simulate resend delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        setSuccess('New OTP sent successfully! (Local mode - any 6-digit code will work)');
-        setTimeLeft(60);
-        setCanResend(false);
-        setOtp('');
-        
-        // Clear success message after 5 seconds
-        setTimeout(() => {
-          setSuccess('');
-        }, 5000);
-        return;
-      }
-      
-      // Try different approaches for resending OTP with real Supabase
-      let response;
-      let error;
-
-      // First try: Use signInWithOtp with email redirect
-      response = await supabase.auth.signInWithOtp({
-        email: email,
-        options: {
-          shouldCreateUser: false,
-          emailRedirectTo: window.location.origin
-        }
-      });
-
-      error = response.error;
-
-      // If that fails, try with resend method
-      if (error) {
-        console.log('First attempt failed, trying resend method');
-        response = await supabase.auth.resend({
-          type: 'signin',
-          email: email
-        });
-        error = response.error;
-      }
-
-      console.log('Resend OTP response:', { error });
-
       if (error) {
         if (error.message.includes('429') || error.message.includes('rate limit')) {
           throw new Error('Rate limit reached. Please wait 1 minute before trying again.');
         }
-        if (error.message.includes('already been sent')) {
-          setSuccess('OTP already sent! Please check your email and spam folder.');
-        } else {
-          throw error;
-        }
-      } else {
-        setSuccess('New OTP sent successfully! Check your email and spam folder.');
+        throw error;
       }
 
-      setTimeLeft(60);
-      setCanResend(false);
-      setOtp('');
-      
-      // Clear success message after 5 seconds
-      setTimeout(() => {
-        setSuccess('');
-      }, 5000);
+      setSuccess('New OTP sent successfully!');
     } catch (err) {
       setError(err.message || 'Failed to resend OTP. Please try again.');
     } finally {
@@ -234,51 +120,40 @@ const OTPVerification = ({ email, verificationType = 'signup', onVerificationCom
     }
   };
 
-  const handleBackToSignIn = () => {
-    onBack();
-  };
-
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
   return (
     <div className="auth-container">
       <div className="auth-card">
         <div className="card-body">
-          <h2 className="auth-title">
-            {verificationType === 'signup' ? 'Email Verification' : 'Login Verification'}
-          </h2>
-          
-          <p className="text-center mb-4">
-            We've sent a 6-digit verification code to <strong>{email}</strong>
-            <br />
-            <small className="text-muted">
-              Please check your email and spam folder. OTP may take 1-2 minutes to arrive.
-            </small>
-          </p>
-          
-          <div className="alert alert-info" role="alert">
-            <strong>💡 Tips for faster OTP:</strong>
-            <ul className="mb-0 mt-2">
-              <li>Check your spam/junk folder</li>
-              <li>Make sure you entered the correct email address</li>
-              <li>Wait 1-2 minutes before requesting a new OTP</li>
-              <li>Enter the 6-digit code exactly as received</li>
-            </ul>
+          <div className="auth-header">
+            <div className="auth-logo">
+              <span className="auth-logo-icon">📧</span>
+              <span className="auth-logo-text">Verify Email</span>
+            </div>
+            <h2 className="auth-title">Enter Verification Code</h2>
+            <p className="auth-subtitle">
+              We've sent a 6-digit code to <strong>{email}</strong>
+            </p>
           </div>
 
           {error && (
             <div className="auth-alert auth-alert-danger" role="alert">
-              {error}
+              <div className="d-flex align-items-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="me-2">
+                  <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="currentColor"/>
+                </svg>
+                <span>{error}</span>
+              </div>
             </div>
           )}
 
           {success && (
             <div className="auth-alert auth-alert-success" role="alert">
-              {success}
+              <div className="d-flex align-items-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="me-2">
+                  <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" fill="currentColor"/>
+                </svg>
+                <span>{success}</span>
+              </div>
             </div>
           )}
 
@@ -287,32 +162,24 @@ const OTPVerification = ({ email, verificationType = 'signup', onVerificationCom
               <label htmlFor="otp">Verification Code</label>
               <input
                 type="text"
-                className="auth-input"
+                className="auth-input text-center"
                 id="otp"
-                name="otp"
-                placeholder="Enter 6-digit code"
+                placeholder="000000"
                 value={otp}
                 onChange={handleOTPChange}
                 maxLength={6}
+                style={{ fontSize: '1.5rem', letterSpacing: '0.5rem' }}
                 required
-                autoComplete="one-time-code"
-                disabled={attempts >= maxAttempts}
-                style={{ 
-                  letterSpacing: '0.5em',
-                  textAlign: 'center',
-                  fontSize: '1.2em',
-                  fontWeight: 'bold'
-                }}
               />
               <small className="text-muted">
                 Enter the 6-digit code sent to your email
               </small>
             </div>
-            
+
             <button
               type="submit"
               className="auth-submit-btn"
-              disabled={isLoading || otp.length !== 6 || attempts >= maxAttempts}
+              disabled={isLoading || otp.length !== 6}
             >
               {isLoading && <span className="auth-loading"></span>}
               {isLoading ? 'Verifying...' : 'Verify Code'}
@@ -320,48 +187,44 @@ const OTPVerification = ({ email, verificationType = 'signup', onVerificationCom
           </form>
 
           <div className="text-center mt-3">
-            <div className="mb-3">
-              <p className="mb-2">
-                Didn't receive the code? 
-                {canResend ? (
-                  <button
-                    className="auth-toggle-btn"
-                    onClick={handleResendOTP}
-                    disabled={isLoading}
-                  >
-                    Resend Code
-                  </button>
-                ) : (
-                  <span className="text-muted">
-                    Resend in {formatTime(timeLeft)}
-                  </span>
-                )}
-              </p>
-              
-              {attempts > 0 && (
-                <small className="text-warning">
-                  Attempts: {attempts}/{maxAttempts}
-                </small>
+            <p className="text-muted">
+              Didn't receive the code? 
+              {canResend ? (
+                <button
+                  type="button"
+                  className="auth-link-btn"
+                  onClick={handleResendOTP}
+                  disabled={isLoading}
+                >
+                  Resend Code
+                </button>
+              ) : (
+                <span className="text-muted">
+                  {' '}Resend in {timeLeft}s
+                </span>
               )}
-            </div>
-            
+            </p>
+          </div>
+
+          <div className="text-center mt-3">
             <button
+              type="button"
               className="auth-toggle-btn"
-              onClick={handleBackToSignIn}
+              onClick={onBack}
+              disabled={isLoading}
             >
-              Back to {verificationType === 'signup' ? 'Sign Up' : 'Sign In'}
+              ← Back to {verificationType === 'signup' ? 'Sign Up' : 'Sign In'}
             </button>
           </div>
 
-          <div className="mt-4 p-3 bg-light rounded">
-            <small className="text-muted">
-              <strong>Security Notice:</strong><br />
-              • OTP expires in 10 minutes<br />
-              • Maximum 3 attempts per OTP<br />
-              • Rate limit: 1 OTP per minute<br />
-              • Check spam folder if not received
-            </small>
-          </div>
+          {/* Attempts counter */}
+          {attempts > 0 && (
+            <div className="text-center mt-3">
+              <small className="text-warning">
+                Attempts: {attempts}/{maxAttempts}
+              </small>
+            </div>
+          )}
         </div>
       </div>
     </div>
