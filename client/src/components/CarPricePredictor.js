@@ -4,19 +4,39 @@ import axios from 'axios';
 const CarPricePredictor = () => {
   const [formData, setFormData] = useState({
     company: '',
-    car_models: '',
+    model: '',
     year: '',
+    kms_driven: '',
     fuel_type: '',
-    kilo_driven: ''
+    transmission: 'Manual',
+    owner: '1st',
+    car_condition: 'Good',
+    insurance_status: 'Yes',
+    previous_accidents: 0,
+    num_doors: 4,
+    engine_size: 1500,
+    power: 100,
+    city: 'Delhi',
+    emission_norm: 'BS-IV',
+    insurance_eligible: 'Yes',
+    maintenance_level: 'Medium'
   });
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [options, setOptions] = useState({
     companies: [],
-    car_models: [],
+    models: [],
     years: [],
-    fuel_types: []
+    fuel_types: [],
+    transmission_types: [],
+    owner_types: [],
+    condition_types: [],
+    insurance_types: [],
+    cities: [],
+    emission_norms: [],
+    insurance_eligible_types: [],
+    maintenance_levels: []
   });
 
   const [datasetInfo, setDatasetInfo] = useState(null);
@@ -40,15 +60,15 @@ const CarPricePredictor = () => {
         .then(res => {
           setOptions(prev => ({
             ...prev,
-            car_models: ['Select Model', ...res.data]
+            models: ['Select Model', ...res.data]
           }));
-          setFormData(prev => ({ ...prev, car_models: '' }));
+          setFormData(prev => ({ ...prev, model: '' }));
         })
         .catch(err => {
-          setOptions(prev => ({ ...prev, car_models: ['Select Model'] }));
+          setOptions(prev => ({ ...prev, models: ['Select Model'] }));
         });
     } else {
-      setOptions(prev => ({ ...prev, car_models: ['Select Model'] }));
+      setOptions(prev => ({ ...prev, models: ['Select Model'] }));
     }
   }, [formData.company]);
 
@@ -56,18 +76,47 @@ const CarPricePredictor = () => {
     try {
       setDatasetInfoLoading(true);
       // Fetch data from unified API
-      const [companiesRes, yearsRes, fuelTypesRes, datasetInfoRes] = await Promise.all([
+      const [
+        companiesRes, 
+        yearsRes, 
+        fuelTypesRes, 
+        transmissionTypesRes,
+        ownerTypesRes,
+        conditionTypesRes,
+        insuranceTypesRes,
+        citiesRes,
+        emissionNormsRes,
+        insuranceEligibleTypesRes,
+        maintenanceLevelsRes,
+        datasetInfoRes
+      ] = await Promise.all([
         axios.get('/api/companies'),
         axios.get('/api/years'),
         axios.get('/api/fuel-types'),
+        axios.get('/api/transmission-types'),
+        axios.get('/api/owner-types'),
+        axios.get('/api/condition-types'),
+        axios.get('/api/insurance-types'),
+        axios.get('/api/cities'),
+        axios.get('/api/emission-norms'),
+        axios.get('/api/insurance-eligible-types'),
+        axios.get('/api/maintenance-levels'),
         axios.get('/api/dataset-info')
       ]);
 
       setOptions({
         companies: ['Select Company', ...companiesRes.data],
-        car_models: ['Select Model'],
+        models: ['Select Model'],
         years: yearsRes.data,
-        fuel_types: fuelTypesRes.data
+        fuel_types: fuelTypesRes.data,
+        transmission_types: transmissionTypesRes.data,
+        owner_types: ownerTypesRes.data,
+        condition_types: conditionTypesRes.data,
+        insurance_types: insuranceTypesRes.data,
+        cities: citiesRes.data,
+        emission_norms: emissionNormsRes.data,
+        insurance_eligible_types: insuranceEligibleTypesRes.data,
+        maintenance_levels: maintenanceLevelsRes.data
       });
 
       setDatasetInfo(datasetInfoRes.data);
@@ -121,11 +170,11 @@ const CarPricePredictor = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate all fields are filled
+    // Validate all required fields are filled
     if (!formData.company || formData.company === 'Select Company' ||
-        !formData.car_models || formData.car_models === 'Select Model' ||
-        !formData.year || !formData.fuel_type || !formData.kilo_driven) {
-      setError('Please fill in all fields before submitting.');
+        !formData.model || formData.model === 'Select Model' ||
+        !formData.year || !formData.fuel_type || !formData.kms_driven) {
+      setError('Please fill in all required fields before submitting.');
       return;
     }
 
@@ -142,11 +191,22 @@ const CarPricePredictor = () => {
     try {
       const response = await axios.post('/api/predict', formData);
       const basePrice = response.data.prediction;
+      const modelUsed = response.data.model_used;
+      const confidenceScore = response.data.confidence_score;
+      const modelPerformance = response.data.model_performance;
+      const featuresUsed = response.data.features_used;
+      
       setPrediction(basePrice);
       
       // Generate advanced prediction features
       const advanced = generateAdvancedPrediction(basePrice);
-      setAdvancedPrediction(advanced);
+      setAdvancedPrediction({
+        ...advanced,
+        modelUsed,
+        confidenceScore,
+        modelPerformance,
+        featuresUsed
+      });
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to get prediction. Please try again.');
     } finally {
@@ -209,17 +269,17 @@ const CarPricePredictor = () => {
                   </div>
 
                   <div className="col-md-6">
-                    <label htmlFor="car_models" className="form-label">Car Model</label>
+                    <label htmlFor="model" className="form-label">Car Model</label>
                     <select
                       className="form-select"
-                      id="car_models"
-                      name="car_models"
-                      value={formData.car_models}
+                      id="model"
+                      name="model"
+                      value={formData.model}
                       onChange={handleChange}
                       required
                       disabled={!formData.company || formData.company === 'Select Company'}
                     >
-                      {options.car_models.map((model, index) => (
+                      {options.models.map((model, index) => (
                         <option key={index} value={model}>
                           {model}
                         </option>
@@ -269,19 +329,220 @@ const CarPricePredictor = () => {
                   </div>
 
                   <div className="col-12">
-                    <label htmlFor="kilo_driven" className="form-label">Kilometers Driven</label>
+                    <label htmlFor="kms_driven" className="form-label">Kilometers Driven</label>
                     <input
                       type="number"
                       className="form-control"
-                      id="kilo_driven"
-                      name="kilo_driven"
-                      value={formData.kilo_driven}
+                      id="kms_driven"
+                      name="kms_driven"
+                      value={formData.kms_driven}
                       onChange={handleChange}
                       placeholder="Enter kilometers driven"
                       required
                       min="0"
-                      max="200000"
+                      max="400000"
                     />
+                  </div>
+
+                  {/* Enhanced Fields Section */}
+                  <div className="col-12">
+                    <hr className="my-4" />
+                    <h5 className="text-primary mb-3">🔧 Additional Details (Optional)</h5>
+                    <p className="text-muted small mb-4">
+                      Provide additional details for more accurate predictions. Default values will be used if not specified.
+                    </p>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="transmission" className="form-label">Transmission</label>
+                    <select
+                      className="form-select"
+                      id="transmission"
+                      name="transmission"
+                      value={formData.transmission}
+                      onChange={handleChange}
+                    >
+                      {options.transmission_types.map((transmission) => (
+                        <option key={transmission} value={transmission}>
+                          {transmission}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="owner" className="form-label">Owner Type</label>
+                    <select
+                      className="form-select"
+                      id="owner"
+                      name="owner"
+                      value={formData.owner}
+                      onChange={handleChange}
+                    >
+                      {options.owner_types.map((owner) => (
+                        <option key={owner} value={owner}>
+                          {owner} Owner
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="car_condition" className="form-label">Car Condition</label>
+                    <select
+                      className="form-select"
+                      id="car_condition"
+                      name="car_condition"
+                      value={formData.car_condition}
+                      onChange={handleChange}
+                    >
+                      {options.condition_types.map((condition) => (
+                        <option key={condition} value={condition}>
+                          {condition}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="insurance_status" className="form-label">Insurance Status</label>
+                    <select
+                      className="form-select"
+                      id="insurance_status"
+                      name="insurance_status"
+                      value={formData.insurance_status}
+                      onChange={handleChange}
+                    >
+                      {options.insurance_types.map((insurance) => (
+                        <option key={insurance} value={insurance}>
+                          {insurance}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="previous_accidents" className="form-label">Previous Accidents</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="previous_accidents"
+                      name="previous_accidents"
+                      value={formData.previous_accidents}
+                      onChange={handleChange}
+                      min="0"
+                      max="4"
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="num_doors" className="form-label">Number of Doors</label>
+                    <select
+                      className="form-select"
+                      id="num_doors"
+                      name="num_doors"
+                      value={formData.num_doors}
+                      onChange={handleChange}
+                    >
+                      <option value={4}>4 Doors</option>
+                      <option value={5}>5 Doors</option>
+                    </select>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="engine_size" className="form-label">Engine Size (cc)</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="engine_size"
+                      name="engine_size"
+                      value={formData.engine_size}
+                      onChange={handleChange}
+                      min="800"
+                      max="3000"
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="power" className="form-label">Power (bhp)</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="power"
+                      name="power"
+                      value={formData.power}
+                      onChange={handleChange}
+                      min="45"
+                      max="350"
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="city" className="form-label">City</label>
+                    <select
+                      className="form-select"
+                      id="city"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleChange}
+                    >
+                      {options.cities.map((city) => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="emission_norm" className="form-label">Emission Norm</label>
+                    <select
+                      className="form-select"
+                      id="emission_norm"
+                      name="emission_norm"
+                      value={formData.emission_norm}
+                      onChange={handleChange}
+                    >
+                      {options.emission_norms.map((norm) => (
+                        <option key={norm} value={norm}>
+                          {norm}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="insurance_eligible" className="form-label">Insurance Eligible</label>
+                    <select
+                      className="form-select"
+                      id="insurance_eligible"
+                      name="insurance_eligible"
+                      value={formData.insurance_eligible}
+                      onChange={handleChange}
+                    >
+                      {options.insurance_eligible_types.map((eligible) => (
+                        <option key={eligible} value={eligible}>
+                          {eligible}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label htmlFor="maintenance_level" className="form-label">Maintenance Level</label>
+                    <select
+                      className="form-select"
+                      id="maintenance_level"
+                      name="maintenance_level"
+                      value={formData.maintenance_level}
+                      onChange={handleChange}
+                    >
+                      {options.maintenance_levels.map((level) => (
+                        <option key={level} value={level}>
+                          {level}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <div className="col-12 text-center">
@@ -312,11 +573,20 @@ const CarPricePredictor = () => {
                   <div className="row mb-4">
                     <div className="col-12">
                       <div className="alert alert-primary text-center" role="alert">
-                        <h4 className="alert-heading">Primary Prediction</h4>
+                        <h4 className="alert-heading">Enhanced Prediction</h4>
                         <h2 className="text-primary mb-0">₹{prediction.toLocaleString()}</h2>
                         <p className="mb-0 mt-2">
-                          Based on our advanced machine learning model
+                          Based on our advanced machine learning model with all 22 features
                         </p>
+                        {advancedPrediction.modelUsed && (
+                          <div className="mt-3">
+                            <small className="text-muted">
+                              Model: {advancedPrediction.modelUsed} | 
+                              Features Used: {advancedPrediction.featuresUsed} | 
+                              Confidence: {advancedPrediction.confidenceScore}%
+                            </small>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -445,6 +715,15 @@ const CarPricePredictor = () => {
                         </p>
                         <p className="card-text small mb-1">
                           <strong>Total Models:</strong> {datasetInfo.total_models}
+                        </p>
+                        <p className="card-text small mb-1">
+                          <strong>Total Records:</strong> {datasetInfo.total_records}
+                        </p>
+                        <p className="card-text small mb-1">
+                          <strong>Cities Available:</strong> {datasetInfo.cities?.length || 0}
+                        </p>
+                        <p className="card-text small mb-1">
+                          <strong>Price Range:</strong> ₹{datasetInfo.price_range?.min?.toLocaleString()} - ₹{datasetInfo.price_range?.max?.toLocaleString()}
                         </p>
                         <p className="card-text small mb-0">
                           <strong>Year Range:</strong> {datasetInfo.year_range.min} - {datasetInfo.year_range.max}

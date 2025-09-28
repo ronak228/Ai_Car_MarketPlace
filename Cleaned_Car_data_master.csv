@@ -1,0 +1,817 @@
+car_id,company,model,year,kms_driven,fuel_type,transmission,owner,car_condition,insurance_status,previous_accidents,num_doors,engine_size,power,Price,city,emission_norm,insurance_eligible,maintenance_level,predicted_price,listing_type,is_certified
+1,Hyundai,Hyundai Santro Xing,2007,45000,Petrol,Manual,3rd,Poor,No,1,4,1257,85,80000,Mumbai,BS-III,No,Low,84925.8,Dealer,No
+2,Mahindra,Mahindra Jeep CL550,2006,40,Diesel,Manual,1st,Excellent,Yes,1,4,2035,109,425000,Pune,BS-III,Yes,Medium,453045.57,Dealer,Yes
+3,Hyundai,Hyundai Grand i10,2014,28000,Petrol,Automatic,4th+,Poor,No,1,4,1155,113,325000,Hyderabad,BS-IV,No,Low,355906.74,Dealer,No
+4,Ford,Ford EcoSport Titanium,2014,36000,Diesel,Automatic,2nd,Fair,No,0,4,1113,90,575000,Hyderabad,BS-IV,Yes,High,596615.27,Dealer,No
+5,Ford,Ford Figo,2012,41000,Diesel,Automatic,2nd,Good,Yes,0,4,1286,93,175000,Pune,BS-IV,Yes,High,156150.67,Individual,No
+6,Hyundai,Hyundai Eon,2013,25000,Petrol,Automatic,2nd,Fair,Yes,0,4,1383,84,190000,Mumbai,BS-IV,Yes,Low,190132.79,Individual,No
+7,Ford,Ford EcoSport Ambiente,2016,24530,Diesel,Automatic,2nd,Excellent,Yes,0,4,1330,68,830000,Bangalore,BS-IV,Yes,High,814942.01,Individual,No
+8,Maruti,Maruti Suzuki Alto,2015,60000,Petrol,Automatic,3rd,Good,No,4,4,1561,92,250000,Hyderabad,BS-IV,Yes,Low,257016.28,Individual,No
+9,Skoda,Skoda Fabia Classic,2010,60000,Petrol,Automatic,3rd,Excellent,No,4,4,2015,349,182000,Hyderabad,BS-IV,Yes,High,206554.92,Dealer,Yes
+10,Maruti,Maruti Suzuki Stingray,2015,30000,Petrol,Automatic,2nd,Excellent,No,0,4,840,93,315000,Bangalore,BS-IV,Yes,Medium,361361.48,Individual,No
+11,Hyundai,Hyundai Elite i20,2014,32000,Petrol,Manual,3rd,Poor,No,0,4,1330,59,415000,Pune,BS-IV,No,Low,404099.95,Dealer,No
+12,Mahindra,Mahindra Scorpio SLE,2015,48660,Diesel,Manual,3rd,Good,No,3,5,2397,175,320000,Kolkata,BS-IV,Yes,Low,287577.43,Dealer,Yes
+13,Hyundai,Hyundai Santro Xing,2007,45000,Petrol,Manual,2nd,Excellent,No,0,4,1025,94,80000,Pune,BS-III,Yes,Medium,91590.54,Dealer,Yes
+14,Mahindra,Mahindra Jeep CL550,2006,40,Diesel,Manual,3rd,Excellent,No,0,4,2356,174,425000,Pune,BS-III,Yes,Low,372622.35,Dealer,Yes
+15,Audi,Audi A8,2017,4000,Petrol,Manual,2nd,Poor,Yes,0,4,1485,203,1000000,Hyderabad,BS-IV,No,High,891395.45,Individual,No
+16,Audi,Audi Q7,2014,16934,Diesel,Manual,1st,Good,No,4,4,2187,286,500000,Delhi,BS-IV,Yes,Medium,497048.64,Individual,No
+17,Mahindra,Mahindra Scorpio S10,2016,43000,Diesel,Manual,1st,Fair,Yes,1,5,2207,132,350000,Mumbai,BS-IV,Yes,Low,307391.06,Dealer,No
+18,Maruti,Maruti Suzuki Alto,2014,35550,Petrol,Manual,2nd,Good,Yes,0,4,1173,101,160000,Delhi,BS-IV,Yes,Medium,175838.22,Dealer,Yes
+19,Mahindra,Mahindra Scorpio S10,2016,43000,Diesel,Automatic,4th+,Fair,Yes,0,5,2556,90,350000,Hyderabad,BS-IV,Yes,Low,353537.98,Dealer,No
+20,Mahindra,Mahindra Scorpio S10,2016,39522,Diesel,Automatic,2nd,Good,Yes,0,5,2405,186,310000,Kolkata,BS-IV,Yes,Low,329300.51,Dealer,Yes
+21,Maruti,Maruti Suzuki Alto,2015,39000,Petrol,Automatic,2nd,Good,No,0,4,1286,83,75000,Bangalore,BS-IV,Yes,Low,71758.0,Individual,No
+22,Hyundai,Hyundai i20 Sportz,2012,55000,Petrol,Automatic,1st,Good,Yes,0,4,1028,55,100000,Chennai,BS-IV,Yes,Medium,102230.9,Dealer,Yes
+23,Hyundai,Hyundai i20 Sportz,2012,55000,Petrol,Automatic,2nd,Good,No,0,4,1514,54,100000,Mumbai,BS-IV,Yes,Medium,106857.33,Individual,No
+24,Hyundai,Hyundai i20 Sportz,2012,55000,Petrol,Automatic,3rd,Good,No,0,4,1197,62,100000,Bangalore,BS-IV,Yes,Medium,108897.31,Dealer,Yes
+25,Maruti,Maruti Suzuki Alto,2017,72000,Petrol,Automatic,2nd,Fair,No,0,4,1008,106,190000,Pune,BS-IV,Yes,Low,199734.25,Individual,No
+26,Maruti,Maruti Suzuki Vitara,2016,15975,Diesel,Automatic,3rd,Poor,No,0,4,1114,81,290000,Kolkata,BS-IV,No,Low,320253.2,Individual,No
+27,Maruti,Maruti Suzuki Alto,2008,70000,Petrol,Manual,2nd,Excellent,No,2,4,1512,63,95000,Chennai,BS-III,Yes,Medium,93732.71,Dealer,Yes
+28,Mahindra,Mahindra Bolero DI,2017,23452,Diesel,Manual,4th+,Poor,No,0,4,2219,164,180000,Hyderabad,BS-IV,No,Low,160240.52,Individual,No
+29,Maruti,Maruti Suzuki Swift,2014,35522,Diesel,Automatic,4th+,Poor,No,0,4,1544,79,385000,Bangalore,BS-IV,No,Medium,390609.92,Individual,No
+30,Mahindra,Mahindra Scorpio S10,2015,48508,Diesel,Manual,2nd,Poor,Yes,1,5,2219,150,250000,Bangalore,BS-IV,No,Low,246376.3,Individual,No
+31,Maruti,Maruti Suzuki Swift,2017,15487,Petrol,Automatic,4th+,Poor,No,1,4,1260,77,180000,Kolkata,BS-IV,No,Medium,198874.37,Dealer,No
+32,Maruti,Maruti Suzuki Wagon,2013,39000,Petrol,Manual,2nd,Poor,Yes,0,4,801,84,105000,Pune,BS-IV,No,Low,102052.7,Individual,No
+33,Maruti,Maruti Suzuki Wagon,2013,39000,Petrol,Manual,2nd,Excellent,No,0,4,994,53,105000,Kolkata,BS-IV,Yes,Low,92615.91,Dealer,Yes
+34,Toyota,Toyota Innova 2.0,2012,82000,Diesel,Automatic,1st,Excellent,No,0,5,2607,174,650000,Chennai,BS-IV,Yes,Low,696501.46,Individual,No
+35,Renault,Renault Lodgy 85,2018,20000,Diesel,Automatic,2nd,Poor,Yes,0,4,1588,66,689999,Bangalore,BS-IV,No,High,676888.56,Individual,No
+36,Skoda,Skoda Yeti Ambition,2012,68000,Diesel,Manual,1st,Good,Yes,0,4,1732,97,448000,Chennai,BS-IV,Yes,High,502269.21,Individual,No
+37,Maruti,Maruti Suzuki Baleno,2017,32000,Diesel,Automatic,4th+,Good,Yes,0,4,1388,105,549000,Mumbai,BS-IV,Yes,Low,630176.51,Individual,No
+38,Renault,Renault Duster 110,2012,38000,Diesel,Manual,2nd,Fair,No,0,4,1088,89,501000,Hyderabad,BS-IV,Yes,High,530461.24,Individual,No
+39,Renault,Renault Duster 85,2013,27000,Diesel,Manual,3rd,Good,No,0,4,1521,56,489999,Chennai,BS-IV,Yes,Low,506312.14,Dealer,Yes
+40,Honda,Honda City 1.5,2011,33000,Petrol,Automatic,3rd,Poor,Yes,0,4,2662,222,280000,Delhi,BS-IV,No,Medium,290707.01,Individual,No
+41,Maruti,Maruti Suzuki Alto,2015,60000,Petrol,Automatic,4th+,Good,No,0,4,1133,65,250000,Kolkata,BS-IV,Yes,Low,241285.82,Individual,No
+42,Maruti,Maruti Suzuki Dzire,2013,46000,Diesel,Manual,1st,Fair,No,0,4,902,45,349999,Chennai,BS-IV,Yes,Medium,335137.39,Individual,No
+43,Honda,Honda Amaze,2013,46000,Diesel,Manual,4th+,Fair,Yes,0,4,2870,87,284999,Kolkata,BS-IV,Yes,High,276953.9,Dealer,No
+44,Honda,Honda Amaze 1.5,2015,36000,Diesel,Automatic,2nd,Poor,Yes,0,4,2055,102,345000,Delhi,BS-IV,No,Low,368340.3,Dealer,No
+45,Honda,Honda City,2015,55000,Petrol,Manual,2nd,Poor,No,0,4,2891,96,499999,Bangalore,BS-IV,No,Medium,516783.19,Individual,No
+46,Datsun,Datsun Redi GO,2017,16000,Petrol,Automatic,3rd,Good,No,0,4,1443,50,235000,Delhi,BS-IV,Yes,High,210722.65,Individual,No
+47,Maruti,Maruti Suzuki SX4,2010,36000,Petrol,Manual,3rd,Poor,No,0,4,850,91,249999,Delhi,BS-IV,No,Low,213018.88,Individual,No
+48,Mitsubishi,Mitsubishi Pajero Sport,2015,47000,Diesel,Manual,1st,Fair,Yes,0,4,1984,151,1475000,Bangalore,BS-IV,Yes,Medium,1606154.41,Individual,No
+49,Mahindra,Mahindra Bolero DI,2017,23452,Diesel,Manual,3rd,Excellent,No,0,4,2448,158,180000,Bangalore,BS-IV,Yes,Low,177386.07,Individual,No
+50,Maruti,Maruti Suzuki Swift,2014,35522,Diesel,Manual,4th+,Good,Yes,0,4,1127,107,385000,Kolkata,BS-IV,Yes,Medium,424037.86,Dealer,Yes
+51,Mahindra,Mahindra Scorpio S10,2015,48508,Diesel,Automatic,1st,Poor,No,1,5,2700,210,250000,Hyderabad,BS-IV,No,Low,241611.19,Dealer,No
+52,Maruti,Maruti Suzuki Swift,2017,15487,Petrol,Manual,3rd,Poor,No,3,4,1316,71,180000,Kolkata,BS-IV,No,Low,197575.42,Dealer,No
+53,Maruti,Maruti Suzuki Wagon,2013,39000,Petrol,Manual,3rd,Good,No,2,4,1506,105,105000,Chennai,BS-IV,Yes,Medium,117342.01,Individual,No
+54,Maruti,Maruti Suzuki Wagon,2013,39000,Petrol,Automatic,1st,Fair,Yes,0,4,1179,114,105000,Chennai,BS-IV,Yes,Low,116531.61,Dealer,No
+55,Mahindra,Mahindra Scorpio S10,2015,35000,Diesel,Manual,2nd,Poor,Yes,2,5,2808,137,395000,Delhi,BS-IV,No,Low,345885.79,Individual,No
+56,Maruti,Maruti Suzuki Swift,2017,30874,Petrol,Manual,4th+,Good,No,2,4,1116,69,220000,Pune,BS-IV,Yes,Medium,243758.81,Individual,No
+57,Honda,Honda City ZX,2017,15000,Diesel,Manual,4th+,Fair,Yes,0,4,1585,160,170000,Chennai,BS-IV,Yes,Low,159129.19,Dealer,No
+58,Maruti,Maruti Suzuki Wagon,2013,29685,Petrol,Automatic,2nd,Poor,No,0,4,1248,105,85000,Pune,BS-IV,No,Low,91542.91,Individual,No
+59,Ford,Ford Figo,2012,41000,Diesel,Automatic,3rd,Excellent,Yes,0,4,1481,105,175000,Hyderabad,BS-IV,Yes,Low,197130.1,Dealer,Yes
+60,Hyundai,Hyundai Eon,2013,25000,Petrol,Manual,1st,Good,No,1,4,1412,89,190000,Bangalore,BS-IV,Yes,Low,164648.04,Individual,No
+61,Tata,Tata Indigo eCS,2017,130000,Diesel,Manual,3rd,Fair,No,0,4,1032,88,200000,Bangalore,BS-IV,Yes,Low,192058.3,Dealer,No
+62,Ford,Ford EcoSport Ambiente,2016,24530,Diesel,Automatic,2nd,Good,No,0,4,891,101,830000,Chennai,BS-IV,Yes,Medium,881364.94,Individual,No
+63,Tata,Tata Indigo eCS,2017,130000,Diesel,Manual,4th+,Poor,No,0,4,1236,71,200000,Delhi,BS-IV,No,Low,182627.52,Dealer,No
+64,Mahindra,Mahindra Scorpio SLE,2012,19000,Diesel,Manual,2nd,Poor,No,0,5,2576,141,570000,Delhi,BS-IV,No,Medium,507914.9,Individual,No
+65,Volkswagen,Volkswagen Polo Highline,2014,60000,Petrol,Automatic,4th+,Fair,Yes,2,4,2858,220,315000,Pune,BS-IV,Yes,Medium,280158.05,Individual,No
+66,Skoda,Skoda Fabia Classic,2010,60000,Petrol,Manual,3rd,Poor,Yes,1,4,2104,176,182000,Delhi,BS-IV,No,Medium,171653.05,Individual,No
+67,Maruti,Maruti Suzuki Stingray,2015,30000,Petrol,Manual,3rd,Good,Yes,0,4,1310,50,315000,Bangalore,BS-IV,Yes,Low,294637.31,Dealer,Yes
+68,Chevrolet,Chevrolet Spark LS,2010,41000,Petrol,Manual,2nd,Fair,Yes,0,4,940,92,110000,Bangalore,BS-IV,Yes,High,95819.96,Individual,No
+69,Renault,Renault Duster 110PS,2012,35000,Diesel,Manual,3rd,Poor,Yes,2,4,1274,67,501000,Hyderabad,BS-IV,No,Low,461073.43,Dealer,No
+70,Honda,Honda City,2015,54000,Petrol,Automatic,4th+,Poor,Yes,0,4,2609,250,448999,Bangalore,BS-IV,No,High,453023.29,Dealer,No
+71,Mini,Mini Cooper S,2013,13000,Petrol,Manual,1st,Good,Yes,0,4,2106,116,1891111,Pune,BS-IV,Yes,Low,2127491.35,Dealer,Yes
+72,Datsun,Datsun Redi GO,2017,16000,Petrol,Manual,1st,Fair,No,0,4,1348,64,235000,Bangalore,BS-IV,Yes,Low,209607.82,Dealer,No
+73,Skoda,Skoda Fabia 1.2L,2011,38200,Diesel,Automatic,3rd,Poor,Yes,0,4,2301,148,159500,Hyderabad,BS-IV,No,Medium,157480.37,Dealer,No
+74,Honda,Honda Amaze,2015,22000,Petrol,Manual,1st,Excellent,Yes,2,4,2133,146,344999,Mumbai,BS-IV,Yes,High,350129.41,Individual,No
+75,Honda,Honda Amaze,2015,22000,Petrol,Manual,1st,Poor,Yes,4,4,1930,130,344999,Bangalore,BS-IV,No,Medium,321493.73,Dealer,No
+76,Renault,Renault Duster,2014,50000,Diesel,Automatic,1st,Excellent,Yes,0,4,1504,97,449999,Delhi,BS-IV,Yes,High,442478.05,Dealer,Yes
+77,Mini,Mini Cooper S,2013,13500,Petrol,Automatic,4th+,Poor,Yes,0,4,1672,298,1891111,Bangalore,BS-IV,No,High,1701859.52,Individual,No
+78,Mahindra,Mahindra Scorpio S4,2015,30000,Diesel,Manual,1st,Excellent,Yes,0,5,1727,131,865000,Pune,BS-IV,Yes,Low,830231.68,Individual,No
+79,Mahindra,Mahindra Scorpio VLX,2014,50000,Diesel,Automatic,4th+,Excellent,No,0,5,1939,186,699000,Chennai,BS-IV,Yes,Low,738152.37,Individual,No
+80,Mahindra,Mahindra Quanto C8,2013,20000,Diesel,Manual,3rd,Fair,Yes,0,4,1768,135,375000,Pune,BS-IV,Yes,Medium,354803.1,Dealer,No
+81,Ford,Ford EcoSport,2017,39000,Petrol,Automatic,3rd,Poor,No,0,4,1403,101,489999,Chennai,BS-IV,No,High,422480.21,Individual,No
+82,Honda,Honda Brio,2012,30000,Petrol,Automatic,1st,Good,Yes,0,4,2650,228,224999,Pune,BS-IV,Yes,Low,229521.78,Dealer,Yes
+83,Volkswagen,Volkswagen Vento Highline,2019,3600,Diesel,Automatic,1st,Poor,Yes,1,4,2499,216,1200000,Delhi,BS-IV,No,Medium,1251386.1,Individual,No
+84,Hyundai,Hyundai i20 Magna,2009,32000,Petrol,Automatic,2nd,Good,Yes,0,4,1038,57,195000,Hyderabad,BS-III,Yes,Low,224209.5,Individual,No
+85,Toyota,Toyota Corolla Altis,2010,38000,Diesel,Automatic,3rd,Good,No,1,4,2158,149,351000,Pune,BS-IV,Yes,High,305505.13,Dealer,Yes
+86,Hyundai,Hyundai Verna Transform,2008,45000,Petrol,Manual,1st,Fair,No,0,4,1122,56,160000,Pune,BS-III,Yes,Low,157757.93,Individual,No
+87,Toyota,Toyota Corolla Altis,2009,35000,Petrol,Manual,1st,Good,No,0,4,2397,174,240000,Bangalore,BS-III,Yes,Low,241933.66,Individual,No
+88,Honda,Honda City 1.5,2005,50000,Petrol,Automatic,1st,Poor,Yes,0,4,2346,129,90000,Pune,BS-III,No,High,91795.22,Individual,No
+89,Hyundai,Hyundai Elite i20,2014,32000,Petrol,Automatic,1st,Excellent,Yes,1,4,877,71,415000,Chennai,BS-IV,Yes,Medium,458672.48,Dealer,Yes
+90,Skoda,Skoda Fabia 1.2L,2011,45863,Diesel,Manual,4th+,Good,No,3,4,2560,162,155000,Kolkata,BS-IV,Yes,High,154908.6,Individual,No
+91,BMW,BMW 3 Series,2011,60500,Petrol,Automatic,2nd,Poor,Yes,0,4,1417,188,600000,Chennai,BS-IV,No,High,640850.06,Dealer,No
+92,Maruti,Maruti Suzuki A,2011,12500,Petrol,Manual,2nd,Excellent,No,3,4,1001,100,189500,Kolkata,BS-IV,Yes,Low,174490.33,Dealer,Yes
+93,Toyota,Toyota Etios GD,2013,60000,Diesel,Manual,3rd,Excellent,No,0,4,2270,81,350000,Mumbai,BS-IV,Yes,Medium,315955.06,Dealer,Yes
+94,Ford,Ford Figo Diesel,2012,35000,Diesel,Manual,4th+,Excellent,Yes,0,4,1228,57,210000,Hyderabad,BS-IV,Yes,Medium,216654.38,Dealer,Yes
+95,Maruti,Maruti Suzuki Swift,2014,35000,Petrol,Manual,2nd,Poor,No,0,4,1580,116,390000,Delhi,BS-IV,No,Low,396097.14,Dealer,No
+96,Chevrolet,Chevrolet Beat LT,2012,45000,Diesel,Manual,3rd,Fair,Yes,0,4,1582,54,135000,Pune,BS-IV,Yes,Medium,144612.42,Dealer,No
+97,BMW,BMW 7 Series,2009,35000,Petrol,Manual,1st,Poor,No,2,4,2458,74,1600000,Hyderabad,BS-III,No,High,1535517.5,Individual,No
+98,Mahindra,Mahindra XUV500 W8,2013,38000,Diesel,Automatic,1st,Good,No,0,5,1915,162,701000,Kolkata,BS-IV,Yes,Medium,674436.72,Dealer,Yes
+99,Hyundai,Hyundai i10 Magna,2014,18000,Petrol,Automatic,3rd,Good,No,0,4,1405,50,265000,Bangalore,BS-IV,Yes,Low,273365.6,Dealer,Yes
+100,Hyundai,Hyundai Verna Fluidic,2015,35000,Diesel,Manual,4th+,Excellent,No,0,4,1181,82,525000,Hyderabad,BS-IV,Yes,Low,596017.61,Individual,No
+101,Maruti,Maruti Suzuki Swift,2013,13349,Petrol,Automatic,1st,Fair,No,4,4,902,112,372000,Mumbai,BS-IV,Yes,Low,383842.91,Individual,No
+102,Maruti,Maruti Suzuki Ertiga,2016,29000,Petrol,Automatic,2nd,Good,Yes,0,4,818,67,635000,Pune,BS-IV,Yes,Low,700220.51,Dealer,Yes
+103,Ford,Ford EcoSport Titanium,2014,44000,Diesel,Automatic,3rd,Poor,No,1,4,1211,69,550000,Bangalore,BS-IV,No,Medium,533581.96,Individual,No
+104,Maruti,Maruti Suzuki Ertiga,2016,29000,Petrol,Automatic,1st,Excellent,No,0,4,1002,57,575000,Bangalore,BS-IV,Yes,Medium,565269.34,Dealer,Yes
+105,Maruti,Maruti Suzuki Ertiga,2013,42000,Diesel,Manual,3rd,Poor,Yes,2,4,897,72,485000,Hyderabad,BS-IV,No,Low,545206.24,Individual,No
+106,Maruti,Maruti Suzuki Alto,2012,14000,Petrol,Automatic,3rd,Good,No,1,4,1389,115,155000,Pune,BS-IV,Yes,Low,138016.98,Dealer,Yes
+107,Hyundai,Hyundai Grand i10,2014,49000,Diesel,Manual,4th+,Fair,Yes,1,4,1065,72,345000,Chennai,BS-IV,Yes,Medium,301350.77,Dealer,No
+108,Honda,Honda Amaze 1.2,2014,42000,Petrol,Manual,2nd,Excellent,Yes,0,4,1730,117,325000,Chennai,BS-IV,Yes,Low,343200.81,Dealer,Yes
+109,Hyundai,Hyundai i20 Asta,2012,36200,Diesel,Manual,2nd,Excellent,Yes,0,4,1225,66,329500,Hyderabad,BS-IV,Yes,Medium,287774.07,Dealer,Yes
+110,Ford,Ford Figo Diesel,2014,50000,Diesel,Manual,1st,Excellent,No,0,4,1278,72,195000,Chennai,BS-IV,Yes,Medium,165884.98,Individual,No
+111,Maruti,Maruti Suzuki Eeco,2015,55000,Petrol,Automatic,3rd,Good,No,0,4,1125,78,251111,Hyderabad,BS-IV,Yes,Medium,254459.94,Individual,No
+112,Maruti,Maruti Suzuki Ertiga,2014,45000,Petrol,Automatic,3rd,Good,Yes,1,4,1261,91,569999,Delhi,BS-IV,Yes,Low,508077.84,Individual,No
+113,Maruti,Maruti Suzuki Esteem,2007,51000,Petrol,Manual,1st,Excellent,No,2,4,1091,119,69999,Mumbai,BS-III,Yes,Medium,60233.85,Individual,No
+114,Maruti,Maruti Suzuki Ritz,2014,19000,Petrol,Automatic,4th+,Poor,No,0,4,1225,79,299999,Kolkata,BS-IV,No,Medium,298725.69,Individual,No
+115,Maruti,Maruti Suzuki Dzire,2009,46000,Petrol,Manual,3rd,Fair,No,0,4,1049,90,220000,Pune,BS-III,Yes,Low,225620.87,Individual,No
+116,Maruti,Maruti Suzuki Ritz,2013,33000,Diesel,Manual,3rd,Poor,Yes,1,4,816,101,399999,Pune,BS-IV,No,Medium,442520.31,Individual,No
+117,Maruti,Maruti Suzuki Swift,2013,13349,Petrol,Manual,2nd,Good,Yes,0,4,1097,78,372000,Bangalore,BS-IV,Yes,Low,393631.87,Individual,No
+118,Maruti,Maruti Suzuki Dzire,2015,104000,Diesel,Manual,3rd,Fair,No,0,4,1312,67,450000,Pune,BS-IV,Yes,Low,412182.26,Individual,No
+119,Toyota,Toyota Etios Liva,2014,55000,Petrol,Manual,1st,Excellent,Yes,1,4,2517,150,270000,Chennai,BS-IV,Yes,High,262769.05,Individual,No
+120,Hyundai,Hyundai i20 Sportz,2011,33333,Diesel,Automatic,2nd,Fair,Yes,0,4,1472,78,350000,Pune,BS-IV,Yes,Low,362495.81,Dealer,No
+121,Chevrolet,Chevrolet Spark,2012,33600,Petrol,Manual,2nd,Poor,Yes,1,4,1567,65,158400,Pune,BS-IV,No,Low,161871.38,Individual,No
+122,Maruti,Maruti Suzuki Alto,2017,5600,Petrol,Manual,4th+,Excellent,Yes,1,4,1183,69,350000,Kolkata,BS-IV,Yes,Medium,324787.8,Individual,No
+123,Nissan,Nissan Micra XV,2011,41000,Petrol,Automatic,2nd,Good,Yes,3,4,1951,119,179000,Kolkata,BS-IV,Yes,Low,197813.31,Individual,No
+124,Maruti,Maruti Suzuki Swift,2007,70000,Petrol,Manual,4th+,Poor,Yes,1,4,829,111,125000,Delhi,BS-III,No,Medium,138199.67,Dealer,No
+125,Maruti,Maruti Suzuki Alto,2018,7500,Petrol,Manual,1st,Poor,No,3,4,939,62,200000,Mumbai,BS-IV,No,Low,196566.52,Dealer,No
+126,Honda,Honda Amaze 1.5,2013,45000,Diesel,Manual,1st,Poor,No,0,4,2741,142,299000,Pune,BS-IV,No,Medium,274710.95,Dealer,No
+127,Maruti,Maruti Suzuki Alto,2015,38000,Petrol,Manual,3rd,Excellent,Yes,0,4,1252,107,220000,Mumbai,BS-IV,Yes,Low,243191.44,Dealer,Yes
+128,Chevrolet,Chevrolet Beat,2015,30000,Petrol,Automatic,1st,Poor,Yes,0,4,819,65,150000,Hyderabad,BS-IV,No,Medium,164803.38,Individual,No
+129,Honda,Honda City 1.5,2010,35000,Petrol,Automatic,1st,Good,Yes,1,4,1668,233,285000,Mumbai,BS-IV,Yes,Low,243398.86,Dealer,Yes
+130,Ford,Ford EcoSport Trend,2016,24330,Diesel,Manual,2nd,Fair,No,0,4,1568,71,830000,Kolkata,BS-IV,Yes,High,916865.22,Individual,No
+131,Hyundai,Hyundai i20 Asta,2009,65480,Petrol,Manual,4th+,Excellent,Yes,0,4,1139,80,210000,Delhi,BS-III,Yes,Medium,229504.62,Individual,No
+132,Maruti,Maruti Suzuki Swift,2013,41000,Petrol,Automatic,4th+,Poor,Yes,0,4,824,104,340000,Bangalore,BS-IV,No,Medium,373190.26,Individual,No
+133,Tata,Tata Indica V2,2006,20000,Petrol,Automatic,2nd,Poor,No,1,4,815,116,90000,Delhi,BS-III,No,Medium,90428.4,Dealer,No
+134,Hindustan,Hindustan Motors Ambassador,2000,200000,Diesel,Automatic,4th+,Poor,Yes,0,4,1370,176,70000,Hyderabad,BS-II,No,High,75583.14,Individual,No
+135,Toyota,Toyota Corolla Altis,2010,70000,Petrol,Manual,4th+,Excellent,No,0,4,2514,195,289999,Pune,BS-IV,Yes,Medium,287262.98,Dealer,Yes
+136,Toyota,Toyota Corolla Altis,2012,59000,Petrol,Manual,2nd,Good,Yes,0,4,2649,200,349999,Pune,BS-IV,Yes,Low,320566.64,Dealer,Yes
+137,Toyota,Toyota Innova 2.5,2012,99000,Diesel,Automatic,3rd,Good,Yes,1,5,2516,195,849999,Bangalore,BS-IV,Yes,Medium,870961.99,Individual,No
+138,Volkswagen,Volkswagen Jetta Highline,2014,46000,Diesel,Automatic,4th+,Fair,Yes,0,4,2691,105,749999,Bangalore,BS-IV,Yes,Medium,677763.41,Dealer,No
+139,Volkswagen,Volkswagen Polo Comfortline,2015,2800,Petrol,Manual,1st,Poor,No,0,4,2167,201,399999,Mumbai,BS-IV,No,High,431563.55,Individual,No
+140,Volkswagen,Volkswagen Polo,2014,32000,Petrol,Automatic,1st,Good,Yes,0,4,2271,298,274999,Pune,BS-IV,Yes,Medium,308382.92,Individual,No
+141,Mahindra,Mahindra Scorpio,2015,22000,Diesel,Manual,3rd,Excellent,No,0,5,2097,126,984999,Hyderabad,BS-IV,Yes,Low,909844.19,Individual,No
+142,Renault,Renault Duster,2014,50000,Diesel,Manual,1st,Fair,Yes,1,4,1554,96,449999,Kolkata,BS-IV,Yes,High,431862.83,Dealer,No
+143,Honda,Honda Amaze,2015,22000,Petrol,Manual,1st,Good,No,0,4,2833,114,344999,Mumbai,BS-IV,Yes,Medium,329933.42,Individual,No
+144,Nissan,Nissan Sunny,2012,45000,Petrol,Manual,3rd,Fair,Yes,1,4,1293,81,224999,Kolkata,BS-IV,Yes,Low,224796.76,Individual,No
+145,Hyundai,Hyundai Elite i20,2018,21000,Petrol,Automatic,4th+,Poor,Yes,0,4,893,59,599999,Pune,BS-IV,No,Low,598554.62,Dealer,No
+146,Renault,Renault Kwid,2016,11000,Petrol,Manual,3rd,Excellent,Yes,0,4,1146,92,244999,Hyderabad,BS-IV,Yes,Medium,225708.09,Dealer,Yes
+147,Renault,Renault Duster,2013,41000,Diesel,Automatic,3rd,Fair,No,0,4,1597,75,399999,Chennai,BS-IV,Yes,Medium,361581.87,Individual,No
+148,Ford,Ford EcoSport,2017,39000,Petrol,Manual,4th+,Fair,Yes,2,4,1437,70,489999,Bangalore,BS-IV,Yes,High,486358.07,Dealer,No
+149,Renault,Renault Duster,2014,50000,Diesel,Automatic,3rd,Excellent,No,4,4,1004,93,474999,Bangalore,BS-IV,Yes,Low,520168.56,Individual,No
+150,Mahindra,Mahindra Scorpio VLX,2011,66000,Diesel,Manual,1st,Good,No,0,5,2984,107,499999,Mumbai,BS-IV,Yes,Low,495743.63,Dealer,Yes
+151,Maruti,Maruti Suzuki Alto,2018,3000,Petrol,Manual,1st,Poor,Yes,0,4,1021,76,310000,Delhi,BS-IV,No,Low,306604.93,Dealer,No
+152,Chevrolet,Chevrolet Spark LT,2010,45000,Petrol,Manual,3rd,Fair,No,3,4,1100,58,85000,Chennai,BS-IV,Yes,Low,74478.07,Individual,No
+153,Datsun,Datsun Redi GO,2016,7000,Petrol,Manual,4th+,Poor,No,2,4,1375,60,245000,Mumbai,BS-IV,No,Low,221815.5,Individual,No
+154,Maruti,Maruti Suzuki Swift,2010,38500,Diesel,Manual,1st,Good,Yes,1,4,1225,74,189500,Chennai,BS-IV,Yes,Medium,173343.6,Individual,No
+155,Fiat,Fiat Punto Emotion,2012,37200,Diesel,Manual,3rd,Good,Yes,0,4,2455,167,169500,Chennai,BS-IV,Yes,Medium,157858.91,Dealer,Yes
+156,Maruti,Maruti Suzuki Swift,2010,43200,Diesel,Automatic,3rd,Fair,No,1,4,1159,69,159500,Chennai,BS-IV,Yes,Low,163046.2,Individual,No
+157,Toyota,Toyota Etios GD,2013,24800,Petrol,Automatic,3rd,Poor,Yes,4,4,1611,248,275000,Bangalore,BS-IV,No,High,246129.88,Individual,No
+158,Hyundai,Hyundai i20 Sportz,2014,60000,Diesel,Automatic,1st,Poor,Yes,0,4,1370,53,370000,Pune,BS-IV,No,Medium,328927.49,Dealer,No
+159,Hyundai,Hyundai i10 Sportz,2010,45872,Petrol,Automatic,1st,Fair,Yes,1,4,1303,92,168000,Mumbai,BS-IV,Yes,Medium,192580.35,Dealer,No
+160,Chevrolet,Chevrolet Beat LT,2011,40000,Diesel,Manual,4th+,Fair,No,0,4,1320,82,150000,Kolkata,BS-IV,Yes,High,141912.71,Dealer,No
+161,Chevrolet,Chevrolet Beat LS,2011,45000,Diesel,Manual,3rd,Fair,No,0,4,1293,78,145000,Delhi,BS-IV,Yes,High,142808.63,Individual,No
+162,Chevrolet,Chevrolet Beat LT,2012,38000,Diesel,Manual,3rd,Good,Yes,0,4,1455,56,98500,Mumbai,BS-IV,Yes,High,92594.12,Dealer,Yes
+163,Mahindra,Mahindra Scorpio VLX,2014,50000,Diesel,Manual,3rd,Good,No,1,5,2976,133,699000,Chennai,BS-IV,Yes,Medium,733112.19,Individual,No
+164,Tata,Tata Indigo CS,2011,11400,Diesel,Manual,3rd,Poor,No,0,4,842,99,85000,Mumbai,BS-IV,No,Medium,89984.25,Individual,No
+165,Toyota,Toyota Corolla Altis,2015,42000,Petrol,Automatic,3rd,Poor,No,1,4,2546,160,575000,Chennai,BS-IV,No,High,578106.72,Dealer,No
+166,Honda,Honda City 1.5,2014,39000,Petrol,Manual,2nd,Fair,Yes,3,4,2227,99,549000,Mumbai,BS-IV,Yes,Low,523930.47,Individual,No
+167,Maruti,Maruti Suzuki Swift,2011,47000,Diesel,Manual,2nd,Fair,Yes,0,4,1295,94,209000,Delhi,BS-IV,Yes,Medium,207187.76,Dealer,No
+168,Hyundai,Hyundai Eon Era,2013,27000,Petrol,Manual,4th+,Good,Yes,1,4,1011,54,185000,Bangalore,BS-IV,Yes,Low,207452.43,Individual,No
+169,Mahindra,Mahindra Scorpio S10,2015,97200,Diesel,Manual,2nd,Good,No,0,5,2520,115,900000,Delhi,BS-IV,Yes,Medium,960587.23,Dealer,Yes
+170,Mahindra,Mahindra XUV500,2014,52000,Diesel,Manual,2nd,Excellent,No,0,5,1631,158,699999,Chennai,BS-IV,Yes,Medium,700315.52,Dealer,Yes
+171,Honda,Honda Brio,2012,30000,Petrol,Manual,2nd,Excellent,Yes,1,4,1930,244,224999,Hyderabad,BS-IV,Yes,High,212445.92,Dealer,Yes
+172,Ford,Ford Fiesta,2011,55000,Diesel,Manual,3rd,Excellent,No,0,4,1548,45,274999,Mumbai,BS-IV,Yes,Low,255935.5,Individual,No
+173,Honda,Honda Amaze,2013,46000,Diesel,Manual,4th+,Excellent,Yes,0,4,1805,146,284999,Chennai,BS-IV,Yes,Medium,311454.84,Dealer,Yes
+174,Honda,Honda City,2015,30000,Diesel,Manual,3rd,Excellent,No,0,4,1511,109,599999,Bangalore,BS-IV,Yes,Low,606898.14,Dealer,Yes
+175,Maruti,Maruti Suzuki Wagon,2012,44000,Petrol,Automatic,2nd,Fair,Yes,0,4,969,66,199999,Pune,BS-IV,Yes,Low,194225.74,Individual,No
+176,Honda,Honda City,2014,45000,Diesel,Manual,1st,Excellent,Yes,3,4,2359,120,544999,Bangalore,BS-IV,Yes,High,602768.98,Dealer,Yes
+177,Hyundai,Hyundai i20,2009,31000,Petrol,Manual,2nd,Fair,Yes,0,4,1118,84,199000,Hyderabad,BS-III,Yes,Medium,219967.09,Dealer,No
+178,Tata,Tata Indigo eCS,2016,175430,Diesel,Automatic,4th+,Fair,Yes,1,4,1373,45,320000,Delhi,BS-IV,Yes,Medium,292136.32,Individual,No
+179,Hyundai,Hyundai Fluidic Verna,2015,38000,Diesel,Manual,2nd,Good,No,3,4,873,107,540000,Chennai,BS-IV,Yes,Low,497084.48,Individual,No
+180,Mahindra,Mahindra Quanto C8,2013,37000,Diesel,Manual,3rd,Fair,Yes,1,4,2923,123,340000,Bangalore,BS-IV,Yes,Low,322307.76,Dealer,No
+181,Fiat,Fiat Petra ELX,2008,65000,Petrol,Manual,3rd,Excellent,Yes,1,4,1617,74,75000,Delhi,BS-III,Yes,High,66877.81,Individual,No
+182,Skoda,Skoda Fabia 1.2L,2011,38200,Diesel,Manual,2nd,Excellent,No,0,4,2385,180,159500,Bangalore,BS-IV,Yes,High,166067.56,Dealer,Yes
+183,Mini,Mini Cooper S,2013,13000,Petrol,Automatic,1st,Poor,No,0,4,2845,135,1891111,Bangalore,BS-IV,No,Medium,1908995.09,Dealer,No
+184,Hyundai,Hyundai Santro Xing,2005,7500,Petrol,Automatic,2nd,Fair,Yes,0,4,914,54,49000,Pune,BS-III,No,Low,42776.75,Individual,No
+185,Maruti,Maruti Suzuki Ciaz,2016,3350,Petrol,Automatic,4th+,Good,No,0,4,1313,86,700000,Pune,BS-IV,Yes,Low,735015.72,Individual,No
+186,Maruti,Maruti Suzuki Zen,2000,60000,Petrol,Automatic,3rd,Fair,Yes,0,4,1057,55,55000,Chennai,BS-II,No,Medium,62480.15,Individual,No
+187,Honda,Honda City,2015,54000,Petrol,Automatic,2nd,Good,No,0,4,1680,182,448999,Kolkata,BS-IV,Yes,Medium,471493.12,Individual,No
+188,Hyundai,Hyundai Creta 1.6,2017,32000,Petrol,Automatic,4th+,Fair,No,0,5,1377,64,895000,Pune,BS-IV,Yes,Medium,1020852.66,Individual,No
+189,Mahindra,Mahindra Scorpio SLX,2007,75000,Diesel,Automatic,2nd,Fair,Yes,0,5,2209,160,355000,Pune,BS-III,Yes,Medium,358836.69,Dealer,No
+190,Mahindra,Mahindra Scorpio SLE,2012,62000,Diesel,Automatic,4th+,Excellent,No,0,5,1921,205,565000,Mumbai,BS-IV,Yes,Low,598713.01,Dealer,Yes
+191,Toyota,Toyota Innova 2.5,2006,73000,Diesel,Automatic,2nd,Poor,Yes,0,5,2874,201,365000,Delhi,BS-III,No,High,378225.73,Individual,No
+192,Maruti,Maruti Suzuki Alto,2011,41000,Petrol,Automatic,1st,Poor,No,0,4,1036,115,145000,Bangalore,BS-IV,No,Medium,128372.2,Individual,No
+193,Maruti,Maruti Suzuki Wagon,2011,35000,Petrol,Manual,3rd,Good,Yes,1,4,1126,104,210000,Mumbai,BS-IV,Yes,Medium,236212.46,Dealer,Yes
+194,Tata,Tata Nano Cx,2013,2200,Petrol,Manual,4th+,Excellent,No,2,4,1090,100,40000,Pune,BS-IV,Yes,Medium,40543.0,Individual,No
+195,Maruti,Maruti Suzuki Alto,2013,39000,Petrol,Manual,2nd,Fair,Yes,1,4,1512,110,125000,Delhi,BS-IV,Yes,Low,130768.5,Individual,No
+196,Maruti,Maruti Suzuki Wagon,2009,45000,Petrol,Automatic,2nd,Poor,No,0,4,1503,74,135000,Hyderabad,BS-III,No,Medium,133479.94,Dealer,No
+197,Maruti,Maruti Suzuki Swift,2006,45000,Petrol,Automatic,3rd,Poor,Yes,0,4,1099,64,135000,Pune,BS-III,No,Medium,153586.73,Dealer,No
+198,Tata,Tata Sumo Victa,2012,65000,Diesel,Manual,1st,Poor,No,2,4,1573,85,285000,Chennai,BS-IV,No,Medium,249106.29,Dealer,No
+199,Maruti,Maruti Suzuki Wagon,2010,54870,Petrol,Manual,1st,Excellent,No,1,4,1217,72,145000,Bangalore,BS-IV,Yes,Medium,159014.88,Individual,No
+200,Maruti,Maruti Suzuki Alto,2010,34580,Petrol,Manual,3rd,Good,No,0,4,1027,96,135000,Pune,BS-IV,Yes,Low,134693.01,Dealer,Yes
+201,Volkswagen,Volkswagen Passat Diesel,2009,97000,Diesel,Automatic,2nd,Good,Yes,0,4,1448,287,450000,Mumbai,BS-III,Yes,Medium,405901.61,Dealer,Yes
+202,Renault,Renault Scala RxL,2015,25000,Diesel,Manual,2nd,Good,No,3,4,1216,62,375000,Delhi,BS-IV,Yes,Medium,345417.2,Dealer,Yes
+203,Mahindra,Mahindra Quanto C8,2013,20000,Diesel,Manual,4th+,Poor,No,1,4,2475,205,375000,Chennai,BS-IV,No,Medium,331098.03,Dealer,No
+204,Hyundai,Hyundai Grand i10,2014,20000,Petrol,Automatic,3rd,Poor,No,0,4,1431,74,365000,Bangalore,BS-IV,No,Low,324967.88,Individual,No
+205,Hyundai,Hyundai i20 Active,2015,18000,Petrol,Manual,3rd,Excellent,No,0,4,959,105,500000,Bangalore,BS-IV,Yes,Medium,504724.72,Individual,No
+206,Mahindra,Mahindra Xylo E4,2012,35000,Diesel,Automatic,3rd,Poor,No,0,4,2366,83,400000,Delhi,BS-IV,No,Medium,459814.97,Individual,No
+207,Mahindra,Mahindra Jeep MM,2019,60,Diesel,Automatic,1st,Good,No,0,4,1797,201,390000,Kolkata,BS-IV,Yes,Medium,403190.93,Dealer,Yes
+208,Renault,Renault Duster 110PS,2012,35000,Diesel,Automatic,2nd,Fair,Yes,0,4,1313,90,501000,Chennai,BS-IV,Yes,Medium,441586.67,Dealer,No
+209,Mahindra,Mahindra Bolero SLE,2013,80200,Diesel,Manual,2nd,Poor,Yes,1,4,2548,175,330000,Hyderabad,BS-IV,No,Low,280721.63,Dealer,No
+210,Force,Force Motors Force,2015,3200,Diesel,Manual,2nd,Excellent,No,1,4,2482,86,580000,Chennai,BS-IV,Yes,Medium,561326.39,Individual,No
+211,Maruti,Maruti Suzuki SX4,2012,46000,Diesel,Manual,4th+,Excellent,No,0,4,1556,68,265000,Kolkata,BS-IV,Yes,Medium,293939.46,Individual,No
+212,Mahindra,Mahindra Jeep CL550,2019,0,Diesel,Manual,4th+,Fair,Yes,0,4,2557,207,379000,Delhi,BS-IV,Yes,Medium,432871.82,Individual,No
+213,Maruti,Maruti Suzuki Alto,2015,5000,Petrol,Automatic,3rd,Excellent,No,0,4,1335,93,219000,Hyderabad,BS-IV,Yes,Low,199462.2,Dealer,Yes
+214,Mahindra,Mahindra Jeep CL550,2018,588,Diesel,Automatic,3rd,Good,Yes,0,4,2117,110,385000,Delhi,BS-IV,Yes,Low,397791.27,Dealer,Yes
+215,Toyota,Toyota Etios,2011,36000,Diesel,Manual,3rd,Fair,Yes,0,4,2028,110,275000,Pune,BS-IV,Yes,Low,248272.12,Dealer,No
+216,Volkswagen,Volkswagen Polo,2015,38000,Diesel,Manual,2nd,Excellent,Yes,1,4,2050,300,330000,Chennai,BS-IV,Yes,High,319458.86,Dealer,Yes
+217,Honda,Honda City ZX,2008,45000,Petrol,Manual,3rd,Good,Yes,0,4,2701,181,110000,Pune,BS-III,Yes,Medium,121654.94,Dealer,Yes
+218,Maruti,Maruti Suzuki Wagon,2006,71200,Petrol,Manual,1st,Poor,Yes,0,4,1453,73,80000,Pune,BS-III,No,Medium,71439.49,Dealer,No
+219,Honda,Honda City VX,2016,52000,Diesel,Automatic,3rd,Fair,No,0,4,1535,168,519000,Mumbai,BS-IV,Yes,Low,441923.63,Dealer,No
+220,Mahindra,Mahindra Thar CRDe,2016,29000,Diesel,Manual,4th+,Good,No,0,4,2996,115,730000,Hyderabad,BS-IV,Yes,Low,811938.03,Individual,No
+221,Mitsubishi,Mitsubishi Pajero Sport,2015,47000,Diesel,Manual,2nd,Excellent,No,2,4,1888,126,1475000,Hyderabad,BS-IV,Yes,High,1555353.36,Individual,No
+222,Audi,Audi A4 1.8,2009,47000,Petrol,Automatic,1st,Poor,No,1,4,2156,263,699000,Chennai,BS-III,No,High,704860.51,Individual,No
+223,Mercedes,Mercedes Benz GLA,2015,20000,Diesel,Manual,2nd,Poor,Yes,3,4,1697,138,2000000,Delhi,BS-IV,No,Medium,2083202.1,Individual,No
+224,Land,Land Rover Freelander,2015,30000,Diesel,Automatic,1st,Good,Yes,0,4,1889,152,2100000,Mumbai,BS-IV,Yes,Medium,2346209.09,Dealer,Yes
+225,Renault,Renault Kwid RXT,2017,5000,Petrol,Manual,2nd,Poor,No,2,4,1372,115,340000,Delhi,BS-IV,No,Medium,385887.96,Dealer,No
+226,Tata,Tata Aria Pleasure,2014,35000,Diesel,Manual,2nd,Poor,No,0,4,1176,50,390000,Delhi,BS-IV,No,Medium,445746.43,Individual,No
+227,Mercedes,Mercedes Benz B,2014,31000,Petrol,Manual,1st,Fair,Yes,1,4,1559,151,1400000,Delhi,BS-IV,Yes,Medium,1231077.13,Dealer,No
+228,Datsun,Datsun GO T,2016,7000,Petrol,Manual,2nd,Excellent,No,0,4,903,107,245000,Delhi,BS-IV,Yes,High,224890.89,Dealer,Yes
+229,Tata,Tata Indigo eCS,2016,175430,Diesel,Automatic,3rd,Fair,Yes,0,4,1141,82,320000,Hyderabad,BS-IV,Yes,Medium,366607.74,Dealer,No
+230,Tata,Tata Indigo eCS,2016,175400,Diesel,Manual,1st,Poor,No,0,4,1269,99,320000,Mumbai,BS-IV,No,Low,296772.58,Dealer,No
+231,Honda,Honda Jazz VX,2016,41000,Petrol,Manual,2nd,Poor,No,1,4,2539,198,450000,Chennai,BS-IV,No,Medium,418924.9,Individual,No
+232,Honda,Honda Amaze 1.2,2014,33000,Petrol,Automatic,3rd,Fair,No,2,4,1890,152,311000,Pune,BS-IV,Yes,Low,304072.57,Dealer,No
+233,Honda,Honda Amaze,2013,46000,Diesel,Automatic,1st,Excellent,Yes,0,4,2938,170,284999,Chennai,BS-IV,Yes,Low,314019.73,Dealer,Yes
+234,Honda,Honda City,2012,45000,Petrol,Automatic,2nd,Good,Yes,0,4,1581,249,399999,Hyderabad,BS-IV,Yes,Medium,439241.03,Individual,No
+235,Honda,Honda City,2015,39000,Diesel,Automatic,1st,Good,Yes,1,4,2995,196,599999,Delhi,BS-IV,Yes,High,598411.08,Dealer,Yes
+236,Honda,Honda Amaze,2015,22000,Petrol,Automatic,2nd,Excellent,Yes,1,4,2555,144,344999,Chennai,BS-IV,Yes,High,337359.38,Dealer,Yes
+237,Audi,Audi A4 1.8,2009,47000,Petrol,Automatic,4th+,Good,No,4,4,2487,228,699000,Delhi,BS-III,Yes,High,677795.08,Individual,No
+238,Force,Force Motors Force,2015,3200,Diesel,Manual,1st,Poor,No,0,4,1351,108,580000,Bangalore,BS-IV,No,Medium,542378.79,Individual,No
+239,Mahindra,Mahindra Scorpio S4,2015,30000,Diesel,Manual,1st,Fair,Yes,0,5,2048,147,855000,Bangalore,BS-IV,Yes,Medium,761964.25,Dealer,No
+240,Hyundai,Hyundai i20 Active,2015,37000,Diesel,Automatic,4th+,Poor,Yes,3,4,1190,107,535000,Bangalore,BS-IV,No,Medium,459514.49,Dealer,No
+241,Mini,Mini Cooper S,2013,13000,Petrol,Manual,2nd,Excellent,No,3,4,2754,300,1891111,Bangalore,BS-IV,Yes,High,2115784.13,Dealer,Yes
+242,Maruti,Maruti Suzuki Ciaz,2017,14000,Petrol,Manual,3rd,Good,Yes,1,4,948,63,699000,Mumbai,BS-IV,Yes,Low,786684.62,Individual,No
+243,Chevrolet,Chevrolet Tavera Neo,2013,55000,Diesel,Automatic,4th+,Good,Yes,0,4,873,76,375000,Pune,BS-IV,Yes,Low,341491.24,Individual,No
+244,Honda,Honda Amaze,2013,46000,Diesel,Manual,4th+,Fair,No,2,4,2905,163,284999,Kolkata,BS-IV,Yes,Medium,271282.24,Dealer,No
+245,Hyundai,Hyundai Eon Sportz,2012,30000,Petrol,Manual,2nd,Excellent,Yes,0,4,904,66,178000,Delhi,BS-IV,Yes,Low,154038.82,Dealer,Yes
+246,Tata,Tata Sumo Gold,2013,50000,Diesel,Automatic,4th+,Excellent,Yes,3,4,1149,60,300000,Delhi,BS-IV,Yes,Low,320022.67,Individual,No
+247,Maruti,Maruti Suzuki Wagon,2003,45000,Petrol,Manual,3rd,Excellent,No,0,4,1187,89,90000,Delhi,BS-II,No,Low,102673.62,Individual,No
+248,Maruti,Maruti Suzuki Esteem,2006,45000,Petrol,Automatic,2nd,Fair,No,0,4,1119,88,95000,Kolkata,BS-III,Yes,Low,97766.97,Dealer,No
+249,Maruti,Maruti Suzuki Eeco,2015,9300,Petrol,Automatic,4th+,Good,No,1,4,975,58,255000,Pune,BS-IV,Yes,Medium,279273.46,Individual,No
+250,Chevrolet,Chevrolet Enjoy 1.4,2013,55000,Diesel,Automatic,4th+,Poor,Yes,2,4,867,45,245000,Hyderabad,BS-IV,No,Low,249322.74,Individual,No
+251,Hyundai,Hyundai i20 Asta,2012,36200,Diesel,Manual,1st,Poor,Yes,0,4,859,58,329500,Kolkata,BS-IV,No,Low,351346.05,Individual,No
+252,Ford,Ford Figo Diesel,2014,50000,Diesel,Manual,1st,Excellent,No,0,4,964,52,195000,Hyderabad,BS-IV,Yes,High,221382.39,Individual,No
+253,Maruti,Maruti Suzuki Eeco,2015,55000,Petrol,Manual,3rd,Good,No,1,4,1367,93,251111,Pune,BS-IV,Yes,Low,231650.72,Individual,No
+254,Maruti,Maruti Suzuki Ertiga,2014,45000,Petrol,Automatic,1st,Fair,Yes,3,4,895,50,569999,Mumbai,BS-IV,Yes,Low,541718.79,Individual,No
+255,Maruti,Maruti Suzuki Esteem,2007,51000,Petrol,Automatic,3rd,Fair,No,4,4,1285,68,69999,Hyderabad,BS-III,Yes,Medium,69811.45,Individual,No
+256,Maruti,Maruti Suzuki Ritz,2014,19000,Petrol,Manual,2nd,Poor,Yes,1,4,1123,63,299999,Delhi,BS-IV,No,Low,281752.88,Dealer,No
+257,Maruti,Maruti Suzuki Dzire,2009,46000,Petrol,Manual,3rd,Poor,Yes,0,4,916,90,220000,Hyderabad,BS-III,No,Medium,206482.17,Individual,No
+258,Maruti,Maruti Suzuki Ritz,2013,33000,Diesel,Manual,1st,Good,Yes,1,4,1395,78,399999,Pune,BS-IV,Yes,Medium,346214.53,Individual,No
+259,Maruti,Maruti Suzuki SX4,2010,36000,Petrol,Automatic,4th+,Poor,No,0,4,1527,78,249999,Kolkata,BS-IV,No,Low,222417.28,Individual,No
+260,Maruti,Maruti Suzuki Wagon,2015,22000,Petrol,Manual,4th+,Fair,Yes,0,4,1478,86,289999,Mumbai,BS-IV,Yes,Medium,261394.71,Dealer,No
+261,Mini,Mini Cooper S,2013,13500,Petrol,Automatic,1st,Fair,Yes,0,4,2701,149,1891111,Mumbai,BS-IV,Yes,High,1758324.61,Dealer,No
+262,Nissan,Nissan Terrano XL,2015,60000,Diesel,Manual,1st,Poor,No,0,4,2203,121,499999,Kolkata,BS-IV,No,Medium,450488.2,Dealer,No
+263,Renault,Renault Duster 85,2013,27000,Diesel,Manual,2nd,Fair,No,0,4,1398,70,489999,Bangalore,BS-IV,Yes,High,474978.91,Dealer,No
+264,Renault,Renault Duster 85,2014,59000,Diesel,Automatic,2nd,Excellent,No,1,4,1143,106,489999,Mumbai,BS-IV,Yes,High,496371.67,Dealer,Yes
+265,Renault,Renault Duster 85,2015,19000,Diesel,Automatic,2nd,Fair,Yes,1,4,1187,58,549999,Delhi,BS-IV,Yes,Low,560071.75,Dealer,No
+266,Maruti,Maruti Suzuki Dzire,2013,30000,Petrol,Automatic,1st,Fair,No,1,4,814,114,380000,Chennai,BS-IV,Yes,Low,386405.87,Individual,No
+267,Renault,Renault Kwid RXT,2018,15000,Petrol,Automatic,4th+,Fair,No,0,4,1082,58,325000,Bangalore,BS-IV,Yes,Medium,316335.46,Individual,No
+268,Maruti,Maruti Suzuki Maruti,2003,56758,Petrol,Automatic,3rd,Poor,No,0,4,1493,77,57000,Bangalore,BS-II,No,Medium,48734.73,Individual,No
+269,Renault,Renault Kwid 1.0,2018,10000,Petrol,Automatic,3rd,Excellent,Yes,0,4,1399,111,349999,Hyderabad,BS-IV,Yes,Low,316023.53,Individual,No
+270,Renault,Renault Lodgy 85,2018,20000,Diesel,Automatic,2nd,Good,No,0,4,1154,52,689999,Mumbai,BS-IV,Yes,High,619396.58,Individual,No
+271,Renault,Renault Scala RxL,2014,49000,Diesel,Automatic,3rd,Fair,Yes,0,4,1033,65,349999,Mumbai,BS-IV,Yes,Low,336253.4,Individual,No
+272,Hyundai,Hyundai Grand i10,2014,41000,Petrol,Manual,2nd,Good,Yes,1,4,1118,78,410000,Chennai,BS-IV,Yes,Medium,383921.0,Individual,No
+273,Maruti,Maruti Suzuki Swift,2011,45000,Petrol,Manual,4th+,Excellent,No,1,4,1391,108,225000,Pune,BS-IV,Yes,Low,237956.62,Individual,No
+274,Chevrolet,Chevrolet Beat LS,2010,43000,Petrol,Manual,4th+,Poor,No,0,4,968,64,120000,Hyderabad,BS-IV,No,Low,111420.43,Individual,No
+275,Tata,Tata Indigo eCS,2016,175430,Diesel,Manual,2nd,Fair,No,0,4,1585,104,320000,Chennai,BS-IV,Yes,Medium,362260.03,Dealer,No
+276,Hyundai,Hyundai Santro Xing,2000,56450,Petrol,Manual,3rd,Excellent,No,0,4,955,91,59000,Chennai,BS-II,No,Low,64959.19,Dealer,Yes
+277,Hyundai,Hyundai Fluidic Verna,2015,38000,Diesel,Manual,1st,Good,No,3,4,1581,62,540000,Bangalore,BS-IV,Yes,Medium,574739.39,Individual,No
+278,Chevrolet,Chevrolet Beat LS,2010,56000,Petrol,Manual,3rd,Excellent,Yes,0,4,805,97,80000,Bangalore,BS-IV,Yes,Low,80726.4,Dealer,Yes
+279,Mahindra,Mahindra Quanto C8,2013,37000,Diesel,Automatic,4th+,Excellent,No,2,4,2174,171,340000,Kolkata,BS-IV,Yes,Medium,296477.28,Dealer,Yes
+280,Fiat,Fiat Petra ELX,2008,65000,Petrol,Manual,3rd,Fair,Yes,1,4,1819,133,75000,Delhi,BS-III,Yes,Low,80715.87,Dealer,No
+281,Chevrolet,Chevrolet Beat LS,2015,32700,Petrol,Automatic,2nd,Fair,No,1,4,1440,77,220000,Mumbai,BS-IV,Yes,Medium,225783.6,Dealer,No
+282,Skoda,Skoda Fabia 1.2L,2011,38200,Diesel,Automatic,4th+,Excellent,Yes,1,4,2389,155,159500,Bangalore,BS-IV,Yes,Medium,145615.26,Dealer,Yes
+283,Ford,Ford EcoSport Titanium,2016,30000,Diesel,Manual,4th+,Fair,No,0,4,1434,104,599000,Bangalore,BS-IV,Yes,Low,682693.14,Individual,No
+284,Hyundai,Hyundai Accent GLX,2006,56000,Petrol,Automatic,2nd,Fair,Yes,0,4,1427,69,80000,Hyderabad,BS-III,Yes,Medium,88577.59,Dealer,No
+285,Mahindra,Mahindra TUV300 T4,2016,9000,Diesel,Manual,1st,Poor,No,1,4,2740,135,675000,Kolkata,BS-IV,No,Medium,581599.24,Dealer,No
+286,Mini,Mini Cooper S,2013,13000,Petrol,Manual,2nd,Poor,No,1,4,2062,245,1891111,Pune,BS-IV,No,Low,2056557.87,Individual,No
+287,Mini,Mini Cooper S,2013,13000,Petrol,Automatic,2nd,Poor,Yes,0,4,1635,178,1891111,Pune,BS-IV,No,Low,1611610.09,Individual,No
+288,Tata,Tata Indica V2,2008,11000,Petrol,Manual,3rd,Poor,Yes,0,4,1230,53,150000,Bangalore,BS-III,No,Medium,165044.56,Dealer,No
+289,Mini,Mini Cooper S,2013,13000,Petrol,Manual,3rd,Fair,No,0,4,2231,193,1891111,Hyderabad,BS-IV,Yes,Medium,1614041.47,Individual,No
+290,Tata,Tata Indigo CS,2009,46000,Diesel,Manual,1st,Poor,Yes,0,4,1580,87,72500,Delhi,BS-III,No,Low,66995.77,Dealer,No
+291,Maruti,Maruti Suzuki Swift,2019,73,Petrol,Manual,2nd,Poor,No,2,4,1525,107,610000,Kolkata,BS-IV,No,Low,617322.45,Dealer,No
+292,Mahindra,Mahindra Scorpio VLX,2004,160000,Diesel,Automatic,2nd,Excellent,Yes,1,5,2973,130,230000,Kolkata,BS-II,No,Low,230056.15,Individual,No
+293,Honda,Honda Accord,2009,58559,Petrol,Manual,4th+,Excellent,No,0,4,1756,207,175000,Hyderabad,BS-III,Yes,Medium,193493.49,Dealer,Yes
+294,Mahindra,Mahindra Scorpio S4,2015,30000,Diesel,Manual,3rd,Good,Yes,0,5,1749,89,855000,Bangalore,BS-IV,Yes,Low,805162.98,Individual,No
+295,Chevrolet,Chevrolet Tavera Neo,2013,55000,Diesel,Automatic,1st,Fair,No,1,4,819,80,375000,Mumbai,BS-IV,Yes,Low,352539.12,Dealer,No
+296,Ford,Ford EcoSport Titanium,2014,57000,Diesel,Automatic,2nd,Excellent,Yes,1,4,1576,76,520000,Bangalore,BS-IV,Yes,High,594348.11,Individual,No
+297,Maruti,Maruti Suzuki Ertiga,2015,50000,Diesel,Automatic,4th+,Poor,No,0,4,1337,62,524999,Kolkata,BS-IV,No,Medium,523277.17,Dealer,No
+298,Honda,Honda Amaze,2014,37000,Petrol,Automatic,2nd,Poor,Yes,0,4,1908,133,299999,Kolkata,BS-IV,No,Medium,266647.1,Individual,No
+299,Maruti,Maruti Suzuki Dzire,2012,40000,Petrol,Manual,3rd,Fair,No,1,4,888,95,299999,Hyderabad,BS-IV,Yes,Medium,288503.2,Dealer,No
+300,Honda,Honda City,2011,55000,Petrol,Manual,1st,Good,Yes,1,4,1721,191,284999,Pune,BS-IV,Yes,Low,295849.08,Individual,No
+301,Mahindra,Mahindra Scorpio 2.6,2007,170000,Diesel,Automatic,4th+,Excellent,Yes,0,5,1640,135,220000,Hyderabad,BS-III,Yes,Low,190886.05,Dealer,Yes
+302,Maruti,Maruti Suzuki Dzire,2014,55000,Diesel,Automatic,1st,Fair,No,0,4,1512,94,424999,Delhi,BS-IV,Yes,Low,460161.65,Dealer,No
+303,Honda,Honda City,2015,39000,Petrol,Manual,1st,Fair,Yes,0,4,1760,180,644999,Pune,BS-IV,Yes,High,675966.38,Dealer,No
+304,Honda,Honda Mobilio,2014,44000,Petrol,Automatic,1st,Poor,No,1,4,2689,236,399999,Pune,BS-IV,No,Medium,373883.25,Individual,No
+305,Toyota,Toyota Corolla Altis,2009,65000,Petrol,Automatic,4th+,Fair,No,0,4,2111,146,199999,Delhi,BS-III,Yes,Medium,214334.39,Dealer,No
+306,Honda,Honda City,2014,39000,Petrol,Manual,4th+,Fair,Yes,0,4,1889,93,584999,Chennai,BS-IV,Yes,High,654630.21,Individual,No
+307,Skoda,Skoda Laura,2012,44000,Diesel,Manual,3rd,Poor,No,0,4,1401,233,349999,Kolkata,BS-IV,No,High,331646.09,Dealer,No
+308,Renault,Renault Duster,2015,49000,Diesel,Automatic,1st,Excellent,No,2,4,1544,84,449999,Kolkata,BS-IV,Yes,Medium,465630.51,Individual,No
+309,Maruti,Maruti Suzuki Ertiga,2018,9000,Diesel,Automatic,4th+,Excellent,No,0,4,1087,81,799999,Pune,BS-IV,Yes,Medium,823146.46,Dealer,Yes
+310,Maruti,Maruti Suzuki Dzire,2015,45000,Diesel,Manual,2nd,Fair,No,0,4,823,74,444999,Pune,BS-IV,Yes,Low,473764.43,Individual,No
+311,Mahindra,Mahindra XUV500,2014,47000,Diesel,Manual,2nd,Fair,Yes,1,5,1799,90,649999,Bangalore,BS-IV,Yes,Medium,702178.76,Dealer,No
+312,Hyundai,Hyundai Verna Fluidic,2012,40000,Diesel,Automatic,4th+,Excellent,Yes,1,4,1092,90,444999,Delhi,BS-IV,Yes,Medium,380030.06,Individual,No
+313,Maruti,Maruti Suzuki Vitara,2016,29000,Diesel,Manual,3rd,Fair,No,1,4,968,83,689999,Chennai,BS-IV,Yes,Medium,720352.07,Individual,No
+314,Maruti,Maruti Suzuki Wagon,2016,15000,Petrol,Manual,3rd,Poor,Yes,0,4,1215,52,344999,Bangalore,BS-IV,No,Low,359545.69,Dealer,No
+315,Mahindra,Mahindra Scorpio,2015,45000,Diesel,Manual,2nd,Poor,No,0,5,1924,123,944999,Kolkata,BS-IV,No,Low,931795.2,Individual,No
+316,Honda,Honda Amaze,2014,35000,Petrol,Manual,1st,Good,No,0,4,2072,180,274999,Chennai,BS-IV,Yes,Low,296708.61,Dealer,Yes
+317,Mahindra,Mahindra XUV500,2013,80000,Diesel,Automatic,1st,Fair,Yes,2,5,1839,126,689999,Delhi,BS-IV,Yes,Medium,589511.84,Dealer,No
+318,Mahindra,Mahindra Scorpio,2013,68000,Diesel,Manual,4th+,Fair,No,0,5,2861,190,574999,Chennai,BS-IV,Yes,Low,642045.52,Dealer,No
+319,Skoda,Skoda Laura,2013,50000,Diesel,Manual,3rd,Excellent,No,0,4,2672,255,374999,Delhi,BS-IV,Yes,Medium,328194.14,Individual,No
+320,Volkswagen,Volkswagen Polo,2010,60000,Diesel,Manual,2nd,Good,Yes,3,4,2080,305,199999,Hyderabad,BS-IV,Yes,High,198593.35,Individual,No
+321,Hyundai,Hyundai Elite i20,2016,9000,Petrol,Manual,1st,Good,Yes,0,4,1244,86,549999,Pune,BS-IV,Yes,Low,568389.31,Dealer,Yes
+322,Tata,Tata Manza Aura,2012,72000,Diesel,Automatic,4th+,Fair,Yes,0,4,1001,83,130000,Kolkata,BS-IV,Yes,Low,115498.71,Individual,No
+323,Chevrolet,Chevrolet Sail UVA,2013,60000,Petrol,Automatic,4th+,Fair,No,0,4,900,94,210000,Hyderabad,BS-IV,Yes,Low,194345.08,Individual,No
+324,Renault,Renault Duster 110,2012,38000,Diesel,Manual,3rd,Fair,No,3,4,1337,55,501000,Chennai,BS-IV,Yes,High,509479.57,Dealer,No
+325,Hyundai,Hyundai Verna Fluidic,2013,45000,Diesel,Manual,3rd,Poor,Yes,1,4,1299,98,401000,Kolkata,BS-IV,No,Medium,349937.64,Individual,No
+326,Audi,Audi A4 2.0,2012,40000,Diesel,Automatic,4th+,Fair,Yes,0,4,1400,107,1350000,Kolkata,BS-IV,Yes,Medium,1230917.2,Individual,No
+327,Hyundai,Hyundai Elantra SX,2013,20000,Petrol,Automatic,2nd,Good,No,0,4,1324,81,600000,Mumbai,BS-IV,Yes,Medium,556795.11,Individual,No
+328,Mahindra,Mahindra Scorpio VLX,2013,35000,Diesel,Automatic,1st,Fair,Yes,1,5,2028,139,610000,Pune,BS-IV,Yes,Medium,568670.63,Dealer,No
+329,Mahindra,Mahindra KUV100 K8,2016,20000,Diesel,Automatic,1st,Good,No,0,4,2700,140,400000,Kolkata,BS-IV,Yes,Low,345099.13,Individual,No
+330,Renault,Renault Scala RxL,2015,25000,Diesel,Automatic,2nd,Excellent,Yes,1,4,868,67,375000,Pune,BS-IV,Yes,Low,322323.15,Individual,No
+331,Mahindra,Mahindra Quanto C8,2013,20000,Diesel,Manual,2nd,Fair,No,0,4,2060,179,375000,Pune,BS-IV,Yes,Low,324497.91,Dealer,No
+332,Hyundai,Hyundai Grand i10,2014,20000,Petrol,Automatic,2nd,Good,Yes,0,4,826,94,365000,Chennai,BS-IV,Yes,Low,328086.28,Individual,No
+333,Hyundai,Hyundai i20 Active,2015,18000,Petrol,Automatic,2nd,Fair,Yes,0,4,868,52,500000,Bangalore,BS-IV,Yes,Medium,535785.84,Individual,No
+334,Mahindra,Mahindra Xylo E4,2012,35000,Diesel,Manual,4th+,Good,No,0,4,2785,187,400000,Chennai,BS-IV,Yes,Low,445624.59,Individual,No
+335,Hyundai,Hyundai Grand i10,2017,6821,Petrol,Manual,4th+,Fair,No,2,4,1269,63,524999,Mumbai,BS-IV,Yes,Low,593730.9,Dealer,No
+336,Hyundai,Hyundai i20,2014,23000,Petrol,Manual,1st,Poor,No,1,4,997,103,449999,Mumbai,BS-IV,No,Medium,502326.48,Individual,No
+337,Hyundai,Hyundai Eon,2014,14000,Petrol,Automatic,1st,Poor,No,3,4,1030,75,174999,Mumbai,BS-IV,No,Low,156786.39,Individual,No
+338,Hyundai,Hyundai i10,2012,38000,Petrol,Manual,3rd,Excellent,Yes,0,4,1448,59,244999,Mumbai,BS-IV,Yes,Low,235479.0,Dealer,Yes
+339,Hyundai,Hyundai i20 Active,2015,35000,Diesel,Automatic,2nd,Excellent,No,0,4,1015,79,574999,Mumbai,BS-IV,Yes,Low,582536.93,Individual,No
+340,Datsun,Datsun Redi GO,2017,22000,Petrol,Manual,3rd,Excellent,No,1,4,869,71,244999,Kolkata,BS-IV,Yes,High,253153.24,Individual,No
+341,Toyota,Toyota Etios Liva,2011,41000,Petrol,Automatic,1st,Excellent,No,0,4,2371,117,239999,Delhi,BS-IV,Yes,Low,224256.83,Dealer,Yes
+342,Hyundai,Hyundai Accent,2010,45000,Petrol,Manual,2nd,Good,No,3,4,1335,106,99999,Pune,BS-IV,Yes,Low,97396.85,Individual,No
+343,Hyundai,Hyundai Verna,2014,44000,Diesel,Automatic,3rd,Excellent,No,0,4,1431,49,489999,Pune,BS-IV,Yes,Low,453085.32,Dealer,Yes
+344,Maruti,Maruti Suzuki Swift,2013,45000,Diesel,Automatic,3rd,Good,Yes,1,4,1374,58,324999,Kolkata,BS-IV,Yes,Medium,342739.15,Dealer,Yes
+345,Toyota,Toyota Fortuner,2011,52000,Diesel,Automatic,2nd,Fair,No,0,4,1546,189,1074999,Mumbai,BS-IV,Yes,Low,1165132.69,Dealer,No
+346,Hyundai,Hyundai i10 Sportz,2012,34000,Petrol,Automatic,1st,Good,Yes,4,4,1157,110,230000,Chennai,BS-IV,Yes,Medium,213091.18,Dealer,Yes
+347,Mahindra,Mahindra Bolero Power,2018,1800,Diesel,Manual,4th+,Excellent,No,0,4,1574,225,699000,Bangalore,BS-IV,Yes,Medium,684430.59,Individual,No
+348,Mahindra,Mahindra XUV500,2015,15000,Diesel,Automatic,2nd,Good,No,0,5,2153,192,1000000,Mumbai,BS-IV,Yes,Low,912433.88,Dealer,Yes
+349,Honda,Honda City 1.5,2010,400000,Petrol,Automatic,4th+,Excellent,Yes,0,4,1711,124,240000,Chennai,BS-IV,Yes,Medium,265408.43,Dealer,Yes
+350,Chevrolet,Chevrolet Spark LT,2009,44000,Petrol,Automatic,1st,Excellent,Yes,0,4,998,117,110000,Kolkata,BS-III,Yes,Medium,105028.47,Dealer,Yes
+351,Mahindra,Mahindra Jeep MM,2019,60,Diesel,Manual,4th+,Poor,No,0,4,2317,161,390000,Chennai,BS-IV,No,Medium,438753.13,Individual,No
+352,Renault,Renault Duster 110PS,2012,35000,Diesel,Automatic,4th+,Fair,Yes,2,4,999,97,501000,Delhi,BS-IV,Yes,Low,463143.35,Dealer,No
+353,Mahindra,Mahindra XUV500,2016,72000,Diesel,Automatic,1st,Excellent,Yes,0,5,1782,93,1130000,Bangalore,BS-IV,Yes,Medium,1020867.11,Dealer,Yes
+354,Tata,Tata Indigo eCS,2014,40000,Diesel,Manual,4th+,Good,No,1,4,1227,84,250000,Chennai,BS-IV,Yes,Medium,240054.55,Individual,No
+355,Mahindra,Mahindra Bolero SLE,2013,80200,Diesel,Automatic,1st,Poor,Yes,1,4,1757,89,330000,Pune,BS-IV,No,Low,360385.74,Dealer,No
+356,Force,Force Motors Force,2015,3200,Diesel,Manual,4th+,Good,Yes,1,4,2181,125,580000,Kolkata,BS-IV,Yes,Medium,644934.0,Dealer,Yes
+357,Skoda,Skoda Rapid Elegance,2013,48000,Diesel,Automatic,1st,Fair,Yes,2,4,1678,107,340000,Mumbai,BS-IV,Yes,High,363391.58,Dealer,No
+358,Tata,Tata Vista Quadrajet,2011,90000,Diesel,Automatic,1st,Fair,Yes,2,4,913,50,120000,Chennai,BS-IV,Yes,Low,130226.48,Individual,No
+359,Maruti,Maruti Suzuki Alto,2015,12000,Petrol,Manual,3rd,Poor,No,2,4,1042,119,265000,Bangalore,BS-IV,No,Medium,284486.96,Dealer,No
+360,Maruti,Maruti Suzuki SX4,2012,46000,Diesel,Automatic,2nd,Fair,No,3,4,984,86,265000,Chennai,BS-IV,Yes,Medium,242112.27,Individual,No
+361,Maruti,Maruti Suzuki Zen,2003,69900,Petrol,Manual,2nd,Good,No,0,4,1179,92,85000,Mumbai,BS-II,No,Low,85817.69,Individual,No
+362,Mahindra,Mahindra Jeep CL550,2019,0,Diesel,Automatic,1st,Fair,Yes,0,4,1751,170,379000,Pune,BS-IV,Yes,Low,432237.86,Individual,No
+363,Hyundai,Hyundai i10 Magna,2011,45000,Petrol,Automatic,1st,Poor,No,1,4,1363,90,175000,Chennai,BS-IV,No,Low,153133.71,Individual,No
+364,Maruti,Maruti Suzuki Alto,2015,5000,Petrol,Manual,3rd,Fair,Yes,1,4,1266,103,219000,Kolkata,BS-IV,Yes,Low,247218.83,Individual,No
+365,Maruti,Maruti Suzuki Swift,2016,166000,Diesel,Automatic,4th+,Fair,No,0,4,1253,65,350000,Hyderabad,BS-IV,Yes,Low,382262.06,Dealer,No
+366,Honda,Honda City ZX,2008,42000,Petrol,Manual,3rd,Good,No,0,4,2595,173,149000,Hyderabad,BS-III,Yes,Low,145293.68,Individual,No
+367,Mahindra,Mahindra Jeep CL550,2018,588,Diesel,Manual,1st,Good,No,0,4,2342,87,385000,Chennai,BS-IV,Yes,Low,409632.41,Individual,No
+368,Mahindra,Mahindra Jeep MM,2006,122,Diesel,Automatic,2nd,Poor,Yes,0,4,2763,190,425000,Delhi,BS-III,No,Medium,409783.6,Individual,No
+369,Chevrolet,Chevrolet Beat Diesel,2017,62000,Diesel,Manual,4th+,Fair,Yes,2,4,1398,76,150000,Mumbai,BS-IV,Yes,Medium,149555.83,Individual,No
+370,Honda,Honda City 1.5,2010,70000,Petrol,Manual,4th+,Good,Yes,0,4,2422,207,225000,Mumbai,BS-IV,Yes,Low,196269.16,Dealer,Yes
+371,Hyundai,Hyundai Verna 1.4,2014,36000,Petrol,Automatic,1st,Good,Yes,1,4,847,60,375000,Kolkata,BS-IV,Yes,Medium,347435.02,Individual,No
+372,Toyota,Toyota Innova 2.5,2012,0,Diesel,Manual,1st,Excellent,Yes,0,5,2316,132,770000,Mumbai,BS-IV,Yes,Medium,698502.03,Dealer,Yes
+373,Maruti,Maruti Suzuki Maruti,1995,55000,Petrol,Manual,1st,Fair,No,0,4,1206,120,30000,Delhi,BS-II,No,Low,30657.63,Dealer,No
+374,Toyota,Toyota Etios,2011,36000,Diesel,Manual,4th+,Excellent,No,0,4,1836,126,275000,Chennai,BS-IV,Yes,Medium,240449.58,Dealer,Yes
+375,Volkswagen,Volkswagen Polo,2015,38000,Diesel,Automatic,3rd,Fair,No,0,4,2940,99,330000,Chennai,BS-IV,Yes,Medium,367341.32,Individual,No
+376,Maruti,Maruti Suzuki Swift,2014,55000,Diesel,Manual,1st,Poor,No,3,4,1547,104,335000,Mumbai,BS-IV,No,Medium,345547.77,Dealer,No
+377,Hyundai,Hyundai Elite i20,2015,20000,Diesel,Manual,3rd,Good,No,0,4,1539,105,450000,Bangalore,BS-IV,Yes,Medium,451202.51,Individual,No
+378,Maruti,Maruti Suzuki Swift,2012,40000,Petrol,Automatic,2nd,Poor,No,1,4,1292,93,225000,Bangalore,BS-IV,No,Low,213876.02,Individual,No
+379,Maruti,Maruti Suzuki Versa,2004,50000,Petrol,Automatic,3rd,Good,No,0,4,1298,79,80000,Pune,BS-II,No,Low,82113.65,Dealer,Yes
+380,Tata,Tata Indigo LX,2016,104000,Diesel,Manual,3rd,Excellent,Yes,0,4,1273,45,130000,Mumbai,BS-IV,Yes,Low,144649.62,Dealer,Yes
+381,Volkswagen,Volkswagen Vento Konekt,2011,65000,Diesel,Automatic,3rd,Excellent,No,0,4,2419,188,245000,Hyderabad,BS-IV,Yes,Medium,244677.68,Dealer,Yes
+382,Mercedes,Mercedes Benz C,2002,41000,Petrol,Automatic,4th+,Good,No,0,4,1155,87,399000,Mumbai,BS-II,No,Medium,372533.22,Individual,No
+383,Maruti,Maruti Suzuki Ertiga,2013,90000,Diesel,Manual,3rd,Good,Yes,1,4,828,95,450000,Pune,BS-IV,Yes,Low,385492.34,Dealer,Yes
+384,Honda,Honda City,2000,80000,Petrol,Manual,4th+,Good,Yes,1,4,2631,157,65000,Chennai,BS-II,No,High,59424.58,Individual,No
+385,Hyundai,Hyundai Santro Xing,2006,46000,Petrol,Automatic,3rd,Good,No,1,4,1463,115,75000,Delhi,BS-III,Yes,Low,85507.6,Dealer,Yes
+386,Maruti,Maruti Suzuki Omni,2001,70000,Petrol,Manual,3rd,Good,Yes,0,4,849,84,70000,Hyderabad,BS-II,No,Medium,80416.88,Dealer,Yes
+387,Hyundai,Hyundai Sonata Transform,2017,36469,Diesel,Automatic,1st,Excellent,No,2,4,837,103,190000,Hyderabad,BS-IV,Yes,Low,193619.04,Individual,No
+388,Hyundai,Hyundai Elite i20,2018,7800,Petrol,Automatic,4th+,Excellent,No,1,4,845,84,600000,Delhi,BS-IV,Yes,Low,545713.52,Dealer,Yes
+389,Volkswagen,Volkswagen Vento Konekt,2011,65000,Diesel,Manual,2nd,Fair,Yes,0,4,1920,108,245000,Bangalore,BS-IV,Yes,High,277911.96,Individual,No
+390,Maruti,Maruti Suzuki Alto,2017,60000,Petrol,Automatic,1st,Good,No,0,4,1113,69,240000,Mumbai,BS-IV,Yes,Medium,222136.35,Individual,No
+391,Maruti,Maruti Suzuki Alto,2011,32000,Petrol,Manual,4th+,Excellent,Yes,0,4,1463,51,155000,Hyderabad,BS-IV,Yes,Low,177507.4,Dealer,Yes
+392,Honda,Honda Jazz S,2009,24695,Petrol,Automatic,4th+,Poor,No,0,4,2969,196,169999,Pune,BS-III,No,Medium,158476.57,Individual,No
+393,Hyundai,Hyundai Grand i10,2017,15141,Petrol,Automatic,4th+,Excellent,Yes,2,4,1095,74,450000,Pune,BS-IV,Yes,Low,505582.54,Dealer,Yes
+394,Maruti,Maruti Suzuki Zen,2001,40000,Petrol,Manual,3rd,Good,Yes,0,4,1197,100,40000,Pune,BS-II,No,Low,40118.77,Individual,No
+395,Mahindra,Mahindra Scorpio W,2012,65000,Diesel,Manual,1st,Excellent,Yes,0,5,1830,174,165000,Mumbai,BS-IV,Yes,Medium,155331.67,Dealer,Yes
+396,Maruti,Maruti Suzuki Alto,2014,22000,Petrol,Manual,2nd,Fair,No,1,4,992,76,270000,Delhi,BS-IV,Yes,Low,261619.25,Individual,No
+397,Hyundai,Hyundai Grand i10,2016,59910,Diesel,Automatic,1st,Poor,No,0,4,945,63,280000,Delhi,BS-IV,No,Medium,298537.95,Individual,No
+398,Mahindra,Mahindra XUV500 W8,2012,100000,Diesel,Automatic,3rd,Fair,No,0,5,2932,225,560000,Delhi,BS-IV,Yes,Medium,621541.2,Individual,No
+399,Hyundai,Hyundai Creta 1.6,2016,25000,Petrol,Manual,3rd,Excellent,No,0,5,1590,86,950000,Chennai,BS-IV,Yes,Medium,820437.43,Individual,No
+400,Hyundai,Hyundai i20 Magna,2013,35000,Petrol,Automatic,4th+,Fair,Yes,0,4,1384,81,310000,Delhi,BS-IV,Yes,Low,276291.34,Individual,No
+401,Renault,Renault Duster 85,2015,65000,Diesel,Manual,2nd,Excellent,No,0,4,1083,100,715000,Chennai,BS-IV,Yes,Low,767873.2,Dealer,Yes
+402,Hyundai,Hyundai Grand i10,2014,35000,Petrol,Automatic,2nd,Fair,No,0,4,1584,90,340000,Mumbai,BS-IV,Yes,Medium,382793.18,Dealer,No
+403,Honda,Honda Brio V,2012,33000,Petrol,Manual,1st,Good,No,2,4,1644,238,235000,Delhi,BS-IV,Yes,Medium,231612.49,Dealer,Yes
+404,Mahindra,Mahindra TUV300 T4,2017,68000,Diesel,Manual,4th+,Excellent,No,2,4,2752,159,610000,Delhi,BS-IV,Yes,Medium,683173.81,Dealer,Yes
+405,Chevrolet,Chevrolet Spark LS,2010,23000,Petrol,Automatic,1st,Excellent,No,0,4,1520,54,95000,Mumbai,BS-IV,Yes,Medium,103087.77,Individual,No
+406,Mahindra,Mahindra TUV300 T8,2018,4500,Diesel,Manual,2nd,Fair,No,0,4,2735,149,1000000,Pune,BS-IV,Yes,Medium,892671.19,Individual,No
+407,Maruti,Maruti Suzuki Swift,2015,129000,Diesel,Manual,1st,Poor,Yes,1,4,1599,98,220000,Hyderabad,BS-IV,No,Medium,209755.71,Dealer,No
+408,Nissan,Nissan X Trail,2019,300,Diesel,Automatic,2nd,Poor,No,0,4,1483,104,1200000,Chennai,BS-IV,No,High,1252912.57,Dealer,No
+409,Maruti,Maruti Suzuki Alto,2015,5000,Petrol,Automatic,3rd,Poor,No,0,4,1254,110,230000,Delhi,BS-IV,No,Low,217360.91,Individual,No
+410,Ford,Ford Ikon 1.3,2001,65000,Petrol,Manual,4th+,Poor,No,0,4,1115,104,45000,Chennai,BS-II,No,High,42298.22,Dealer,No
+411,Toyota,Toyota Fortuner 3.0,2010,131000,Diesel,Manual,1st,Poor,No,0,4,2946,148,940000,Mumbai,BS-IV,No,Medium,976042.11,Dealer,No
+412,Tata,Tata Manza ELAN,2010,111111,Petrol,Automatic,4th+,Good,Yes,2,4,1179,84,155555,Chennai,BS-IV,Yes,Medium,162708.1,Individual,No
+413,Mercedes,Mercedes Benz A,2013,14000,Petrol,Manual,2nd,Excellent,No,0,4,1668,115,1500000,Bangalore,BS-IV,Yes,Medium,1566480.71,Dealer,Yes
+414,Chevrolet,Chevrolet Beat LS,2016,22000,Diesel,Manual,4th+,Excellent,Yes,0,4,1130,87,210000,Mumbai,BS-IV,Yes,Medium,198503.71,Individual,No
+415,Ford,Ford EcoSport Trend,2013,38000,Diesel,Manual,1st,Excellent,Yes,0,4,1588,90,495000,Delhi,BS-IV,Yes,High,462484.03,Dealer,Yes
+416,Tata,Tata Indigo LS,2016,70000,Diesel,Automatic,2nd,Good,Yes,0,4,948,61,125000,Pune,BS-IV,Yes,Medium,140901.43,Dealer,Yes
+417,Hyundai,Hyundai i20 Magna,2010,36000,Petrol,Manual,4th+,Excellent,Yes,0,4,1317,119,195000,Kolkata,BS-IV,Yes,Low,205990.66,Individual,No
+418,Volkswagen,Volkswagen Vento Highline,2015,34000,Diesel,Automatic,4th+,Excellent,No,1,4,2433,300,550000,Bangalore,BS-IV,Yes,High,598840.68,Dealer,Yes
+419,Renault,Renault Kwid RXT,2015,43000,Petrol,Automatic,2nd,Good,Yes,0,4,1312,105,270000,Mumbai,BS-IV,Yes,High,302672.12,Dealer,Yes
+420,Ford,Ford EcoSport Titanium,2014,40000,Diesel,Manual,4th+,Poor,Yes,0,4,1428,84,500000,Mumbai,BS-IV,No,Medium,457830.14,Individual,No
+421,Honda,Honda Amaze 1.5,2016,160000,Diesel,Manual,3rd,Excellent,Yes,0,4,2807,207,240000,Kolkata,BS-IV,Yes,Low,214333.96,Individual,No
+422,Hyundai,Hyundai Verna 1.6,2017,12000,Petrol,Manual,2nd,Excellent,No,0,4,1578,72,800000,Kolkata,BS-IV,Yes,Medium,890059.1,Individual,No
+423,BMW,BMW 5 Series,2011,49000,Diesel,Automatic,2nd,Poor,Yes,0,4,1073,144,1299000,Pune,BS-IV,No,Medium,1457128.67,Individual,No
+424,Skoda,Skoda Superb 1.8,2011,68000,Petrol,Manual,2nd,Good,Yes,0,4,2753,310,530000,Pune,BS-IV,Yes,Medium,534891.21,Dealer,Yes
+425,Audi,Audi Q3 2.0,2013,37000,Diesel,Automatic,4th+,Excellent,Yes,2,4,1408,231,1499000,Chennai,BS-IV,Yes,Medium,1292157.2,Dealer,Yes
+426,Mahindra,Mahindra Bolero DI,2012,59466,Diesel,Manual,1st,Fair,No,1,4,1953,158,220000,Chennai,BS-IV,Yes,Medium,191620.25,Individual,No
+427,Mahindra,Mahindra Scorpio S10,2015,97200,Diesel,Automatic,1st,Poor,No,2,5,2217,158,900000,Pune,BS-IV,No,Medium,895417.74,Dealer,No
+428,Ford,Ford Figo Duratorq,2012,99000,Diesel,Automatic,1st,Good,Yes,0,4,1248,87,250000,Pune,BS-IV,Yes,High,279712.25,Individual,No
+429,Maruti,Maruti Suzuki Wagon,2018,25500,Petrol,Manual,3rd,Poor,No,0,4,1363,109,395000,Kolkata,BS-IV,No,Low,352912.37,Individual,No
+430,Mahindra,Mahindra Logan Diesel,2009,66000,Petrol,Automatic,1st,Excellent,No,0,4,2205,250,130000,Hyderabad,BS-III,Yes,Medium,123282.7,Individual,No
+431,Tata,Tata Nano GenX,2010,44005,Petrol,Automatic,3rd,Fair,No,1,4,1534,103,32000,Bangalore,BS-IV,Yes,Low,30139.05,Dealer,No
+432,Mahindra,Mahindra TUV300 T4,2016,35000,Diesel,Manual,2nd,Excellent,Yes,0,4,1763,96,540000,Pune,BS-IV,Yes,Low,471956.58,Individual,No
+433,Mahindra,Mahindra TUV300 T4,2016,35000,Diesel,Automatic,3rd,Fair,Yes,3,4,1893,207,540000,Kolkata,BS-IV,Yes,Low,618694.93,Individual,No
+434,Hyundai,Hyundai Elite i20,2015,28000,Petrol,Manual,4th+,Poor,Yes,4,4,1419,54,405000,Delhi,BS-IV,No,Low,452517.96,Individual,No
+435,Hyundai,Hyundai Elite i20,2015,30000,Petrol,Automatic,2nd,Fair,Yes,2,4,1137,117,400000,Delhi,BS-IV,Yes,Medium,410361.82,Individual,No
+436,Honda,Honda City SV,2017,4000,Petrol,Manual,1st,Poor,No,2,4,1933,94,760000,Hyderabad,BS-IV,No,High,780826.35,Individual,No
+437,Maruti,Maruti Suzuki Baleno,2016,28000,Petrol,Automatic,3rd,Good,Yes,0,4,910,74,500000,Kolkata,BS-IV,Yes,Medium,532855.01,Individual,No
+438,Ford,Ford Figo Petrol,2011,75000,Petrol,Automatic,2nd,Excellent,Yes,0,4,1384,80,175000,Delhi,BS-IV,Yes,High,159010.06,Dealer,Yes
+439,Mahindra,Mahindra Scorpio S10,2015,97200,Diesel,Automatic,2nd,Excellent,No,0,5,1933,165,900000,Kolkata,BS-IV,Yes,Low,986181.01,Dealer,Yes
+440,Honda,Honda City,2017,3000,Petrol,Manual,4th+,Poor,Yes,1,4,2555,126,750000,Mumbai,BS-IV,No,High,764440.36,Individual,No
+441,Hyundai,Hyundai Elite i20,2015,20000,Petrol,Automatic,3rd,Fair,No,0,4,1090,80,419000,Chennai,BS-IV,Yes,Low,422358.44,Dealer,No
+442,Maruti,Maruti Suzuki Versa,2004,50000,Petrol,Automatic,4th+,Fair,Yes,0,4,1167,105,90000,Bangalore,BS-II,No,Low,88635.89,Dealer,No
+443,Hyundai,Hyundai Eon Era,2018,2110,Petrol,Automatic,4th+,Fair,Yes,0,4,1413,63,140000,Delhi,BS-IV,Yes,Medium,134402.06,Individual,No
+444,Mitsubishi,Mitsubishi Pajero Sport,2015,43222,Petrol,Automatic,4th+,Poor,Yes,2,4,1558,185,1540000,Pune,BS-IV,No,Low,1760286.68,Individual,No
+445,Hyundai,Hyundai i10 Magna,2008,100200,Petrol,Automatic,1st,Fair,Yes,0,4,1109,78,275000,Delhi,BS-III,Yes,Low,245792.46,Dealer,No
+446,Toyota,Toyota Corolla H2,2003,100000,Petrol,Automatic,4th+,Good,Yes,0,4,1884,226,150000,Kolkata,BS-II,No,Medium,133248.83,Individual,No
+447,Maruti,Maruti Suzuki Swift,2011,65,Petrol,Automatic,1st,Poor,No,0,4,857,58,230000,Pune,BS-IV,No,Medium,210748.36,Dealer,No
+448,Tata,Tata Indigo CS,2015,100000,Diesel,Automatic,3rd,Good,Yes,3,4,976,64,123000,Bangalore,BS-IV,Yes,Low,138339.83,Dealer,Yes
+449,Mahindra,Mahindra Scorpio S10,2015,97200,Diesel,Manual,3rd,Poor,No,0,5,1729,198,900000,Pune,BS-IV,No,Medium,816549.95,Dealer,No
+450,Mahindra,Mahindra Scorpio S10,2015,97200,Diesel,Manual,1st,Excellent,No,1,5,2072,147,900000,Delhi,BS-IV,Yes,Low,952232.36,Dealer,Yes
+451,Hyundai,Hyundai Xcent Base,2016,140000,Diesel,Manual,2nd,Poor,Yes,3,4,950,67,300000,Pune,BS-IV,No,Medium,294151.57,Individual,No
+452,Honda,Honda City,2015,55000,Petrol,Automatic,4th+,Fair,No,0,4,2990,148,499999,Pune,BS-IV,Yes,Low,535819.84,Individual,No
+453,Hyundai,Hyundai Accent Executive,2009,48000,Petrol,Manual,3rd,Poor,No,0,4,808,88,165000,Kolkata,BS-III,No,Low,177423.83,Individual,No
+454,Maruti,Maruti Suzuki Baleno,2016,22000,Petrol,Manual,4th+,Excellent,No,0,4,864,91,498000,Mumbai,BS-IV,Yes,Medium,538584.25,Dealer,Yes
+455,Tata,Tata Zest XE,2018,103553,Diesel,Manual,3rd,Fair,No,0,4,1043,81,480000,Delhi,BS-IV,Yes,Low,440838.1,Individual,No
+456,Maruti,Maruti Suzuki Dzire,2017,80000,Diesel,Automatic,3rd,Excellent,No,0,4,1546,46,488000,Bangalore,BS-IV,Yes,Medium,421312.17,Dealer,Yes
+457,Tata,Tata Sumo Gold,2014,99000,Diesel,Manual,4th+,Excellent,Yes,0,4,1002,55,250000,Delhi,BS-IV,Yes,Medium,284546.56,Dealer,Yes
+458,Toyota,Toyota Corolla Altis,2010,58000,Petrol,Automatic,2nd,Excellent,No,0,4,1513,147,220000,Bangalore,BS-IV,Yes,Medium,216269.16,Dealer,Yes
+459,Maruti,Maruti Suzuki Eeco,2013,70000,LPG,Automatic,1st,Poor,Yes,0,4,943,61,290000,Mumbai,BS-IV,No,Low,264056.22,Dealer,No
+460,Toyota,Toyota Fortuner 3.0,2015,120000,Diesel,Automatic,3rd,Poor,Yes,1,4,2412,212,1525000,Chennai,BS-IV,No,Medium,1627834.83,Individual,No
+461,Mahindra,Mahindra XUV500 W6,2013,49800,Diesel,Manual,3rd,Fair,Yes,0,5,2878,144,548900,Hyderabad,BS-IV,Yes,Low,548540.44,Dealer,No
+462,Tata,Tata Tigor Revotron,2019,100,Diesel,Manual,1st,Good,No,1,4,1463,69,650000,Hyderabad,BS-IV,Yes,Medium,662803.8,Individual,No
+463,Maruti,Maruti Suzuki 800,2001,81876,Petrol,Automatic,4th+,Excellent,Yes,2,4,1190,91,55000,Delhi,BS-II,No,Medium,63080.86,Individual,No
+464,Maruti,Maruti Suzuki Ertiga,2015,75000,Petrol,Automatic,3rd,Excellent,No,1,4,1075,101,550000,Delhi,BS-IV,Yes,Low,540184.82,Dealer,Yes
+465,Maruti,Maruti Suzuki Versa,2004,50000,Petrol,Automatic,2nd,Good,No,0,4,1079,54,90000,Chennai,BS-II,No,Medium,81735.93,Dealer,Yes
+466,Honda,Honda Mobilio S,2014,44000,Diesel,Manual,1st,Fair,No,1,4,2918,101,399000,Bangalore,BS-IV,Yes,High,375445.06,Individual,No
+467,Maruti,Maruti Suzuki Ertiga,2016,55000,Diesel,Manual,3rd,Fair,Yes,4,4,919,87,730000,Hyderabad,BS-IV,Yes,Low,741499.5,Individual,No
+468,Maruti,Maruti Suzuki Vitara,2017,36000,Diesel,Automatic,4th+,Fair,No,1,4,954,90,725000,Pune,BS-IV,Yes,Medium,772268.63,Individual,No
+469,Hyundai,Hyundai Verna 1.6,2016,56000,Diesel,Automatic,4th+,Poor,Yes,0,4,1424,90,195000,Hyderabad,BS-IV,No,Medium,183899.71,Individual,No
+470,Maruti,Maruti Suzuki Swift,2007,62000,Petrol,Automatic,2nd,Excellent,No,3,4,1042,51,130000,Hyderabad,BS-III,Yes,Low,145397.53,Individual,No
+471,Toyota,Toyota Fortuner 3.0,2015,120000,Diesel,Manual,1st,Good,No,0,4,2099,126,1525000,Pune,BS-IV,Yes,Medium,1385089.63,Individual,No
+472,Maruti,Maruti Suzuki Omni,2014,6020,Petrol,Automatic,4th+,Good,Yes,1,4,934,114,190000,Kolkata,BS-IV,Yes,Medium,168002.09,Individual,No
+473,Honda,Honda Amaze,2013,55700,Diesel,Manual,1st,Poor,Yes,0,4,2300,133,250000,Bangalore,BS-IV,No,Medium,233528.79,Individual,No
+474,Tata,Tata Indica,2005,42000,Petrol,Automatic,4th+,Fair,No,1,4,901,93,80000,Hyderabad,BS-III,No,Medium,74686.44,Dealer,No
+475,Hyundai,Hyundai Santro Xing,2003,50000,Petrol,Automatic,3rd,Excellent,No,0,4,1017,81,120000,Kolkata,BS-II,No,Low,113078.66,Dealer,Yes
+476,Maruti,Maruti Suzuki Zen,2010,35000,Petrol,Manual,1st,Poor,Yes,0,4,1221,68,149000,Pune,BS-IV,No,Medium,148938.81,Individual,No
+477,Maruti,Maruti Suzuki Wagon,2014,18500,Petrol,Automatic,1st,Excellent,Yes,0,4,1407,110,250000,Pune,BS-IV,Yes,Medium,283892.74,Dealer,Yes
+478,Maruti,Maruti Suzuki Wagon,2007,7000,Petrol,Automatic,1st,Poor,No,0,4,1295,55,120000,Mumbai,BS-III,No,Low,116969.22,Dealer,No
+479,Honda,Honda Brio VX,2017,11000,Petrol,Automatic,1st,Excellent,No,0,4,1799,189,450000,Mumbai,BS-IV,Yes,High,400242.65,Dealer,Yes
+480,Maruti,Maruti Suzuki Zen,2003,53000,Petrol,Automatic,2nd,Fair,Yes,3,4,1235,114,99999,Mumbai,BS-II,No,Medium,101183.64,Dealer,No
+481,Maruti,Maruti Suzuki Zen,2008,23000,Petrol,Automatic,1st,Good,Yes,0,4,1159,84,135000,Hyderabad,BS-III,Yes,Low,131405.52,Individual,No
+482,Maruti,Maruti Suzuki Wagon,2016,35500,Diesel,Manual,2nd,Good,No,0,4,1477,98,225000,Pune,BS-IV,Yes,Low,194673.34,Individual,No
+483,Maruti,Maruti Suzuki Alto,2010,22134,Petrol,Manual,3rd,Fair,Yes,0,4,1521,50,99000,Mumbai,BS-IV,Yes,Low,92148.13,Dealer,No
+484,Renault,Renault Kwid RXT,2019,1000,Petrol,Manual,3rd,Excellent,No,0,4,1073,116,370000,Pune,BS-IV,Yes,High,359752.66,Individual,No
+485,Tata,Tata Nano Lx,2010,9000,Petrol,Automatic,1st,Excellent,Yes,4,4,1348,80,52000,Mumbai,BS-IV,Yes,Low,53237.02,Individual,No
+486,Jaguar,Jaguar XE XE,2016,8500,Petrol,Automatic,2nd,Good,No,2,4,1442,133,2800000,Hyderabad,BS-IV,Yes,High,3137767.33,Individual,No
+487,Hyundai,Hyundai Eon Magna,2014,35000,Petrol,Automatic,2nd,Excellent,No,1,4,1110,94,190000,Kolkata,BS-IV,Yes,Medium,206361.2,Dealer,Yes
+488,Honda,Honda City 1.5,2014,22000,Petrol,Automatic,1st,Excellent,Yes,0,4,2941,198,499000,Bangalore,BS-IV,Yes,Low,437894.79,Individual,No
+489,Hindustan,Hindustan Motors Ambassador,2002,25000,Diesel,Manual,3rd,Excellent,Yes,2,4,1120,105,90000,Chennai,BS-II,No,Low,86318.77,Individual,No
+490,Maruti,Maruti Suzuki Ritz,2010,40000,Petrol,Manual,1st,Excellent,No,2,4,1500,89,149000,Mumbai,BS-IV,Yes,Medium,154911.79,Individual,No
+491,Hyundai,Hyundai Grand i10,2017,20000,Petrol,Manual,2nd,Poor,No,1,4,1327,119,400000,Chennai,BS-IV,No,Medium,430137.32,Dealer,No
+492,Hyundai,Hyundai Eon D,2016,87000,Petrol,Automatic,2nd,Good,No,0,4,1507,63,120000,Bangalore,BS-IV,Yes,Low,108653.17,Dealer,Yes
+493,Maruti,Maruti Suzuki Swift,2015,55000,Petrol,Automatic,4th+,Good,Yes,2,4,1276,77,250000,Pune,BS-IV,Yes,Medium,276898.13,Individual,No
+494,Maruti,Maruti Suzuki Wagon,2017,23000,Petrol,Automatic,2nd,Good,Yes,2,4,1117,95,375000,Hyderabad,BS-IV,Yes,Medium,396808.34,Individual,No
+495,Honda,Honda Amaze 1.2,2014,6000,Petrol,Manual,4th+,Excellent,No,1,4,1615,169,381000,Chennai,BS-IV,Yes,Medium,374776.17,Individual,No
+496,Maruti,Maruti Suzuki Estilo,2013,65000,Petrol,Manual,4th+,Excellent,No,0,4,1296,85,180000,Pune,BS-IV,Yes,Medium,183290.8,Individual,No
+497,Maruti,Maruti Suzuki Vitara,2016,25000,Diesel,Manual,2nd,Excellent,No,4,4,1293,66,580000,Hyderabad,BS-IV,Yes,Medium,657443.34,Individual,No
+498,Maruti,Maruti Suzuki Eeco,2015,39000,Petrol,Manual,3rd,Poor,No,0,4,1594,80,278000,Pune,BS-IV,No,Low,272615.52,Individual,No
+499,Hyundai,Hyundai Creta 1.6,2016,8000,Petrol,Automatic,3rd,Excellent,Yes,0,5,1418,113,1000000,Mumbai,BS-IV,Yes,Medium,1032681.53,Dealer,Yes
+500,Mahindra,Mahindra Scorpio Vlx,2013,75000,Diesel,Automatic,3rd,Fair,Yes,3,5,2440,150,690000,Pune,BS-IV,Yes,Medium,635029.36,Individual,No
+501,Maruti,Maruti Suzuki Ertiga,2012,51000,Diesel,Manual,1st,Poor,Yes,2,4,1156,107,480000,Mumbai,BS-IV,No,Low,524136.99,Dealer,No
+502,Mitsubishi,Mitsubishi Lancer 1.8,2006,50000,Petrol,Manual,4th+,Good,Yes,0,4,2923,128,85000,Hyderabad,BS-III,Yes,High,91011.43,Dealer,Yes
+503,Maruti,Maruti Suzuki Maruti,2001,75000,Petrol,Manual,3rd,Good,No,0,4,856,74,40000,Hyderabad,BS-II,No,Medium,44864.63,Individual,No
+504,Maruti,Maruti Suzuki Alto,2015,55800,Petrol,Automatic,2nd,Good,No,2,4,1053,56,90000,Chennai,BS-IV,Yes,Medium,97296.2,Individual,No
+505,Hyundai,Hyundai Grand i10,2015,53000,Petrol,Manual,3rd,Excellent,Yes,1,4,1147,111,340000,Chennai,BS-IV,Yes,Medium,327610.72,Dealer,Yes
+506,Hyundai,Hyundai Eon D,2018,25000,Petrol,Automatic,3rd,Poor,No,4,4,1022,90,260000,Kolkata,BS-IV,No,Low,245395.26,Dealer,No
+507,Ford,Ford Fiesta SXi,2009,56400,Petrol,Automatic,2nd,Fair,Yes,0,4,1184,115,250000,Pune,BS-III,Yes,High,243126.83,Dealer,No
+508,Maruti,Maruti Suzuki Ritz,2010,72160,Diesel,Automatic,2nd,Excellent,No,0,4,1199,103,180000,Delhi,BS-IV,Yes,Low,183647.48,Dealer,Yes
+509,Hyundai,Hyundai Verna Fluidic,2012,10000,Diesel,Manual,2nd,Good,No,2,4,943,71,350000,Mumbai,BS-IV,Yes,Low,312664.54,Dealer,Yes
+510,Maruti,Maruti Suzuki Wagon,2006,48000,Petrol,Manual,1st,Good,No,0,4,1452,78,90001,Pune,BS-III,Yes,Medium,90679.2,Dealer,Yes
+511,Maruti,Maruti Suzuki Estilo,2007,36000,Petrol,Manual,3rd,Fair,Yes,0,4,1127,68,115000,Delhi,BS-III,Yes,Medium,100364.38,Individual,No
+512,Audi,Audi A6 2.0,2012,11500,Diesel,Manual,3rd,Excellent,Yes,1,4,1715,155,1599000,Delhi,BS-IV,Yes,Medium,1436849.42,Individual,No
+513,Maruti,Maruti Suzuki Wagon,2003,133000,Petrol,Manual,4th+,Fair,No,0,4,1212,104,130000,Chennai,BS-II,No,Medium,134929.88,Individual,No
+514,Maruti,Maruti Suzuki Wagon,2009,27000,Petrol,Manual,3rd,Fair,Yes,0,4,885,77,159000,Chennai,BS-III,Yes,Medium,144491.77,Dealer,No
+515,Maruti,Maruti Suzuki Wagon,2009,35000,Petrol,Automatic,4th+,Poor,No,1,4,1144,103,160000,Kolkata,BS-III,No,Low,183956.83,Individual,No
+516,Maruti,Maruti Suzuki Alto,2010,55000,Petrol,Automatic,3rd,Fair,Yes,3,4,1493,69,110000,Hyderabad,BS-IV,Yes,Low,98423.22,Individual,No
+517,Maruti,Maruti Suzuki Baleno,2016,40000,Petrol,Manual,2nd,Poor,No,1,4,1124,76,425000,Delhi,BS-IV,No,Medium,442864.68,Dealer,No
+518,Hyundai,Hyundai Verna 1.6,2019,2000,Petrol,Automatic,3rd,Good,Yes,2,4,1554,90,900000,Pune,BS-IV,Yes,Low,913926.73,Dealer,Yes
+519,Maruti,Maruti Suzuki Swift,2009,45000,Petrol,Automatic,2nd,Excellent,Yes,0,4,979,69,150000,Chennai,BS-III,Yes,Medium,164787.95,Dealer,Yes
+520,Hyundai,Hyundai Getz Prime,2009,20000,Petrol,Automatic,4th+,Poor,No,0,4,855,80,110000,Delhi,BS-III,No,Medium,107664.49,Dealer,No
+521,Hyundai,Hyundai Santro,2000,88000,Petrol,Automatic,1st,Fair,Yes,0,4,1446,116,51999,Mumbai,BS-II,No,Low,54243.87,Dealer,No
+522,Hyundai,Hyundai Getz Prime,2009,20000,Petrol,Manual,1st,Good,Yes,2,4,884,115,115000,Mumbai,BS-III,Yes,Low,103565.35,Individual,No
+523,Chevrolet,Chevrolet Beat PS,2012,65422,Diesel,Manual,3rd,Excellent,No,3,4,896,56,215000,Mumbai,BS-IV,Yes,Low,217043.79,Dealer,Yes
+524,Ford,Ford EcoSport Trend,2017,10000,Petrol,Automatic,3rd,Fair,Yes,1,4,1506,81,580000,Kolkata,BS-IV,Yes,High,637863.96,Individual,No
+525,Maruti,Maruti Suzuki Dzire,2013,35000,Petrol,Automatic,3rd,Excellent,Yes,1,4,1275,61,380000,Mumbai,BS-IV,Yes,Medium,326596.16,Individual,No
+526,Hyundai,Hyundai Fluidic Verna,2013,117000,Diesel,Automatic,2nd,Fair,No,0,4,1325,107,350000,Pune,BS-IV,Yes,Medium,299325.99,Individual,No
+527,Tata,Tata Indica V2,2005,150000,Diesel,Manual,1st,Poor,Yes,2,4,1104,57,35000,Pune,BS-III,No,Low,30987.2,Individual,No
+528,BMW,BMW X1 xDrive20d,2011,72000,Diesel,Manual,4th+,Poor,Yes,3,4,1784,110,1150000,Kolkata,BS-IV,No,Medium,1143156.86,Individual,No
+529,Hyundai,Hyundai i20 Asta,2010,10750,Petrol,Automatic,1st,Excellent,No,0,4,942,112,300000,Bangalore,BS-IV,Yes,Medium,332075.86,Dealer,Yes
+530,Honda,Honda City 1.5,2009,55000,Petrol,Manual,3rd,Fair,No,0,4,1969,233,269000,Pune,BS-III,Yes,Low,279419.02,Individual,No
+531,Tata,Tata Nano,2013,6800,Petrol,Automatic,1st,Good,No,0,4,1168,51,60000,Mumbai,BS-IV,Yes,Low,61350.47,Individual,No
+532,Chevrolet,Chevrolet Cruze LTZ,2014,41000,Diesel,Manual,1st,Excellent,No,0,4,966,107,400000,Chennai,BS-IV,Yes,High,442136.63,Individual,No
+533,Hyundai,Hyundai Verna Fluidic,2015,73000,Diesel,Manual,2nd,Fair,No,0,4,1245,71,430000,Bangalore,BS-IV,Yes,Medium,468147.43,Individual,No
+534,Maruti,Maruti Suzuki Swift,2011,65000,Diesel,Automatic,4th+,Good,No,2,4,1332,66,140000,Pune,BS-IV,Yes,Low,126828.18,Dealer,Yes
+535,Mahindra,Mahindra XUV500 W6,2014,45000,Diesel,Automatic,3rd,Excellent,No,3,5,2707,88,8500003,Hyderabad,BS-IV,Yes,Medium,7319971.93,Individual,No
+536,Mahindra,Mahindra XUV500 W10,2018,40000,Diesel,Manual,1st,Fair,Yes,0,5,2893,151,1299000,Bangalore,BS-IV,Yes,Low,1380280.56,Dealer,No
+537,Maruti,Maruti Suzuki Alto,2014,37000,Petrol,Manual,4th+,Poor,No,0,4,1001,61,199000,Hyderabad,BS-IV,No,Low,209994.33,Individual,No
+538,Hyundai,Hyundai Accent GLE,2006,55000,Petrol,Automatic,3rd,Good,Yes,0,4,805,84,90000,Mumbai,BS-III,Yes,Low,92524.95,Dealer,Yes
+539,Force,Force Motors One,2013,140000,Diesel,Automatic,3rd,Fair,No,1,4,2100,80,550000,Kolkata,BS-IV,Yes,High,573896.13,Dealer,No
+540,Maruti,Maruti Suzuki Alto,2019,9800,Petrol,Automatic,1st,Good,No,0,4,912,107,265000,Delhi,BS-IV,Yes,Medium,278748.18,Individual,No
+541,Chevrolet,Chevrolet Spark 1.0,2011,27000,Petrol,Automatic,1st,Good,Yes,1,4,1352,51,100000,Kolkata,BS-IV,Yes,High,89192.07,Individual,No
+542,Hyundai,Hyundai i10,2009,27000,Petrol,Manual,1st,Good,Yes,1,4,921,68,215000,Kolkata,BS-III,Yes,Medium,203193.41,Individual,No
+543,Toyota,Toyota Etios Liva,2012,20000,Diesel,Manual,4th+,Good,No,2,4,1825,165,380000,Delhi,BS-IV,Yes,High,389443.81,Individual,No
+544,Renault,Renault Duster 85PS,2013,57923,Diesel,Manual,3rd,Good,No,0,4,1054,62,401919,Chennai,BS-IV,Yes,Low,440641.31,Dealer,Yes
+545,Chevrolet,Chevrolet Enjoy,2014,30201,Diesel,Automatic,2nd,Excellent,Yes,3,4,1029,83,490000,Bangalore,BS-IV,Yes,Medium,425288.21,Individual,No
+546,Maruti,Maruti Suzuki Alto,2017,6200,Petrol,Manual,2nd,Excellent,Yes,0,4,1235,102,280000,Bangalore,BS-IV,Yes,Low,303037.59,Dealer,Yes
+547,BMW,BMW 5 Series,2009,37518,Petrol,Manual,1st,Good,No,0,4,2139,134,650000,Delhi,BS-III,Yes,Medium,712557.51,Dealer,Yes
+548,Toyota,Toyota Etios Liva,2014,24652,Petrol,Automatic,4th+,Poor,No,0,4,2890,205,160000,Hyderabad,BS-IV,No,High,148543.81,Individual,No
+549,Mahindra,Mahindra Jeep MM,2004,383,Diesel,Automatic,2nd,Good,No,0,4,2944,92,424000,Chennai,BS-II,No,Low,392275.02,Individual,No
+550,Chevrolet,Chevrolet Beat LS,2016,95000,Diesel,Automatic,4th+,Excellent,Yes,0,4,810,102,225000,Delhi,BS-IV,Yes,High,237911.96,Individual,No
+551,Chevrolet,Chevrolet Cruze LTZ,2011,35000,Diesel,Automatic,2nd,Poor,Yes,0,4,1220,77,350000,Mumbai,BS-IV,No,Medium,356937.17,Dealer,No
+552,Jeep,Jeep Wrangler Unlimited,2015,3528,Diesel,Manual,4th+,Fair,No,0,4,2121,77,950000,Kolkata,BS-IV,Yes,Medium,996640.1,Dealer,No
+553,Maruti,Maruti Suzuki Ertiga,2013,52500,Diesel,Automatic,2nd,Excellent,Yes,0,4,800,97,485000,Hyderabad,BS-IV,Yes,Medium,423192.82,Individual,No
+554,Hyundai,Hyundai Verna VGT,2010,47900,Diesel,Manual,1st,Fair,No,0,4,848,101,205000,Mumbai,BS-IV,Yes,Low,217668.01,Dealer,No
+555,Maruti,Maruti Suzuki Omni,2012,14000,Petrol,Automatic,3rd,Good,Yes,2,4,1054,55,160000,Chennai,BS-IV,Yes,Low,144695.66,Dealer,Yes
+556,Maruti,Maruti Suzuki Celerio,2018,37000,Petrol,Automatic,2nd,Good,Yes,0,4,970,51,310000,Hyderabad,BS-IV,Yes,Low,315336.32,Dealer,Yes
+557,Tata,Tata Zest Quadrajet,2017,90000,Diesel,Automatic,1st,Fair,Yes,0,4,1322,108,180000,Bangalore,BS-IV,Yes,Low,155384.59,Individual,No
+558,Mahindra,Mahindra XUV500 W6,2013,52800,Diesel,Manual,4th+,Excellent,Yes,0,5,2751,164,549900,Bangalore,BS-IV,Yes,Low,614400.36,Dealer,Yes
+559,Tata,Tata Indigo CS,2016,104000,Diesel,Manual,4th+,Excellent,No,1,4,1131,65,150000,Delhi,BS-IV,Yes,Medium,142562.74,Individual,No
+560,Hyundai,Hyundai i10 Era,2011,30000,Petrol,Manual,4th+,Fair,No,2,4,1021,81,175000,Hyderabad,BS-IV,Yes,Low,178185.73,Individual,No
+561,Tata,Tata Indigo eCS,2014,195000,Diesel,Automatic,2nd,Fair,Yes,1,4,1326,89,95000,Mumbai,BS-IV,Yes,Low,87468.4,Dealer,No
+562,Tata,Tata Indigo LX,2016,104000,Diesel,Automatic,1st,Excellent,Yes,0,4,861,107,230000,Delhi,BS-IV,Yes,Medium,197027.54,Dealer,Yes
+563,Tata,Tata Indigo eCS,2016,104000,Diesel,Automatic,4th+,Good,No,3,4,977,63,230000,Chennai,BS-IV,Yes,Low,243424.18,Dealer,Yes
+564,Tata,Tata Indigo Marina,2004,70000,Diesel,Automatic,3rd,Poor,Yes,4,4,826,79,180000,Bangalore,BS-II,No,Medium,194488.58,Dealer,No
+565,Hyundai,Hyundai Xcent SX,2015,43000,Diesel,Manual,2nd,Good,No,1,4,1353,74,400000,Delhi,BS-IV,Yes,Medium,437483.77,Dealer,Yes
+566,Hyundai,Hyundai Eon Magna,2013,23000,Petrol,Automatic,3rd,Good,Yes,0,4,1471,63,185000,Kolkata,BS-IV,Yes,Low,201569.32,Individual,No
+567,Renault,Renault Duster 85,2015,51000,Diesel,Manual,4th+,Poor,Yes,0,4,1415,95,385000,Kolkata,BS-IV,No,Low,392934.41,Individual,No
+568,Maruti,Maruti Suzuki Alto,2009,62000,Petrol,Manual,4th+,Good,No,1,4,1441,93,90000,Mumbai,BS-III,Yes,Medium,93110.15,Individual,No
+569,Tata,Tata Nano LX,2010,48008,Petrol,Manual,4th+,Excellent,No,1,4,1143,80,32000,Delhi,BS-IV,Yes,Medium,31535.85,Individual,No
+570,Renault,Renault Duster 110,2013,39000,Diesel,Manual,1st,Fair,No,1,4,1572,90,435000,Mumbai,BS-IV,Yes,Low,500135.32,Dealer,No
+571,Maruti,Maruti Suzuki Wagon,2010,40000,Petrol,Manual,1st,Fair,Yes,0,4,852,112,225000,Hyderabad,BS-IV,Yes,Low,198310.22,Dealer,No
+572,Maruti,Maruti Suzuki Swift,2006,48247,Petrol,Automatic,2nd,Good,Yes,1,4,1294,109,189700,Kolkata,BS-III,Yes,Medium,210037.3,Individual,No
+573,Maruti,Maruti Suzuki Ertiga,2012,39000,Diesel,Manual,1st,Good,Yes,4,4,877,105,389700,Bangalore,BS-IV,Yes,Medium,338341.99,Dealer,Yes
+574,Maruti,Maruti Suzuki Swift,2014,23000,Petrol,Automatic,3rd,Excellent,Yes,0,4,953,101,365000,Kolkata,BS-IV,Yes,Low,417889.95,Individual,No
+575,Maruti,Maruti Suzuki Alto,2017,9400,Petrol,Manual,4th+,Fair,No,0,4,1466,106,360000,Delhi,BS-IV,Yes,Low,343589.66,Dealer,No
+576,Hyundai,Hyundai i20 Magna,2010,50000,Petrol,Manual,1st,Fair,No,4,4,1385,82,210000,Kolkata,BS-IV,Yes,Medium,232150.99,Dealer,No
+577,Hyundai,Hyundai i10 Magna,2009,75000,Petrol,Manual,1st,Poor,Yes,2,4,1106,75,170000,Bangalore,BS-III,No,Medium,149261.17,Dealer,No
+578,Tata,Tata Zest XE,2017,70000,Diesel,Automatic,2nd,Excellent,Yes,2,4,1506,99,380000,Delhi,BS-IV,Yes,Medium,373325.97,Dealer,Yes
+579,Mahindra,Mahindra Xylo E8,2009,64000,Diesel,Manual,2nd,Fair,No,0,4,2469,183,295000,Kolkata,BS-III,Yes,Medium,270701.09,Individual,No
+580,Toyota,Toyota Corolla Altis,2010,55000,Petrol,Manual,4th+,Poor,Yes,0,4,2152,100,185000,Chennai,BS-IV,No,Low,172910.24,Dealer,No
+581,Tata,Tata Manza Aqua,2014,200000,Diesel,Manual,3rd,Poor,No,0,4,852,101,160000,Pune,BS-IV,No,Low,145853.79,Individual,No
+582,Renault,Renault Kwid 1.0,2018,2137,Petrol,Automatic,3rd,Poor,Yes,0,4,1588,116,290000,Mumbai,BS-IV,No,Low,293564.65,Individual,No
+583,Tata,Tata Venture EX,2013,30000,Diesel,Manual,1st,Poor,Yes,0,4,906,84,100000,Bangalore,BS-IV,No,Low,99131.0,Individual,No
+584,Maruti,Maruti Suzuki Swift,2014,44000,Petrol,Automatic,3rd,Poor,No,1,4,1358,107,315000,Bangalore,BS-IV,No,Medium,286144.68,Individual,No
+585,Skoda,Skoda Octavia Classic,2006,65000,Diesel,Automatic,1st,Poor,No,0,4,1517,179,114990,Bangalore,BS-III,No,Medium,120853.66,Dealer,No
+586,Maruti,Maruti Suzuki Omni,2012,160000,LPG,Manual,2nd,Good,Yes,0,4,865,92,120000,Chennai,BS-IV,Yes,Medium,102463.97,Dealer,Yes
+587,Chevrolet,Chevrolet Beat Diesel,2011,56000,Diesel,Automatic,3rd,Fair,Yes,0,4,966,52,125000,Delhi,BS-IV,Yes,High,115095.99,Dealer,No
+588,Tata,Tata Sumo Gold,2012,75000,Diesel,Manual,1st,Excellent,Yes,0,4,927,90,210000,Mumbai,BS-IV,Yes,Medium,213049.06,Dealer,Yes
+589,Hyundai,Hyundai Verna 1.6,2018,42000,Diesel,Automatic,3rd,Good,Yes,0,4,1288,62,855000,Chennai,BS-IV,Yes,Medium,961111.6,Individual,No
+590,Tata,Tata Sumo Gold,2012,75000,Diesel,Automatic,1st,Fair,Yes,1,4,984,70,210000,Kolkata,BS-IV,Yes,Medium,195795.22,Individual,No
+591,Mahindra,Mahindra Scorpio 2.6,2007,56000,Diesel,Automatic,3rd,Good,Yes,0,5,1797,115,260000,Chennai,BS-III,Yes,Low,231177.69,Dealer,Yes
+592,Maruti,Maruti Suzuki Zen,2002,10544,Petrol,Automatic,3rd,Fair,Yes,0,4,962,113,95000,Bangalore,BS-II,No,Low,92899.45,Individual,No
+593,Maruti,Maruti Suzuki Swift,2011,64000,Petrol,Automatic,1st,Good,No,1,4,1337,109,255000,Hyderabad,BS-IV,Yes,Low,261436.43,Dealer,Yes
+594,Mahindra,Mahindra Scorpio SLX,2008,70000,Diesel,Manual,3rd,Good,No,1,5,2104,172,300000,Bangalore,BS-III,Yes,Low,262783.29,Dealer,Yes
+595,Hyundai,Hyundai Grand i10,2014,25000,Petrol,Automatic,2nd,Poor,No,0,4,1161,55,340000,Pune,BS-IV,No,Low,362990.76,Individual,No
+596,Hyundai,Hyundai Elite i20,2017,15000,Petrol,Manual,2nd,Excellent,No,0,4,835,57,550000,Kolkata,BS-IV,Yes,Low,485080.24,Individual,No
+597,Ford,Ford Ikon 1.6,2003,50000,Petrol,Automatic,2nd,Poor,Yes,0,4,842,96,60000,Delhi,BS-II,No,Medium,55098.98,Dealer,No
+598,Toyota,Toyota Innova 2.5,2011,147000,Diesel,Manual,2nd,Fair,Yes,0,5,2598,223,750000,Pune,BS-IV,Yes,Low,780228.37,Individual,No
+599,Nissan,Nissan Sunny XL,2011,52000,Petrol,Manual,1st,Excellent,Yes,0,4,1824,154,230000,Bangalore,BS-IV,Yes,High,195794.37,Dealer,Yes
+600,Chevrolet,Chevrolet Beat LT,2012,90001,Diesel,Automatic,1st,Fair,Yes,0,4,1509,52,130000,Delhi,BS-IV,Yes,Low,123708.67,Dealer,No
+601,Maruti,Maruti Suzuki Alto,2017,21000,Petrol,Automatic,3rd,Excellent,No,4,4,954,120,270000,Bangalore,BS-IV,Yes,Medium,303399.3,Individual,No
+602,Maruti,Maruti Suzuki Swift,2012,48006,Diesel,Automatic,4th+,Excellent,No,0,4,954,72,280000,Bangalore,BS-IV,Yes,Medium,296076.45,Individual,No
+603,Maruti,Maruti Suzuki Swift,2012,48006,Diesel,Manual,4th+,Poor,No,0,4,1273,84,280000,Delhi,BS-IV,No,Low,268430.18,Individual,No
+604,Maruti,Maruti Suzuki Swift,2012,48006,Diesel,Manual,3rd,Fair,Yes,0,4,1424,58,280000,Pune,BS-IV,Yes,Low,266668.21,Individual,No
+605,Toyota,Toyota Innova 2.0,2012,80000,Diesel,Automatic,4th+,Poor,Yes,0,5,2141,102,600000,Mumbai,BS-IV,No,Low,546660.18,Individual,No
+606,Maruti,Maruti Suzuki Swift,2010,74000,Diesel,Automatic,3rd,Excellent,Yes,2,4,1355,99,190000,Mumbai,BS-IV,Yes,Low,201778.18,Individual,No
+607,Hyundai,Hyundai Elite i20,2015,22000,Petrol,Manual,1st,Poor,No,0,4,1578,86,500000,Kolkata,BS-IV,No,Medium,535583.99,Individual,No
+608,Mahindra,Mahindra XUV500 W10,2016,41000,Diesel,Manual,2nd,Fair,No,1,5,1633,90,1065000,Chennai,BS-IV,Yes,Medium,1004006.24,Individual,No
+609,Volkswagen,Volkswagen Polo Trendline,2015,25000,Diesel,Automatic,4th+,Poor,Yes,0,4,2796,297,350000,Chennai,BS-IV,No,Medium,301662.49,Individual,No
+610,Toyota,Toyota Etios Liva,2012,85000,Diesel,Manual,1st,Good,No,0,4,2547,210,350000,Bangalore,BS-IV,Yes,Medium,349232.53,Dealer,Yes
+611,Mahindra,Mahindra TUV300 T4,2016,29500,Diesel,Automatic,3rd,Excellent,No,0,4,2252,162,540000,Delhi,BS-IV,Yes,Medium,533244.14,Dealer,Yes
+612,Hyundai,Hyundai Elite i20,2015,30000,Petrol,Automatic,4th+,Fair,Yes,1,4,1158,65,470000,Chennai,BS-IV,Yes,Medium,442049.4,Individual,No
+613,Hyundai,Hyundai Santro Xing,2014,57000,Petrol,Manual,1st,Good,Yes,0,4,1205,96,179000,Mumbai,BS-IV,Yes,Low,196866.59,Individual,No
+614,Maruti,Maruti Suzuki Zen,2003,60000,Petrol,Automatic,4th+,Good,No,0,4,1384,60,48000,Delhi,BS-II,No,Low,53658.26,Individual,No
+615,Maruti,Maruti Suzuki Ciaz,2016,50000,Petrol,Manual,1st,Excellent,No,2,4,1128,85,650000,Kolkata,BS-IV,Yes,Medium,652557.58,Individual,No
+616,Hyundai,Hyundai Eon Era,2013,39700,Petrol,Manual,2nd,Good,Yes,0,4,1257,57,190000,Pune,BS-IV,Yes,Low,182197.18,Individual,No
+617,Hyundai,Hyundai Elantra 1.8,2012,65000,Petrol,Manual,3rd,Good,Yes,0,4,1451,83,500000,Mumbai,BS-IV,Yes,Low,444997.33,Dealer,Yes
+618,Maruti,Maruti Suzuki Swift,2010,67000,Diesel,Automatic,1st,Good,No,2,4,1119,104,270000,Chennai,BS-IV,Yes,Low,246876.93,Individual,No
+619,Maruti,Maruti Suzuki Zen,2008,46000,Petrol,Manual,2nd,Poor,No,1,4,1101,70,125000,Hyderabad,BS-III,No,Medium,138002.74,Individual,No
+620,Hyundai,Hyundai Eon Era,2012,38000,Petrol,Manual,2nd,Good,Yes,3,4,1342,84,188000,Mumbai,BS-IV,Yes,Medium,181232.66,Individual,No
+621,Hyundai,Hyundai Grand i10,2016,27000,Petrol,Manual,3rd,Poor,No,2,4,1364,64,380000,Chennai,BS-IV,No,Low,361434.62,Individual,No
+622,Hyundai,Hyundai Verna Fluidic,2011,43000,Diesel,Automatic,3rd,Fair,No,2,4,1345,68,365000,Kolkata,BS-IV,Yes,Medium,321244.56,Individual,No
+623,Ford,Ford EcoSport Trend,2014,47000,Petrol,Manual,1st,Poor,No,2,4,983,110,465000,Mumbai,BS-IV,No,High,412360.23,Dealer,No
+624,Hyundai,Hyundai i20 Magna,2011,42000,Petrol,Manual,4th+,Excellent,Yes,0,4,1494,117,240000,Chennai,BS-IV,Yes,Medium,270353.99,Individual,No
+625,Chevrolet,Chevrolet Beat Diesel,2016,19336,Diesel,Automatic,3rd,Good,Yes,0,4,997,79,179999,Bangalore,BS-IV,Yes,High,183371.19,Individual,No
+626,Tata,Tata Indica eV2,2015,60105,Diesel,Automatic,2nd,Fair,Yes,0,4,1357,68,140000,Mumbai,BS-IV,Yes,Low,145517.59,Dealer,No
+627,Jaguar,Jaguar XF 2.2,2013,29000,Diesel,Automatic,1st,Excellent,No,0,4,1798,109,2190000,Delhi,BS-IV,Yes,High,2237206.13,Individual,No
+628,Audi,Audi Q5 2.0,2014,34000,Diesel,Automatic,4th+,Poor,Yes,3,4,2103,142,2390000,Pune,BS-IV,No,High,2373366.26,Individual,No
+629,BMW,BMW 3 Series,2011,35000,Diesel,Automatic,3rd,Fair,No,1,4,2205,115,1075000,Pune,BS-IV,Yes,High,928301.87,Dealer,No
+630,Maruti,Maruti Suzuki Swift,2015,22000,Petrol,Manual,4th+,Poor,No,0,4,811,80,475000,Delhi,BS-IV,No,Low,440432.15,Individual,No
+631,BMW,BMW X1 sDrive20d,2012,41000,Diesel,Manual,1st,Excellent,No,2,4,2236,161,1025000,Pune,BS-IV,Yes,Medium,1019190.12,Dealer,Yes
+632,Maruti,Maruti Suzuki S,2016,21000,Diesel,Manual,4th+,Fair,No,0,4,985,80,615000,Kolkata,BS-IV,Yes,Low,649982.84,Individual,No
+633,Maruti,Maruti Suzuki Ertiga,2013,48000,Diesel,Automatic,3rd,Good,No,0,4,1110,91,475000,Mumbai,BS-IV,Yes,Low,480729.37,Dealer,Yes
+634,Maruti,Maruti Suzuki Alto,2016,38000,Petrol,Automatic,4th+,Excellent,Yes,1,4,1562,99,270000,Hyderabad,BS-IV,Yes,Low,247676.62,Dealer,Yes
+635,Honda,Honda City SV,2014,34000,Diesel,Manual,1st,Poor,No,0,4,2149,84,475000,Chennai,BS-IV,No,Low,441776.75,Dealer,No
+636,Volkswagen,Volkswagen Vento Comfortline,2011,45933,Petrol,Manual,2nd,Fair,No,0,4,2151,245,240000,Chennai,BS-IV,Yes,Medium,213927.54,Dealer,No
+637,Honda,Honda City 1.5,2005,68000,Petrol,Manual,2nd,Fair,No,1,4,2278,131,120000,Bangalore,BS-III,No,Low,136575.93,Individual,No
+638,Audi,Audi A4 2.0,2016,44000,Diesel,Manual,3rd,Fair,No,1,4,2243,194,1900000,Mumbai,BS-IV,Yes,High,1931940.61,Dealer,No
+639,Mahindra,Mahindra KUV100,2017,35000,Diesel,Manual,2nd,Fair,Yes,0,4,2827,212,360000,Delhi,BS-IV,Yes,Low,345698.13,Individual,No
+640,Tata,Tata Zest XE,2018,102563,Diesel,Manual,3rd,Excellent,Yes,1,4,1296,67,450000,Bangalore,BS-IV,Yes,Low,496944.05,Dealer,Yes
+641,Mahindra,Mahindra XUV500 W8,2015,28600,Diesel,Automatic,1st,Fair,No,0,5,2559,217,900000,Pune,BS-IV,Yes,Low,876475.42,Dealer,No
+642,Maruti,Maruti Suzuki Swift,2017,41800,Diesel,Manual,3rd,Good,No,3,4,1556,66,650000,Bangalore,BS-IV,Yes,Low,659092.91,Dealer,Yes
+643,Tata,Tata Sumo Gold,2014,116000,Diesel,Manual,4th+,Good,Yes,2,4,1404,79,275000,Chennai,BS-IV,Yes,Low,268421.92,Individual,No
+644,Maruti,Maruti Suzuki Swift,2009,59000,Petrol,Manual,1st,Fair,No,0,4,1552,83,210000,Delhi,BS-III,Yes,Medium,200321.67,Individual,No
+645,Mahindra,Mahindra Scorpio 2.6,2004,58000,Diesel,Manual,2nd,Good,No,0,5,2080,126,175000,Chennai,BS-II,No,Low,159721.33,Dealer,Yes
+646,Maruti,Maruti Suzuki Omni,2009,45000,Petrol,Automatic,3rd,Fair,No,0,4,1481,63,85000,Bangalore,BS-III,Yes,Medium,77116.06,Dealer,No
+647,Mitsubishi,Mitsubishi Pajero Sport,2015,42590,Diesel,Automatic,2nd,Excellent,Yes,0,4,1954,104,1490000,Hyderabad,BS-IV,Yes,Medium,1591069.11,Individual,No
+648,Renault,Renault Duster,2014,7400,Diesel,Automatic,2nd,Fair,No,0,4,985,90,800000,Pune,BS-IV,Yes,Medium,694049.79,Individual,No
+649,Volkswagen,Volkswagen Jetta Comfortline,2009,54500,Diesel,Manual,2nd,Excellent,Yes,2,4,1435,233,450000,Pune,BS-III,Yes,High,440316.85,Individual,No
+650,Maruti,Maruti Suzuki Ertiga,2012,200000,Diesel,Manual,3rd,Excellent,Yes,1,4,982,100,1000000,Pune,BS-IV,Yes,Medium,993308.86,Dealer,Yes
+651,Audi,Audi A4 2.0,2013,27000,Diesel,Automatic,2nd,Good,Yes,3,4,2134,101,1510000,Delhi,BS-IV,Yes,High,1552230.57,Dealer,Yes
+652,Volvo,Volvo S80 Summum,2015,42000,Diesel,Manual,2nd,Poor,Yes,0,4,2205,119,1850000,Pune,BS-IV,No,Medium,1641133.35,Individual,No
+653,Toyota,Toyota Corolla Altis,2014,29000,Petrol,Manual,1st,Poor,No,0,4,1949,149,790000,Chennai,BS-IV,No,High,864748.89,Dealer,No
+654,Mitsubishi,Mitsubishi Pajero Sport,2015,37000,Diesel,Manual,3rd,Fair,Yes,0,4,2472,85,1725000,Hyderabad,BS-IV,Yes,High,1831544.07,Dealer,No
+655,Chevrolet,Chevrolet Beat LT,2012,36000,Petrol,Manual,3rd,Poor,Yes,0,4,996,90,135000,Hyderabad,BS-IV,No,High,125879.76,Individual,No
+656,BMW,BMW X1,2011,34000,Diesel,Manual,3rd,Poor,Yes,0,4,1116,152,1000000,Delhi,BS-IV,No,Medium,1105030.51,Dealer,No
+657,Datsun,Datsun Redi GO,2018,7000,Petrol,Manual,2nd,Good,Yes,2,4,1452,93,299999,Hyderabad,BS-IV,Yes,Medium,266766.42,Dealer,Yes
+658,Mercedes,Mercedes Benz C,2009,76000,Diesel,Automatic,3rd,Excellent,Yes,0,4,2250,167,1225000,Kolkata,BS-III,Yes,Medium,1197564.33,Dealer,Yes
+659,Mahindra,Mahindra Scorpio SLX,2004,60000,Diesel,Automatic,4th+,Good,No,1,5,1950,148,175000,Mumbai,BS-II,No,Low,180326.58,Individual,No
+660,Volkswagen,Volkswagen Vento Comfortline,2011,95000,Diesel,Manual,1st,Fair,No,0,4,2705,181,200000,Pune,BS-IV,Yes,High,179276.91,Individual,No
+661,Tata,Tata Indigo CS,2017,50000,Diesel,Automatic,1st,Excellent,No,0,4,1382,90,270000,Mumbai,BS-IV,Yes,Low,293837.42,Individual,No
+662,Ford,Ford Figo Petrol,2019,0,Petrol,Automatic,3rd,Excellent,Yes,2,4,1378,116,525000,Delhi,BS-IV,Yes,Low,501043.69,Individual,No
+663,Honda,Honda City ZX,2006,50000,Petrol,Automatic,2nd,Fair,Yes,0,4,1757,101,180000,Mumbai,BS-III,Yes,High,206560.59,Individual,No
+664,Maruti,Maruti Suzuki Wagon,2008,68000,Petrol,Automatic,1st,Fair,Yes,0,4,1089,106,140000,Mumbai,BS-III,Yes,Low,130920.62,Dealer,No
+665,Ford,Ford EcoSport Trend,2014,16000,Petrol,Automatic,1st,Fair,No,0,4,1593,107,400000,Chennai,BS-IV,Yes,High,341235.9,Individual,No
+666,Maruti,Maruti Suzuki Swift,2016,51000,Diesel,Automatic,3rd,Excellent,No,1,4,1094,91,499000,Hyderabad,BS-IV,Yes,Low,522102.95,Dealer,Yes
+667,Maruti,Maruti Suzuki Omni,2009,56000,Petrol,Manual,1st,Good,No,1,4,1595,69,85000,Mumbai,BS-III,Yes,Medium,72747.91,Individual,No
+668,Maruti,Maruti Suzuki Zen,2004,100000,Petrol,Manual,2nd,Poor,Yes,0,4,866,50,70000,Hyderabad,BS-II,No,Medium,79666.76,Individual,No
+669,Renault,Renault Duster RxL,2015,36000,Petrol,Manual,2nd,Fair,Yes,0,4,1267,56,550000,Kolkata,BS-IV,Yes,Low,497049.55,Individual,No
+670,Maruti,Maruti Suzuki Swift,2014,11523,Petrol,Manual,2nd,Fair,Yes,4,4,1322,53,370000,Pune,BS-IV,Yes,Low,421097.86,Dealer,No
+671,Maruti,Maruti Suzuki Baleno,2018,1000,Petrol,Automatic,1st,Good,No,2,4,1422,61,690000,Chennai,BS-IV,Yes,Low,701599.98,Dealer,Yes
+672,Honda,Honda WR V,2009,60000,Petrol,Automatic,4th+,Excellent,No,0,4,2199,198,250000,Chennai,BS-III,Yes,High,214150.05,Dealer,Yes
+673,Tata,Tata Indigo CS,2016,85000,Diesel,Manual,1st,Poor,No,1,4,1114,75,110000,Bangalore,BS-IV,No,Medium,99127.92,Dealer,No
+674,Renault,Renault Duster 110,2013,38600,Diesel,Manual,3rd,Good,No,3,4,810,46,490000,Pune,BS-IV,Yes,High,517673.79,Individual,No
+675,Mahindra,Mahindra Scorpio LX,2009,95500,Diesel,Manual,3rd,Good,Yes,1,5,2887,95,320000,Delhi,BS-III,Yes,Low,277070.23,Dealer,Yes
+676,Maruti,Maruti Suzuki Zen,2004,56000,Petrol,Manual,2nd,Excellent,Yes,2,4,1130,63,68000,Kolkata,BS-II,No,Low,59301.65,Individual,No
+677,Maruti,Maruti Suzuki Wagon,2014,37458,Petrol,Manual,4th+,Good,No,0,4,1359,99,130000,Chennai,BS-IV,Yes,Medium,113229.18,Dealer,Yes
+678,Maruti,Maruti Suzuki SX4,2016,85960,Diesel,Automatic,1st,Fair,Yes,2,4,1072,72,970000,Hyderabad,BS-IV,Yes,Low,870529.04,Dealer,No
+679,Audi,Audi A3 Cabriolet,2015,12516,Petrol,Automatic,3rd,Fair,Yes,2,4,1646,143,3100000,Kolkata,BS-IV,Yes,High,3156451.36,Dealer,No
+680,Hyundai,Hyundai Eon D,2018,35000,Petrol,Automatic,4th+,Fair,No,1,4,1233,111,280000,Kolkata,BS-IV,Yes,Medium,311279.94,Dealer,No
+681,Maruti,Maruti Suzuki Zen,2009,0,Petrol,Automatic,4th+,Good,No,0,4,1360,108,125000,Pune,BS-III,Yes,Medium,122787.66,Individual,No
+682,Mahindra,Mahindra Scorpio SLX,2008,80000,Diesel,Automatic,4th+,Good,Yes,2,5,2374,104,285000,Delhi,BS-III,Yes,Medium,276083.05,Dealer,Yes
+683,Hyundai,Hyundai Santro AE,2011,45000,Petrol,Automatic,1st,Poor,Yes,0,4,840,85,165000,Mumbai,BS-IV,No,Medium,180654.76,Individual,No
+684,Maruti,Maruti Suzuki Swift,2009,51000,Diesel,Manual,2nd,Poor,No,0,4,1528,86,250000,Mumbai,BS-III,No,Medium,286645.81,Dealer,No
+685,Mahindra,Mahindra Scorpio S4,2015,30000,Diesel,Automatic,4th+,Excellent,Yes,3,5,2362,90,865000,Kolkata,BS-IV,Yes,Low,941697.86,Individual,No
+686,Mahindra,Mahindra Xylo D2,2011,48000,Diesel,Automatic,4th+,Excellent,No,1,4,2050,117,390000,Hyderabad,BS-IV,Yes,Medium,334675.18,Individual,No
+687,Hyundai,Hyundai Santro,2003,51000,Petrol,Automatic,2nd,Poor,Yes,0,4,1124,64,60000,Mumbai,BS-II,No,Low,68280.06,Individual,No
+688,Chevrolet,Chevrolet Beat LT,2015,90000,Diesel,Manual,3rd,Poor,Yes,0,4,1009,99,215000,Mumbai,BS-IV,No,Medium,223617.94,Dealer,No
+689,Maruti,Maruti Suzuki Swift,2015,43000,Diesel,Automatic,2nd,Fair,No,1,4,989,104,475000,Kolkata,BS-IV,Yes,Low,406887.97,Individual,No
+690,Mahindra,Mahindra XUV500 W8,2015,53000,Diesel,Automatic,2nd,Poor,No,2,5,2984,125,899000,Mumbai,BS-IV,No,Medium,1011634.16,Dealer,No
+691,Toyota,Toyota Fortuner 3.0,2013,97000,Diesel,Automatic,1st,Fair,Yes,0,4,2370,126,1499000,Kolkata,BS-IV,Yes,Low,1579516.77,Individual,No
+692,Maruti,Maruti Suzuki Alto,2013,20000,Petrol,Automatic,3rd,Excellent,No,2,4,1090,119,240000,Pune,BS-IV,Yes,Medium,267580.9,Individual,No
+693,Hyundai,Hyundai Getz GLE,2007,55000,Petrol,Manual,2nd,Fair,No,3,4,1532,107,99000,Mumbai,BS-III,Yes,Medium,89672.41,Dealer,No
+694,Maruti,Maruti Suzuki Swift,2014,120000,Diesel,Manual,1st,Poor,Yes,1,4,980,105,260000,Mumbai,BS-IV,No,Low,289816.3,Individual,No
+695,Hyundai,Hyundai Creta 1.6,2019,0,Petrol,Manual,2nd,Good,No,0,5,1015,108,1200000,Pune,BS-IV,Yes,Medium,1247609.85,Dealer,Yes
+696,Hyundai,Hyundai Santro Xing,2007,46000,Petrol,Manual,2nd,Fair,Yes,0,4,1337,53,115000,Pune,BS-III,Yes,Low,131856.19,Dealer,No
+697,Hyundai,Hyundai Santro Xing,2009,43200,Petrol,Manual,2nd,Poor,Yes,1,4,1435,79,88000,Hyderabad,BS-III,No,Medium,85471.19,Dealer,No
+698,Mahindra,Mahindra Xylo D2,2011,56000,Diesel,Automatic,1st,Good,Yes,0,4,1994,183,390000,Pune,BS-IV,Yes,Medium,364985.65,Individual,No
+699,Hyundai,Hyundai Santro Xing,2007,42000,Petrol,Automatic,2nd,Fair,No,0,4,1567,64,135000,Hyderabad,BS-III,Yes,Medium,148280.11,Individual,No
+700,Tata,Tata Indica V2,2009,30600,Diesel,Manual,2nd,Good,No,0,4,1347,55,90000,Chennai,BS-III,Yes,Medium,90284.19,Individual,No
+701,Hyundai,Hyundai i10 Sportz,2011,38000,Petrol,Automatic,4th+,Excellent,Yes,2,4,1586,90,220000,Pune,BS-IV,Yes,Medium,222658.24,Dealer,Yes
+702,Hyundai,Hyundai Grand i10,2017,2550,Petrol,Manual,2nd,Poor,Yes,0,4,1489,65,424999,Bangalore,BS-IV,No,Medium,365472.47,Individual,No
+703,Hyundai,Hyundai Santro Xing,2007,47000,Petrol,Automatic,3rd,Good,Yes,0,4,1427,84,135000,Hyderabad,BS-III,Yes,Medium,128547.05,Individual,No
+704,Honda,Honda City 1.5,2005,41000,Petrol,Automatic,2nd,Fair,No,0,4,2031,185,95000,Pune,BS-III,No,Low,94002.52,Individual,No
+705,Nissan,Nissan Micra XL,2017,62500,Diesel,Automatic,4th+,Fair,Yes,0,4,1769,74,430000,Pune,BS-IV,Yes,Medium,446050.71,Individual,No
+706,Honda,Honda City 1.5,2005,68000,Petrol,Automatic,3rd,Excellent,No,1,4,2882,198,115000,Mumbai,BS-III,No,High,111488.63,Individual,No
+707,Maruti,Maruti Suzuki Alto,2015,50000,Petrol,Manual,3rd,Good,Yes,3,4,1522,99,215000,Chennai,BS-IV,Yes,Low,231836.19,Individual,No
+708,Maruti,Maruti Suzuki Wagon,2004,69000,Petrol,Automatic,2nd,Excellent,Yes,0,4,1209,53,53000,Hyderabad,BS-II,No,Low,54177.32,Individual,No
+709,Maruti,Maruti Suzuki Ertiga,2012,48000,Diesel,Manual,4th+,Excellent,Yes,1,4,1484,82,500000,Mumbai,BS-IV,Yes,Medium,539007.58,Dealer,Yes
+710,Tata,Tata Indica eV2,2012,55000,Diesel,Manual,4th+,Poor,Yes,0,4,1559,50,85000,Mumbai,BS-IV,No,Low,87653.46,Individual,No
+711,Maruti,Maruti Suzuki Omni,2013,25000,Petrol,Automatic,4th+,Good,Yes,0,4,1514,91,165000,Pune,BS-IV,Yes,Medium,168515.35,Dealer,Yes
+712,Hyundai,Hyundai Eon Era,2014,28400,Petrol,Automatic,2nd,Good,Yes,0,4,1153,51,200000,Kolkata,BS-IV,Yes,Medium,175454.87,Individual,No
+713,Hyundai,Hyundai Eon,2014,28000,Petrol,Manual,2nd,Poor,No,0,4,1327,54,200000,Mumbai,BS-IV,No,Low,225806.07,Individual,No
+714,Maruti,Maruti Suzuki Swift,2015,42000,Diesel,Manual,1st,Excellent,Yes,1,4,1534,89,425000,Delhi,BS-IV,Yes,Medium,419311.14,Individual,No
+715,Hyundai,Hyundai Verna 1.6,2012,29000,Diesel,Automatic,1st,Fair,Yes,0,4,907,98,600000,Hyderabad,BS-IV,Yes,Low,574790.28,Individual,No
+716,Chevrolet,Chevrolet Tavera LS,2005,68485,Diesel,Manual,2nd,Excellent,No,2,4,1144,62,130000,Delhi,BS-III,No,Low,128086.64,Dealer,Yes
+717,Tata,Tata Tiago Revotron,2018,3500,Petrol,Manual,1st,Poor,Yes,0,4,1111,94,430000,Delhi,BS-IV,No,Low,386063.94,Individual,No
+718,Tata,Tata Tiago Revotorq,2019,0,Petrol,Manual,1st,Good,Yes,0,4,926,119,568500,Bangalore,BS-IV,Yes,Medium,602324.96,Dealer,Yes
+719,Maruti,Maruti Suzuki Zen,2006,32000,Petrol,Manual,1st,Fair,No,1,4,947,62,71000,Mumbai,BS-III,Yes,Medium,62966.04,Individual,No
+720,Mahindra,Mahindra KUV100 K8,2018,8000,Diesel,Manual,4th+,Poor,Yes,1,4,2082,109,560000,Bangalore,BS-IV,No,Medium,486173.77,Dealer,No
+721,Ford,Ford EcoSport Titanium,2014,34000,Diesel,Automatic,2nd,Poor,Yes,2,4,951,94,590000,Pune,BS-IV,No,Low,518950.56,Individual,No
+722,Hindustan,Hindustan Motors Ambassador,1995,37000,Petrol,Manual,2nd,Poor,No,1,4,1869,173,750000,Bangalore,BS-II,No,Low,663864.58,Individual,No
+723,Ford,Ford Fusion 1.4,2007,85455,Diesel,Manual,2nd,Fair,No,3,4,940,57,125000,Hyderabad,BS-III,Yes,Low,119177.25,Dealer,No
+724,Hyundai,Hyundai Santro Xing,2007,46000,Petrol,Automatic,3rd,Good,No,0,4,936,73,135000,Bangalore,BS-III,Yes,Medium,132915.73,Dealer,Yes
+725,Hyundai,Hyundai Santro,2002,47000,Petrol,Automatic,2nd,Excellent,Yes,0,4,894,101,60000,Chennai,BS-II,No,Low,59846.42,Dealer,Yes
+726,Fiat,Fiat Linea Emotion,2009,64000,Petrol,Manual,3rd,Fair,No,0,4,2144,162,120000,Chennai,BS-III,Yes,Medium,109054.29,Dealer,No
+727,Ford,Ford Ikon 1.3,2008,46000,Petrol,Automatic,3rd,Excellent,Yes,1,4,861,57,95000,Hyderabad,BS-III,Yes,High,82304.72,Individual,No
+728,Maruti,Maruti Suzuki Omni,2017,8000,Petrol,Manual,2nd,Poor,No,0,4,1568,56,240000,Delhi,BS-IV,No,Medium,239664.96,Dealer,No
+729,Tata,Tata Indica V2,2012,64000,Diesel,Automatic,3rd,Fair,No,3,4,1190,105,115000,Bangalore,BS-IV,Yes,Low,124246.91,Dealer,No
+730,Mahindra,Mahindra Scorpio S4,2015,63000,Diesel,Automatic,1st,Poor,Yes,0,5,1647,112,795000,Kolkata,BS-IV,No,Medium,686340.66,Dealer,No
+731,Hyundai,Hyundai Santro Xing,2007,65000,Petrol,Manual,2nd,Fair,Yes,0,4,800,83,55000,Bangalore,BS-III,Yes,Medium,48899.7,Individual,No
+732,Mahindra,Mahindra Xylo D2,2009,62000,Diesel,Manual,1st,Fair,No,1,4,1560,102,300000,Pune,BS-III,Yes,Medium,340390.46,Dealer,No
+733,Hyundai,Hyundai Grand i10,2014,41000,Petrol,Manual,1st,Fair,No,0,4,1457,54,320000,Kolkata,BS-IV,Yes,Low,281432.99,Dealer,No
+734,Maruti,Maruti Suzuki Alto,2015,14000,Petrol,Automatic,2nd,Excellent,No,0,4,1356,95,265000,Delhi,BS-IV,Yes,Low,290601.05,Dealer,Yes
+735,Toyota,Toyota Corolla,2006,40000,Petrol,Manual,2nd,Excellent,No,0,4,2128,196,160000,Mumbai,BS-III,Yes,Medium,155447.54,Dealer,Yes
+736,Hyundai,Hyundai Eon Magna,2017,1600,Petrol,Manual,2nd,Poor,No,0,4,1215,106,300000,Chennai,BS-IV,No,Low,300214.76,Individual,No
+737,Tata,Tata Sumo Grande,2010,90000,Diesel,Automatic,3rd,Excellent,Yes,2,4,1493,45,130000,Pune,BS-IV,Yes,Low,114675.58,Individual,No
+738,Maruti,Maruti Suzuki Swift,2011,58000,Diesel,Automatic,2nd,Fair,Yes,0,4,1374,56,250000,Chennai,BS-IV,Yes,Medium,266882.01,Dealer,No
+739,Volkswagen,Volkswagen Polo Highline1.2L,2013,27000,Petrol,Automatic,3rd,Poor,No,1,4,2745,129,380000,Kolkata,BS-IV,No,High,410617.1,Dealer,No
+740,Maruti,Maruti Suzuki Alto,2003,60000,Petrol,Automatic,1st,Good,No,2,4,938,75,42000,Kolkata,BS-II,No,Medium,43631.9,Dealer,Yes
+741,Tata,Tata Tiago Revotron,2017,31000,Petrol,Manual,2nd,Good,No,1,4,1205,91,400000,Mumbai,BS-IV,Yes,Low,416906.05,Dealer,Yes
+742,Maruti,Maruti Suzuki Swift,2009,90000,Diesel,Automatic,1st,Excellent,No,1,4,1254,79,120000,Kolkata,BS-III,Yes,Low,127631.75,Individual,No
+743,Maruti,Maruti Suzuki Swift,2009,90000,Diesel,Automatic,1st,Fair,Yes,0,4,1544,89,120000,Chennai,BS-III,Yes,Medium,122805.8,Individual,No
+744,Tata,Tata Indigo eCS,2016,150000,Diesel,Manual,4th+,Poor,Yes,3,4,1301,97,130000,Bangalore,BS-IV,No,Low,114237.88,Individual,No
+745,Chevrolet,Chevrolet Beat LS,2014,31000,Diesel,Automatic,4th+,Excellent,Yes,0,4,979,49,189000,Pune,BS-IV,Yes,Low,201531.49,Dealer,Yes
+746,Mahindra,Mahindra Xylo E8,2011,43000,Diesel,Manual,2nd,Excellent,No,2,4,1917,104,365000,Chennai,BS-IV,Yes,Medium,313757.98,Dealer,Yes
+747,Hyundai,Hyundai Eon D,2013,20000,Petrol,Automatic,2nd,Excellent,Yes,2,4,1022,91,170000,Delhi,BS-IV,Yes,Low,187525.2,Dealer,Yes
+748,Tata,Tata Sumo Gold,2013,100000,Petrol,Manual,4th+,Fair,No,3,4,1466,78,215000,Pune,BS-IV,Yes,Medium,240113.42,Individual,No
+749,Tata,Tata Nano,2013,7000,Petrol,Manual,4th+,Fair,No,1,4,1208,114,60000,Bangalore,BS-IV,Yes,Medium,51536.97,Individual,No
+750,Hyundai,Hyundai Elite i20,2017,31000,Petrol,Manual,4th+,Fair,No,0,4,878,120,599999,Kolkata,BS-IV,Yes,Low,585456.26,Dealer,No
+751,Hyundai,Hyundai i10 Magna,2009,33000,Petrol,Automatic,2nd,Fair,No,0,4,1222,55,400000,Pune,BS-III,Yes,Low,360964.67,Dealer,No
+752,Hyundai,Hyundai Creta,2016,60000,Diesel,Manual,3rd,Excellent,Yes,0,5,1020,92,900000,Mumbai,BS-IV,Yes,Medium,897221.91,Individual,No
+753,Volkswagen,Volkswagen Polo,2013,48000,Diesel,Manual,3rd,Excellent,Yes,0,4,2032,270,299999,Hyderabad,BS-IV,Yes,Medium,317826.84,Dealer,Yes
+754,Maruti,Maruti Suzuki Dzire,2014,33000,Petrol,Automatic,3rd,Excellent,Yes,1,4,1409,61,374999,Chennai,BS-IV,Yes,Medium,347841.26,Individual,No
+755,Tata,Tata Bolt XM,2015,15000,Petrol,Automatic,3rd,Poor,Yes,1,4,883,114,600000,Pune,BS-IV,No,Low,555147.02,Individual,No
+756,Maruti,Maruti Suzuki Alto,2005,47000,Petrol,Automatic,3rd,Good,Yes,0,4,1430,65,70000,Bangalore,BS-III,No,Medium,76840.02,Dealer,Yes
+757,Maruti,Maruti Suzuki Alto,2005,40000,Petrol,Manual,2nd,Poor,No,0,4,1470,105,100000,Mumbai,BS-III,No,Medium,100948.51,Individual,No
+758,Maruti,Maruti Suzuki Ritz,2010,38000,Diesel,Automatic,1st,Fair,No,0,4,1468,83,150000,Chennai,BS-IV,Yes,Medium,141836.1,Individual,No
+759,Maruti,Maruti Suzuki Alto,2017,12500,Petrol,Automatic,4th+,Fair,Yes,2,4,1216,75,225000,Hyderabad,BS-IV,Yes,Low,201780.1,Dealer,No
+760,Maruti,Maruti Suzuki Dzire,2009,42000,Petrol,Automatic,3rd,Poor,No,0,4,1480,106,210000,Mumbai,BS-III,No,Medium,219900.63,Individual,No
+761,Hyundai,Hyundai i20 Asta,2014,31000,Petrol,Manual,3rd,Poor,Yes,0,4,844,92,425000,Hyderabad,BS-IV,No,Medium,450250.03,Dealer,No
+762,Maruti,Maruti Suzuki Swift,2008,60000,Diesel,Automatic,3rd,Fair,No,0,4,1372,105,162000,Kolkata,BS-III,Yes,Low,178508.81,Individual,No
+763,Tata,Tata Indica V2,2005,80000,Diesel,Manual,4th+,Fair,No,0,4,1473,63,60000,Delhi,BS-III,No,Low,53282.65,Individual,No
+764,Mahindra,Mahindra Scorpio VLX,2014,77000,Diesel,Manual,4th+,Poor,Yes,1,5,1691,208,650000,Delhi,BS-IV,No,Low,628433.47,Dealer,No
+765,Toyota,Toyota Innova 2.5,2012,75000,Diesel,Automatic,1st,Poor,No,0,5,2828,205,750000,Hyderabad,BS-IV,No,Medium,818049.23,Dealer,No
+766,Mahindra,Mahindra Xylo E8,2010,40000,Diesel,Manual,3rd,Good,Yes,0,4,2689,217,375000,Delhi,BS-IV,Yes,Low,393350.18,Dealer,Yes
+767,Hyundai,Hyundai i20 Magna,2011,47000,Petrol,Automatic,2nd,Fair,No,0,4,1114,106,230000,Chennai,BS-IV,Yes,Low,247253.4,Individual,No
+768,Maruti,Maruti Suzuki Omni,2000,60000,Petrol,Automatic,1st,Poor,Yes,0,4,1525,63,35999,Hyderabad,BS-II,No,Medium,33043.26,Dealer,No
+769,Mahindra,Mahindra KUV100,2016,26500,Petrol,Manual,2nd,Fair,No,0,4,1762,163,380000,Hyderabad,BS-IV,Yes,Low,389514.48,Individual,No
+770,Mahindra,Mahindra KUV100 K8,2019,2875,Petrol,Manual,2nd,Fair,Yes,1,4,2565,237,560000,Hyderabad,BS-IV,Yes,Low,557604.36,Individual,No
+771,Datsun,Datsun Go Plus,2016,13900,Petrol,Automatic,4th+,Excellent,Yes,0,4,1565,96,285000,Bangalore,BS-IV,Yes,Medium,273917.29,Individual,No
+772,Ford,Ford Endeavor 4x4,2019,9000,Diesel,Automatic,3rd,Excellent,Yes,1,4,1482,82,2900000,Hyderabad,BS-IV,Yes,High,2908010.69,Individual,No
+773,Tata,Tata Indica V2,2005,80000,Diesel,Automatic,4th+,Fair,Yes,0,4,949,50,39999,Mumbai,BS-III,No,Medium,41765.07,Individual,No
+774,Hyundai,Hyundai Santro Xing,2006,60000,Petrol,Automatic,3rd,Poor,No,1,4,870,98,85000,Delhi,BS-III,No,Low,80614.04,Individual,No
+775,Maruti,Maruti Suzuki Wagon,2016,20000,Petrol,Automatic,4th+,Poor,Yes,4,4,1264,117,395000,Kolkata,BS-IV,No,Medium,373199.69,Individual,No
+776,Maruti,Maruti Suzuki Swift,2008,58000,Diesel,Automatic,3rd,Poor,Yes,1,4,1119,105,175000,Chennai,BS-III,No,Low,157807.95,Individual,No
+777,Maruti,Maruti Suzuki Alto,2019,1500,Petrol,Manual,3rd,Excellent,Yes,0,4,1407,97,400000,Hyderabad,BS-IV,Yes,Medium,439168.28,Individual,No
+778,Toyota,Toyota Innova 2.5,2011,75000,Diesel,Manual,3rd,Excellent,Yes,0,5,1532,146,750000,Delhi,BS-IV,Yes,High,844794.79,Individual,No
+779,Maruti,Maruti Suzuki Alto,2016,2450,Petrol,Manual,2nd,Fair,No,0,4,1553,98,250000,Delhi,BS-IV,Yes,Medium,284447.71,Dealer,No
+780,Maruti,Maruti Suzuki Alto,2019,1625,Petrol,Automatic,4th+,Fair,No,1,4,841,93,425000,Bangalore,BS-IV,Yes,Medium,424384.88,Dealer,No
+781,Volkswagen,Volkswagen Polo Highline1.2L,2017,45000,Petrol,Manual,2nd,Good,Yes,0,4,1971,343,525000,Delhi,BS-IV,Yes,Medium,483834.4,Dealer,Yes
+782,Mahindra,Mahindra Logan,2009,65000,Diesel,Manual,4th+,Fair,No,0,4,1643,138,130000,Pune,BS-III,Yes,Medium,131384.79,Dealer,No
+783,Maruti,Maruti Suzuki 800,2000,33400,Petrol,Manual,3rd,Poor,Yes,0,4,969,75,30000,Bangalore,BS-II,No,Low,28289.81,Dealer,No
+784,Mahindra,Mahindra Scorpio,2011,60123,Diesel,Manual,3rd,Poor,Yes,3,5,2004,114,475000,Pune,BS-IV,No,Low,503336.54,Individual,No
+785,Chevrolet,Chevrolet Sail 1.2,2013,28000,Petrol,Automatic,4th+,Poor,Yes,0,4,1383,65,300000,Bangalore,BS-IV,No,High,259187.36,Individual,No
+786,Hyundai,Hyundai Santro AE,2003,70000,Petrol,Manual,1st,Fair,No,1,4,1081,76,60000,Kolkata,BS-II,No,Medium,54223.39,Individual,No
+787,Maruti,Maruti Suzuki Wagon,2006,7000,Petrol,Manual,2nd,Good,Yes,1,4,1336,63,100000,Pune,BS-III,Yes,Low,93592.16,Dealer,Yes
+788,Hyundai,Hyundai Eon,2018,25000,Petrol,Manual,2nd,Excellent,Yes,2,4,971,96,260000,Pune,BS-IV,Yes,Medium,249142.57,Dealer,Yes
+789,Tata,Tata Manza,2015,100000,Diesel,Automatic,1st,Excellent,Yes,0,4,1067,106,100000,Delhi,BS-IV,Yes,Medium,104841.43,Dealer,Yes
+790,Toyota,Toyota Etios G,2013,42000,Petrol,Automatic,1st,Fair,Yes,0,4,2414,138,265000,Pune,BS-IV,Yes,High,255990.39,Dealer,No
+791,Hyundai,Hyundai Getz Prime,2009,20000,Petrol,Automatic,4th+,Poor,No,0,4,1448,78,115000,Hyderabad,BS-III,No,Low,111034.01,Dealer,No
+792,Toyota,Toyota Qualis,2003,100000,Diesel,Automatic,3rd,Good,No,4,4,2690,189,180000,Bangalore,BS-II,No,Low,154909.59,Individual,No
+793,Hyundai,Hyundai Santro Xing,2004,137495,Petrol,Automatic,2nd,Poor,No,3,4,929,88,45000,Pune,BS-II,No,Medium,43774.87,Dealer,No
+794,Tata,Tata Indica eV2,2016,91200,Diesel,Automatic,4th+,Fair,Yes,0,4,1331,54,50500,Pune,BS-IV,Yes,Medium,43234.17,Individual,No
+795,Honda,Honda City 1.5,2009,55000,Petrol,Automatic,3rd,Poor,Yes,2,4,1953,161,270000,Hyderabad,BS-III,No,Low,296507.84,Individual,No
+796,Tata,Tata Zest XE,2017,120000,Diesel,Automatic,2nd,Fair,No,1,4,1309,75,290000,Delhi,BS-IV,Yes,Low,269771.03,Dealer,No
+797,Mahindra,Mahindra Quanto C4,2013,63000,Diesel,Manual,1st,Excellent,Yes,3,4,2489,200,325000,Hyderabad,BS-IV,Yes,Medium,297379.5,Dealer,Yes
+798,Tata,Tata Indigo eCS,2016,104000,Diesel,Automatic,3rd,Excellent,Yes,0,4,1550,47,160000,Hyderabad,BS-IV,Yes,Low,183269.55,Dealer,Yes
+799,Maruti,Maruti Suzuki Swift,2016,146000,Diesel,Automatic,3rd,Poor,Yes,1,4,936,83,350000,Hyderabad,BS-IV,No,Medium,302252.47,Individual,No
+800,Hyundai,Hyundai Elite i20,2011,40000,Petrol,Manual,1st,Poor,Yes,2,4,1496,73,290000,Pune,BS-IV,No,Medium,307628.73,Individual,No
+801,Hyundai,Hyundai i20 Select,2011,40000,Petrol,Manual,4th+,Fair,No,0,4,847,65,290000,Kolkata,BS-IV,Yes,Low,303520.75,Dealer,No
+802,Chevrolet,Chevrolet Tavera Neo,2007,100800,Diesel,Automatic,2nd,Good,Yes,1,4,1268,82,465000,Pune,BS-III,Yes,Medium,515504.12,Individual,No
+803,Maruti,Maruti Suzuki Dzire,2016,150000,Diesel,Manual,4th+,Fair,Yes,2,4,930,92,325000,Pune,BS-IV,Yes,Medium,336490.52,Dealer,No
+804,Hyundai,Hyundai Elite i20,2018,2100,Petrol,Automatic,4th+,Fair,Yes,4,4,1485,93,510000,Hyderabad,BS-IV,Yes,Low,519978.14,Dealer,No
+805,Honda,Honda City VX,2016,95000,Petrol,Manual,2nd,Fair,No,0,4,2450,179,860000,Mumbai,BS-IV,Yes,Medium,843626.03,Individual,No
+806,Maruti,Maruti Suzuki Dzire,2016,2500,Diesel,Automatic,1st,Fair,Yes,0,4,1302,56,450000,Bangalore,BS-IV,Yes,Low,501908.83,Individual,No
+807,Hyundai,Hyundai Getz,2006,80000,Petrol,Manual,1st,Poor,Yes,0,4,1436,88,125000,Pune,BS-III,No,Low,112707.94,Individual,No
+808,Mercedes,Mercedes Benz C,2006,15000,Petrol,Manual,2nd,Fair,Yes,1,4,1908,157,500001,Delhi,BS-III,Yes,High,483929.69,Individual,No
+809,Maruti,Maruti Suzuki Alto,2005,65000,Petrol,Manual,3rd,Fair,No,1,4,1588,69,95000,Hyderabad,BS-III,No,Low,93935.89,Individual,No
+810,Maruti,Maruti Suzuki Swift,2009,51000,Diesel,Manual,4th+,Fair,No,0,4,1528,71,250000,Kolkata,BS-III,Yes,Medium,213081.32,Individual,No
+811,Skoda,Skoda Fabia,2009,45000,Petrol,Automatic,1st,Fair,No,2,4,1721,304,110000,Delhi,BS-III,Yes,High,99752.11,Individual,No
+812,Maruti,Maruti Suzuki Ritz,2011,50000,Petrol,Manual,4th+,Good,Yes,0,4,1391,57,270000,Mumbai,BS-IV,Yes,Medium,256189.4,Dealer,Yes
+813,Tata,Tata Indica V2,2009,30000,Diesel,Automatic,2nd,Good,No,0,4,1082,62,110000,Bangalore,BS-III,Yes,Medium,126389.33,Dealer,Yes
+814,Toyota,Toyota Corolla Altis,2009,132000,Petrol,Manual,1st,Poor,Yes,0,4,1820,194,300000,Mumbai,BS-III,No,Medium,305741.58,Individual,No
+815,Tata,Tata Zest XM,2018,27000,Diesel,Automatic,4th+,Fair,Yes,0,4,862,65,260000,Delhi,BS-IV,Yes,Low,233840.05,Individual,No
+816,Mahindra,Mahindra Quanto C8,2013,40000,Diesel,Manual,4th+,Excellent,No,0,4,1660,108,390000,Kolkata,BS-IV,Yes,Low,421276.58,Individual,No
