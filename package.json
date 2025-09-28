@@ -1,0 +1,40 @@
+{
+  "name": "car-price-predictor-mern",
+  "version": "1.0.0",
+  "description": "Car Price Predictor with Unified Flask Application",
+  "main": "unified_app.py",
+  "scripts": {
+    "start": "python unified_app.py",
+    "dev": "python unified_app.py",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "install-client": "cd client && npm install",
+    "heroku-postbuild": "cd client && npm install && npm run build",
+    "setup": "npm install && cd client && npm install",
+    "run-all": "concurrently \"npm run start\" \"cd client && npm start\"",
+    "run-flask": "python application.py",
+    "run-unified": "python unified_app.py",
+    "quick-start": "npm run setup && npm run run-unified"
+  },
+  "keywords": [
+    "car",
+    "price",
+    "predictor",
+    "flask",
+    "react",
+    "machine-learning",
+    "unified"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "path": "^0.12.7",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22",
+    "concurrently": "^8.0.1"
+  }
+} 
