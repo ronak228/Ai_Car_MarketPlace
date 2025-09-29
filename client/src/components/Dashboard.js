@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import PredictionStorage from '../utils/predictionStorage';
+import CompanyDetailsModal from './CompanyDetailsModal';
 
 const Dashboard = ({ user }) => {
   const [recentPredictions, setRecentPredictions] = useState([]);
@@ -16,6 +17,8 @@ const Dashboard = ({ user }) => {
   });
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
@@ -124,21 +127,21 @@ const Dashboard = ({ user }) => {
       });
       
       // Update local state
-      setRecentPredictions(prev => 
-        prev.map(p => 
-          p.id === predictionId 
-            ? { ...p, saved: !p.saved }
-            : p
-        )
-      );
-      
-      setSavedPredictions(prev => {
-        if (prediction.saved) {
-          return prev.filter(p => p.id !== predictionId);
-        } else {
-          return [...prev, { ...prediction, saved: true }];
-        }
-      });
+    setRecentPredictions(prev => 
+      prev.map(p => 
+        p.id === predictionId 
+          ? { ...p, saved: !p.saved }
+          : p
+      )
+    );
+    
+    setSavedPredictions(prev => {
+      if (prediction.saved) {
+        return prev.filter(p => p.id !== predictionId);
+      } else {
+        return [...prev, { ...prediction, saved: true }];
+      }
+    });
     } else {
       Swal.fire({
         title: 'Error',
@@ -420,6 +423,16 @@ const Dashboard = ({ user }) => {
     }
     
     return insights;
+  };
+
+  const handleViewCompanyDetails = (company) => {
+    setSelectedCompany(company);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedCompany(null);
   };
 
   if (loading) {
@@ -840,7 +853,12 @@ const Dashboard = ({ user }) => {
                               <strong>Price Change:</strong> {trend.change}<br/>
                               <strong>Confidence:</strong> {trend.confidence}%
                             </p>
-                            <button className="btn btn-outline-primary btn-sm">View Details</button>
+                            <button 
+                              className="btn btn-outline-primary btn-sm"
+                              onClick={() => handleViewCompanyDetails(trend.brand)}
+                            >
+                              View Details
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -952,7 +970,7 @@ const Dashboard = ({ user }) => {
                 <div className="card-header">
                   <h5 className="mb-0">📊 Dataset Information</h5>
                   <small className="text-muted">Combined dataset statistics and insights</small>
-                </div>
+      </div>
                 <div className="card-body">
                   <DatasetInfoComponent />
                 </div>
@@ -961,6 +979,13 @@ const Dashboard = ({ user }) => {
           </div>
         )}
       </div>
+
+      {/* Company Details Modal */}
+      <CompanyDetailsModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        company={selectedCompany}
+      />
     </div>
   );
 };

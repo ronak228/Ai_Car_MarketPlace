@@ -5,9 +5,12 @@ const Home = ({ isAuthenticated }) => {
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
+    console.log('Button clicked!'); // Debug log
     if (isAuthenticated) {
-      navigate('/dashboard');
+      console.log('User is authenticated, navigating to predictor'); // Debug log
+      navigate('/car-price-predictor');
     } else {
+      console.log('User not authenticated, navigating to signin'); // Debug log
       navigate('/signin');
     }
   };

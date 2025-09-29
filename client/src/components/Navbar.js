@@ -1,21 +1,13 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 
-const Navbar = () => {
+const Navbar = ({ isAuthenticated, onLogout, user }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, user, signOut } = useAuth();
 
-  const handleLogout = async () => {
-    try {
-      await signOut();
-      navigate('/');
-    } catch (error) {
-      console.error('Logout error:', error);
-      // Force logout even if there's an error
-      navigate('/');
-    }
+  const handleLogout = () => {
+    onLogout();
+    navigate('/');
   };
 
   const isOnSignInPage = location.pathname === '/signin';

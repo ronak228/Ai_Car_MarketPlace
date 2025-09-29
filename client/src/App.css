@@ -81,6 +81,7 @@
   bottom: 0;
   background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
   opacity: 0.3;
+  pointer-events: none; /* Ensure the overlay doesn't block clicks */
 }
 
 .hero-feature-card {
@@ -193,12 +194,21 @@
   background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
   border: none;
   transition: all 0.3s ease;
+  position: relative;
+  z-index: 10; /* Ensure button is above overlays */
 }
 
 .btn-primary:hover {
   background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+}
+
+/* Ensure buttons in hero section are clickable */
+.bg-primary .btn {
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
 }
 
 /* Form styling */

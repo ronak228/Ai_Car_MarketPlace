@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
 import OTPVerification from './OTPVerification';
 import PasswordReset from './PasswordReset';
 
-const SignIn = ({ isSignUp = false }) => {
+const SignIn = ({ onLogin, isSignUp = false }) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { signUp, signIn, signInWithOtp, resetPassword } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -40,8 +38,10 @@ const SignIn = ({ isSignUp = false }) => {
       id: user.id,
       email: user.email,
       name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-      token: user.access_token
+      token: user.access_token || user.session?.access_token || `token-${Date.now()}`
     };
+    
+    console.log('Verification complete, user data:', userData);
     onLogin(userData);
     navigate('/dashboard');
   };
@@ -67,54 +67,148 @@ const SignIn = ({ isSignUp = false }) => {
 
     try {
       if (isSignUpMode) {
-        // Sign up with password
-        const { data, error } = await signUp(formData.email, formData.password, formData.name);
-        
-        if (error) {
-          const errorMessage = error.message.toLowerCase();
+        // DIRECT APPROACH: Try to sign up and handle the response properly
+        console.log('Attempting signup for:', formData.email);
+
+        // For sign up, create user with password and send OTP
+        const signUpResponse = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: {
+            data: {
+              full_name: formData.name
+            }
+          }
+        });
+
+        if (signUpResponse.error) {
+          console.log('Signup error:', signUpResponse.error.message);
+          // Check for various existing user error messages
+          const errorMessage = signUpResponse.error.message.toLowerCase();
           if (errorMessage.includes('already registered') || 
               errorMessage.includes('already exists') ||
               errorMessage.includes('user already registered') ||
-              errorMessage.includes('email already confirmed')) {
+              errorMessage.includes('email already confirmed') ||
+              errorMessage.includes('user already confirmed') ||
+              errorMessage.includes('already been registered') ||
+              errorMessage.includes('user already exists') ||
+              errorMessage.includes('already been registered')) {
+            console.log('User exists, throwing error');
             throw new Error('An account with this email already exists. Please sign in instead.');
           }
-          throw error;
+          throw signUpResponse.error;
         }
 
-        // Send OTP for verification
-        const { error: otpError } = await signInWithOtp(formData.email);
+        // Check if signup was successful
+        if (!signUpResponse.data.user) {
+          throw new Error('Failed to create account. Please try again.');
+        }
+
+        // CRITICAL CHECK: If user already has confirmed email, they exist
+        if (signUpResponse.data.user.email_confirmed_at) {
+          throw new Error('An account with this email already exists. Please sign in instead.');
+        }
+
+        // Additional check: If user was created but immediately confirmed, they existed before
+        if (signUpResponse.data.user.created_at === signUpResponse.data.user.email_confirmed_at) {
+          throw new Error('An account with this email already exists. Please sign in instead.');
+        }
+
+
+
+        // Now send OTP for verification
+        console.log('Sending OTP to:', formData.email);
         
+        let otpResponse;
+        let otpError;
+
+        // Try different OTP sending methods
+        try {
+          // Method 1: Standard signInWithOtp
+          otpResponse = await supabase.auth.signInWithOtp({
+            email: formData.email,
+            options: {
+              shouldCreateUser: false,
+              emailRedirectTo: window.location.origin
+            }
+          });
+          otpError = otpResponse.error;
+        } catch (err) {
+          otpError = err;
+        }
+
+        // If first method fails, try alternative
         if (otpError) {
+          console.log('First OTP method failed, trying alternative');
+          try {
+            otpResponse = await supabase.auth.signInWithOtp({
+              email: formData.email,
+              options: {
+                shouldCreateUser: false
+              }
+            });
+            otpError = otpResponse.error;
+          } catch (err) {
+            otpError = err;
+          }
+        }
+
+        if (otpError) {
+          console.log('OTP error:', otpError.message);
           if (otpError.message.includes('429') || otpError.message.includes('rate limit')) {
             throw new Error('Rate limit reached. Please wait 1 minute before trying again.');
           }
+          // Check if OTP error indicates user already exists
+          if (otpError.message.includes('already registered') || 
+              otpError.message.includes('already exists') ||
+              otpError.message.includes('user already registered')) {
+            console.log('OTP indicates user exists, throwing error');
+            throw new Error('An account with this email already exists. Please sign in instead.');
+          }
           throw otpError;
         }
+
+        console.log('OTP sent successfully, showing verification');
 
         setVerificationEmail(formData.email);
         setVerificationType('signup');
         setShowOTPVerification(true);
       } else {
-        // Sign in
+        // For sign in, check which method user chose
         if (authMethod === 'password') {
-          const { data, error } = await signIn(formData.email, formData.password);
-          
-          if (error) {
-            throw error;
+          // Password authentication
+          const signInResponse = await supabase.auth.signInWithPassword({
+            email: formData.email,
+            password: formData.password
+          });
+
+          if (signInResponse.error) {
+            throw signInResponse.error;
           }
 
-          // Redirect to intended page or dashboard
-          const from = location.state?.from?.pathname || '/dashboard';
-          navigate(from, { replace: true });
+          // Password authentication successful
+          const userData = {
+            id: signInResponse.data.user.id,
+            email: signInResponse.data.user.email,
+            name: signInResponse.data.user.user_metadata?.full_name || formData.email.split('@')[0],
+            token: signInResponse.data.session.access_token
+          };
+          onLogin(userData);
+          navigate('/dashboard');
         } else {
           // OTP authentication
-          const { error } = await signInWithOtp(formData.email);
-          
-          if (error) {
-            if (error.message.includes('429') || error.message.includes('rate limit')) {
+          const otpResponse = await supabase.auth.signInWithOtp({
+            email: formData.email,
+            options: {
+              shouldCreateUser: false
+            }
+          });
+
+          if (otpResponse.error) {
+            if (otpResponse.error.message.includes('429') || otpResponse.error.message.includes('rate limit')) {
               throw new Error('Rate limit reached. Please wait 1 minute before trying again.');
             }
-            throw error;
+            throw otpResponse.error;
           }
 
           setVerificationEmail(formData.email);
@@ -124,6 +218,7 @@ const SignIn = ({ isSignUp = false }) => {
       }
     } catch (err) {
       setError(err.message || 'An error occurred. Please try again.');
+      // Clear any OTP verification state if there's an error
       setShowOTPVerification(false);
       setVerificationEmail('');
       setVerificationType('signup');
