@@ -33,9 +33,31 @@ def clean_for_json(obj):
         return obj
 
 class MarketTrendsAnalyzer:
-    def __init__(self, data_file='backend/data/raw/Cleaned_Car_data_master.csv'):
+    def __init__(self, data_file='Cleaned_Car_data_master.csv', additional_data_file='generated_5000_strict.csv'):
         """Initialize the market trends analyzer with car data"""
-        self.data = pd.read_csv(data_file)
+        try:
+            # Load main dataset
+            data1 = pd.read_csv(data_file)
+            print(f"✅ Main dataset loaded for analysis - {len(data1)} records")
+            
+            # Try to load additional dataset
+            try:
+                data2 = pd.read_csv(additional_data_file)
+                print(f"✅ Additional dataset loaded for analysis - {len(data2)} records")
+                
+                # Combine both datasets
+                self.data = pd.concat([data1, data2], ignore_index=True)
+                print(f"✅ Combined dataset for analysis - {len(self.data)} total records")
+                
+            except FileNotFoundError:
+                print(f"⚠️ Additional dataset not found: {additional_data_file}")
+                print("Using main dataset only")
+                self.data = data1
+                
+        except FileNotFoundError:
+            print(f"❌ Main dataset not found: {data_file}")
+            raise
+            
         self.current_year = datetime.now().year
         self.prepare_data()
         

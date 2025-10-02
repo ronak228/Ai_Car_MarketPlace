@@ -31,33 +31,37 @@ def debug_routes():
 
 # Load the enhanced model and encoders
 try:
-    enhanced_model_data = pickle.load(open('backend/data/models/BestCombinedModel.pkl', 'rb'))
+    enhanced_model_data = pickle.load(open('BestCombinedModel.pkl', 'rb'))
     
-    # Handle different model formats
+    # Handle the actual model structure
     if isinstance(enhanced_model_data, dict):
-        enhanced_model = enhanced_model_data.get('model', enhanced_model_data)
-        enhanced_scaler = enhanced_model_data.get('scaler', None)
-        enhanced_label_encoders = enhanced_model_data.get('label_encoders', {})
-        enhanced_feature_names = enhanced_model_data.get('feature_names', [])
-        enhanced_categorical_columns = enhanced_model_data.get('categorical_columns', [])
+        enhanced_model = enhanced_model_data.get('model')
+        enhanced_model_name = enhanced_model_data.get('model_name', 'Enhanced Model')
+        enhanced_categorical_columns = enhanced_model_data.get('categorical_features', [])
         enhanced_numerical_features = enhanced_model_data.get('numerical_features', [])
+        enhanced_performance = enhanced_model_data.get('performance', {})
+        
+        # The model is a Pipeline, so we don't need separate scaler/encoders
+        enhanced_scaler = None
+        enhanced_label_encoders = {}
+        enhanced_feature_names = enhanced_categorical_columns + enhanced_numerical_features
         
         print("✅ Enhanced ML model loaded successfully")
-        if 'best_model_name' in enhanced_model_data:
-            print(f"Model: {enhanced_model_data['best_model_name']}")
-        if 'model_scores' in enhanced_model_data and 'best_model_name' in enhanced_model_data:
-            model_name = enhanced_model_data['best_model_name']
-            if model_name in enhanced_model_data['model_scores']:
-                print(f"Test R²: {enhanced_model_data['model_scores'][model_name]['test_r2']:.4f}")
+        print(f"Model: {enhanced_model_name}")
+        if 'r2_score' in enhanced_performance:
+            print(f"R² Score: {enhanced_performance['r2_score']:.4f}")
+        print(f"Features: {len(enhanced_feature_names)} ({len(enhanced_categorical_columns)} categorical + {len(enhanced_numerical_features)} numerical)")
     else:
-        # If it's just the model directly
-        enhanced_model = enhanced_model_data
+        # Fallback for unexpected format
+        enhanced_model = None
         enhanced_scaler = None
         enhanced_label_encoders = {}
         enhanced_feature_names = []
         enhanced_categorical_columns = []
         enhanced_numerical_features = []
-        print("✅ Enhanced ML model loaded successfully (simple format)")
+        enhanced_model_name = "Unknown"
+        enhanced_performance = {}
+        print("⚠️ Enhanced model format not recognized")
         
 except FileNotFoundError:
     print("⚠️ Enhanced model not found, using legacy model")
@@ -67,6 +71,8 @@ except FileNotFoundError:
     enhanced_feature_names = []
     enhanced_categorical_columns = []
     enhanced_numerical_features = []
+    enhanced_model_name = "None"
+    enhanced_performance = {}
 except Exception as e:
     print(f"⚠️ Error loading enhanced model: {str(e)}")
     print("Using legacy model instead")
@@ -76,10 +82,12 @@ except Exception as e:
     enhanced_feature_names = []
     enhanced_categorical_columns = []
     enhanced_numerical_features = []
+    enhanced_model_name = "None"
+    enhanced_performance = {}
 
 # Legacy model (for backward compatibility)
 try:
-    model_data = pickle.load(open('backend/data/models/LinearRegressionModel.pkl', 'rb'))
+    model_data = pickle.load(open('LinearRegressionModel.pkl', 'rb'))
     model = model_data['model']
     le_name = model_data['le_name']
     le_company = model_data['le_company']
@@ -97,17 +105,24 @@ except Exception as e:
     le_transmission = None
     scaler = None
 
-# Load master dataset with all 22 fields
+# Load master dataset with all 22 fields - combine multiple CSV files
 try:
-    car = pd.read_csv('Cleaned_Car_data_master.csv')
-    print(f"✅ Dataset loaded successfully - {len(car)} records")
-except FileNotFoundError:
-    try:
-        car = pd.read_csv('backend/data/raw/Cleaned_Car_data_master.csv')
-        print(f"✅ Dataset loaded from backend directory - {len(car)} records")
-    except FileNotFoundError:
-        print("❌ Dataset not found - creating empty DataFrame")
-        car = pd.DataFrame()
+    # Load the main dataset
+    car1 = pd.read_csv('Cleaned_Car_data_master.csv')
+    print(f"✅ Main dataset loaded - {len(car1)} records")
+    
+    # Load the additional dataset
+    car2 = pd.read_csv('generated_5000_strict.csv')
+    print(f"✅ Additional dataset loaded - {len(car2)} records")
+    
+    # Combine both datasets
+    car = pd.concat([car1, car2], ignore_index=True)
+    print(f"✅ Combined dataset created - {len(car)} total records")
+    
+except FileNotFoundError as e:
+    print(f"❌ Dataset file not found: {e}")
+    print("❌ Creating empty DataFrame")
+    car = pd.DataFrame()
 
 # Initialize market trends analyzer
 market_analyzer = None
@@ -427,78 +442,89 @@ def predict():
         return jsonify({"error": f"Unable to make prediction. {str(e)}"}), 500
 
 def predict_with_enhanced_model(car_data):
-    """Predict using the enhanced model with all 22 fields"""
+    """Predict using the enhanced model (Pipeline) with all features"""
     try:
-        # Create DataFrame with input data
-        input_df = pd.DataFrame([car_data])
+        # Create DataFrame with input data - the Pipeline expects all features
+        input_data = {}
         
-        # Encode categorical variables
-        encoded_data = {}
-        
-        # Encode categorical features
+        # Add all categorical features
         for col in enhanced_categorical_columns:
             if col in car_data:
-                try:
-                    encoded_data[col + '_encoded'] = enhanced_label_encoders[col].transform([car_data[col]])[0]
-                except ValueError:
-                    # Handle unseen categories by using the most common category
-                    most_common = enhanced_label_encoders[col].classes_[0]
-                    encoded_data[col + '_encoded'] = enhanced_label_encoders[col].transform([most_common])[0]
-                    print(f"Warning: Unknown {col} '{car_data[col]}', using '{most_common}'")
+                input_data[col] = car_data[col]
+            else:
+                # Provide default values for missing categorical features
+                if col == 'company':
+                    input_data[col] = 'Maruti Suzuki'
+                elif col == 'model':
+                    input_data[col] = 'Alto'
+                elif col == 'fuel_type':
+                    input_data[col] = 'Petrol'
+                elif col == 'transmission':
+                    input_data[col] = 'Manual'
+                elif col == 'owner':
+                    input_data[col] = 'First Owner'
+                elif col == 'car_condition':
+                    input_data[col] = 'Good'
+                elif col == 'insurance_status':
+                    input_data[col] = 'Valid'
+                elif col == 'city':
+                    input_data[col] = 'Delhi'
+                elif col == 'emission_norm':
+                    input_data[col] = 'BS IV'
+                elif col == 'insurance_eligible':
+                    input_data[col] = 'Yes'
+                elif col == 'maintenance_level':
+                    input_data[col] = 'Good'
+                elif col == 'listing_type':
+                    input_data[col] = 'Individual'
+                elif col == 'is_certified':
+                    input_data[col] = 'No'
+                else:
+                    input_data[col] = 'Unknown'
         
-        # Add numerical features
+        # Add all numerical features
         for col in enhanced_numerical_features:
             if col in car_data:
-                encoded_data[col] = car_data[col]
-        
-        # Create feature vector in correct order
-        feature_vector = []
-        for feature_name in enhanced_feature_names:
-            if feature_name in encoded_data:
-                feature_vector.append(encoded_data[feature_name])
+                input_data[col] = car_data[col]
             else:
-                # Use default values for missing features
-                if feature_name in enhanced_numerical_features:
-                    feature_vector.append(0)  # Default for numerical
+                # Provide default values for missing numerical features
+                if col == 'year':
+                    input_data[col] = 2015
+                elif col == 'kms_driven':
+                    input_data[col] = 50000
+                elif col == 'previous_accidents':
+                    input_data[col] = 0
+                elif col == 'num_doors':
+                    input_data[col] = 4
+                elif col == 'engine_size':
+                    input_data[col] = 1200
+                elif col == 'power':
+                    input_data[col] = 80
                 else:
-                    feature_vector.append(0)  # Default for encoded categorical
+                    input_data[col] = 0
         
-        # Convert to numpy array and reshape
-        X = np.array(feature_vector).reshape(1, -1)
+        # Create DataFrame with single row
+        input_df = pd.DataFrame([input_data])
         
-        # Scale features if scaler is available
-        if enhanced_scaler is not None:
-            X_scaled = enhanced_scaler.transform(X)
-        else:
-            X_scaled = X  # Use unscaled features if no scaler
-        
-        # Make prediction
-        prediction = enhanced_model.predict(X_scaled)[0]
+        # Make prediction using the Pipeline (it handles encoding and scaling internally)
+        prediction = enhanced_model.predict(input_df)[0]
         predicted_price = float(np.round(prediction, 2))
         
         # Calculate confidence based on model performance
-        try:
-            if 'model_scores' in enhanced_model_data and 'best_model_name' in enhanced_model_data:
-                model_name = enhanced_model_data['best_model_name']
-                if model_name in enhanced_model_data['model_scores']:
-                    confidence_score = min(95, max(60, int(enhanced_model_data['model_scores'][model_name]['test_r2'] * 100)))
-                else:
-                    confidence_score = 85  # Default confidence
-            else:
-                confidence_score = 85  # Default confidence
-        except (KeyError, TypeError):
-            confidence_score = 85  # Default confidence
+        r2_score = enhanced_performance.get('r2_score', 0.85)
+        confidence_score = min(95, max(60, int(r2_score * 100)))
         
         return {
             "prediction": predicted_price,
-            "model_used": enhanced_model_data.get('best_model_name', 'Enhanced Model'),
+            "model_used": enhanced_model_name,
             "confidence_score": confidence_score,
             "model_performance": {
-                "test_r2": enhanced_model_data.get('model_scores', {}).get(enhanced_model_data.get('best_model_name', ''), {}).get('test_r2', 0.85),
-                "test_rmse": enhanced_model_data.get('model_scores', {}).get(enhanced_model_data.get('best_model_name', ''), {}).get('test_rmse', 50000)
+                "r2_score": r2_score,
+                "rmse": enhanced_performance.get('rmse', 50000),
+                "mae": enhanced_performance.get('mae', 30000)
             },
             "features_used": len(enhanced_feature_names),
-            "message": "Enhanced prediction with all features"
+            "message": f"Enhanced prediction using {enhanced_model_name} with {len(enhanced_feature_names)} features"
         }
     
     except Exception as e:
