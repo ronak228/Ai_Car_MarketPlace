@@ -1,41 +1,42 @@
 {
   "name": "car-price-predictor-mern",
   "version": "1.0.0",
-  "description": "Car Price Predictor with Unified Flask Application",
+  "description": "Advanced Car Price Predictor with Market Trends Analysis",
   "main": "unified_app.py",
   "scripts": {
     "start": "python unified_app.py",
     "dev": "python unified_app.py",
     "client": "cd client && npm start",
+    "server": "python unified_app.py",
     "build": "cd client && npm run build",
     "install-client": "cd client && npm install",
-    "heroku-postbuild": "cd client && npm install && npm run build",
-    "setup": "npm install && cd client && npm install",
-    "run-all": "concurrently \"npm run start\" \"cd client && npm start\"",
-    "run-flask": "python application.py",
-    "run-unified": "python unified_app.py",
-    "quick-start": "npm run setup && npm run run-unified"
+    "install-server": "pip install -r requirements.txt",
+    "install-all": "npm run install-server && npm run install-client",
+    "setup": "npm run install-all && cd client && echo REACT_APP_USE_LOCAL_AUTH=true > .env",
+    "run-all": "concurrently \"npm run server\" \"npm run client\"",
+    "test": "cd client && npm test",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "keywords": [
-    "car",
-    "price",
-    "predictor",
-    "flask",
-    "react",
+    "car-price-prediction",
     "machine-learning",
-    "unified"
+    "react",
+    "flask",
+    "market-trends",
+    "analytics"
   ],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "path": "^0.12.7",
-    "sweetalert2": "^11.23.0"
-  },
+  "author": "Your Name",
+  "license": "MIT",
   "devDependencies": {
-    "concurrently": "^8.0.1",
-    "nodemon": "^2.0.22"
+    "concurrently": "^7.6.0"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0",
+    "python": ">=3.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "your-repo-url"
   }
 }

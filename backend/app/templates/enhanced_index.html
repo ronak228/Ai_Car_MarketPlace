@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head xmlns="http://www.w3.org/1999/xhtml">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Car Price Predictor & Market Trends</title>
+    <link rel="stylesheet" href="static/css/enhanced_style.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SweetAlert2 for better alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gradient">
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#"><i class="fas fa-car"></i> CarPredict Pro</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#predictor"><i class="fas fa-calculator"></i> Price Predictor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#market-trends"><i class="fas fa-chart-line"></i> Market Trends</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#analytics"><i class="fas fa-analytics"></i> Analytics</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid mt-5 pt-4">
+    <!-- Hero Section -->
+    <div class="hero-section text-center mb-5">
+        <div class="container">
+            <h1 class="display-4 text-white mb-3">
+                <i class="fas fa-car-side"></i> Advanced Car Market Intelligence
+            </h1>
+            <p class="lead text-white-50">
+                Get accurate price predictions and comprehensive market insights powered by AI
+            </p>
+        </div>
+    </div>
+
+    <!-- Price Predictor Section -->
+    <section id="predictor" class="mb-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card shadow-lg border-0 predictor-card">
+                        <div class="card-header bg-primary text-white text-center">
+                            <h2><i class="fas fa-calculator"></i> Car Price Predictor</h2>
+                            <p class="mb-0">Get instant price estimates for your vehicle</p>
+                        </div>
+                        <div class="card-body p-4">
+                            <form method="post" accept-charset="utf-8" name="Modelform">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label"><strong>Select Company:</strong></label>
+                                        <select class="form-control form-control-lg" id="company" name="company" required="1"
+                                                onchange="load_car_models(this.id,'car_models')">
+                                            {% for company in companies %}
+                                            <option value="{{ company }}">{{ company }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label"><strong>Select Model:</strong></label>
+                                        <select class="form-control form-control-lg" id="car_models" name="car_models" required="1">
+                                            <option value="">Select Company First</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label"><strong>Year of Purchase:</strong></label>
+                                        <select class="form-control form-control-lg" id="year" name="year" required="1">
+                                            {% for year in years %}
+                                            <option value="{{ year }}">{{ year }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label"><strong>Fuel Type:</strong></label>
+                                        <select class="form-control form-control-lg" id="fuel_type" name="fuel_type" required="1">
+                                            {% for fuel in fuel_types %}
+                                            <option value="{{ fuel }}">{{ fuel }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label"><strong>Kilometers Driven:</strong></label>
+                                        <input type="number" class="form-control form-control-lg" id="kilo_driven" name="kilo_driven"
+                                               placeholder="Enter kilometers" required min="0">
+                                    </div>
+                                </div>
+                                <div class="text-center mt-4">
+                                    <button type="button" class="btn btn-primary btn-lg px-5" onclick="send_data()">
+                                        <i class="fas fa-magic"></i> Predict Price
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <!-- Prediction Result -->
+                            <div class="prediction-result mt-4" id="prediction-container" style="display: none;">
+                                <div class="alert alert-success text-center">
+                                    <h4 class="mb-0"><i class="fas fa-rupee-sign"></i> <span id="prediction"></span></h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Market Trends Section -->
+    <section id="market-trends" class="mb-5">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="text-white"><i class="fas fa-chart-line"></i> Market Trends Dashboard</h2>
+                <p class="text-white-50">Real-time market insights and analytics</p>
+            </div>
+            
+            <!-- Market Overview Cards -->
+            <div class="row mb-4" id="market-overview-cards">
+                <!-- Cards will be populated by JavaScript -->
+            </div>
+            
+            <!-- Charts Row -->
+            <div class="row mb-4">
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow border-0">
+                        <div class="card-header bg-info text-white">
+                            <h5><i class="fas fa-chart-pie"></i> Market Share by Company</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="marketShareChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow border-0">
+                        <div class="card-header bg-success text-white">
+                            <h5><i class="fas fa-gas-pump"></i> Fuel Type Distribution</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="fuelTypeChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-lg-12">
+                    <div class="card shadow border-0">
+                        <div class="card-header bg-warning text-dark">
+                            <h5><i class="fas fa-chart-area"></i> Price Trends by Year</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="priceTrendsChart" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analytics Section -->
+    <section id="analytics" class="mb-5">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="text-white"><i class="fas fa-brain"></i> Advanced Analytics</h2>
+                <p class="text-white-50">AI-powered market predictions and insights</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow border-0">
+                        <div class="card-header bg-purple text-white">
+                            <h5><i class="fas fa-trending-up"></i> Market Predictions</h5>
+                        </div>
+                        <div class="card-body" id="market-predictions">
+                            <!-- Predictions will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow border-0">
+                        <div class="card-header bg-danger text-white">
+                            <h5><i class="fas fa-city"></i> City Market Analysis</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="cityMarketChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Loading Spinner -->
+<div class="loading-spinner" id="loadingSpinner" style="display: none;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<script>
+// Global variables for charts
+let marketShareChart, fuelTypeChart, priceTrendsChart, cityMarketChart;
+
+// Load car models based on company selection
+function load_car_models(company_id, car_model_id) {
+    var company = document.getElementById(company_id);
+    var car_model = document.getElementById(car_model_id);
+    console.log(company.value);
+    car_model.value = "";
+    car_model.innerHTML = "";
+    
+    if(company.value === "Select Company") {
+        car_model.innerHTML = "<option value=''>Select Company First</option>";
+        return;
+    }
+    
+    {% for company in companies %}
+        if(company.value == "{{ company }}") {
+            {% for model in car_models %}
+                {% if company in model %}
+                    var newOption = document.createElement("option");
+                    newOption.value = "{{ model }}";
+                    newOption.innerHTML = "{{ model }}";
+                    car_model.options.add(newOption);
+                {% endif %}
+            {% endfor %}
+        }
+    {% endfor %}
+}
+
+// Send prediction data
+function send_data() {
+    // Get form data
+    var company = document.getElementById('company').value;
+    var car_model = document.getElementById('car_models').value;
+    var year = document.getElementById('year').value;
+    var fuel_type = document.getElementById('fuel_type').value;
+    var kilo_driven = document.getElementById('kilo_driven').value;
+    
+    // Validate form
+    if(!company || company === "Select Company") {
+        Swal.fire('Error', 'Please select a company', 'error');
+        return;
+    }
+    if(!car_model) {
+        Swal.fire('Error', 'Please select a car model', 'error');
+        return;
+    }
+    if(!year) {
+        Swal.fire('Error', 'Please select a year', 'error');
+        return;
+    }
+    if(!fuel_type) {
+        Swal.fire('Error', 'Please select a fuel type', 'error');
+        return;
+    }
+    if(!kilo_driven) {
+        Swal.fire('Error', 'Please enter kilometers driven', 'error');
+        return;
+    }
+
+    var fd = new FormData();
+    fd.append('company', company);
+    fd.append('car_models', car_model);
+    fd.append('year', year);
+    fd.append('fuel_type', fuel_type);
+    fd.append('kilo_driven', kilo_driven);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/predict', true);
+    
+    // Show loading
+    document.getElementById('prediction').innerHTML = "Calculating...";
+    document.getElementById('prediction-container').style.display = 'block';
+    
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState == XMLHttpRequest.DONE){
+            if(xhr.status === 200) {
+                document.getElementById('prediction').innerHTML = "₹" + parseFloat(xhr.responseText).toLocaleString('en-IN');
+                
+                // Show success animation
+                Swal.fire({
+                    title: 'Prediction Complete!',
+                    text: `Estimated Price: ₹${parseFloat(xhr.responseText).toLocaleString('en-IN')}`,
+                    icon: 'success',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            } else {
+                document.getElementById('prediction').innerHTML = "Error occurred";
+                Swal.fire('Error', xhr.responseText, 'error');
+            }
+        }
+    };
+
+    xhr.send(fd);
+}
+
+// Load market trends data
+async function loadMarketTrends() {
+    try {
+        showLoading(true);
+        
+        // Load market overview
+        const overviewResponse = await fetch('/api/market-overview');
+        const overviewData = await overviewResponse.json();
+        
+        if (overviewData.success) {
+            displayMarketOverview(overviewData.data);
+        }
+        
+        // Load company trends for market share chart
+        const companyResponse = await fetch('/api/company-trends');
+        const companyData = await companyResponse.json();
+        
+        if (companyData.success) {
+            createMarketShareChart(companyData.data);
+        }
+        
+        // Load fuel type analysis
+        const fuelResponse = await fetch('/api/fuel-type-analysis');
+        const fuelData = await fuelResponse.json();
+        
+        if (fuelData.success) {
+            createFuelTypeChart(fuelData.data);
+        }
+        
+        // Load price trends
+        const priceResponse = await fetch('/api/price-trends');
+        const priceData = await priceResponse.json();
+        
+        if (priceData.success) {
+            createPriceTrendsChart(priceData.data);
+        }
+        
+        // Load city market analysis
+        const cityResponse = await fetch('/api/city-market-analysis');
+        const cityData = await cityResponse.json();
+        
+        if (cityData.success) {
+            createCityMarketChart(cityData.data);
+        }
+        
+        // Load market predictions
+        const predictionsResponse = await fetch('/api/market-predictions');
+        const predictionsData = await predictionsResponse.json();
+        
+        if (predictionsData.success) {
+            displayMarketPredictions(predictionsData.data);
+        }
+        
+        showLoading(false);
+    } catch (error) {
+        console.error('Error loading market trends:', error);
+        showLoading(false);
+        Swal.fire('Error', 'Failed to load market trends data', 'error');
+    }
+}
+
+function displayMarketOverview(data) {
+    const container = document.getElementById('market-overview-cards');
+    container.innerHTML = `
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body text-center">
+                    <i class="fas fa-car fa-2x mb-2"></i>
+                    <h4>${data.total_listings.toLocaleString()}</h4>
+                    <p class="mb-0">Total Listings</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white shadow">
+                <div class="card-body text-center">
+                    <i class="fas fa-rupee-sign fa-2x mb-2"></i>
+                    <h4>₹${Math.round(data.average_price).toLocaleString('en-IN')}</h4>
+                    <p class="mb-0">Average Price</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white shadow">
+                <div class="card-body text-center">
+                    <i class="fas fa-building fa-2x mb-2"></i>
+                    <h4>${data.total_companies}</h4>
+                    <p class="mb-0">Companies</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-white shadow">
+                <div class="card-body text-center">
+                    <i class="fas fa-calendar fa-2x mb-2"></i>
+                    <h4>${Math.round(data.average_age)} years</h4>
+                    <p class="mb-0">Average Age</p>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function createMarketShareChart(data) {
+    const ctx = document.getElementById('marketShareChart').getContext('2d');
+    
+    // Get top 10 companies by market share
+    const companies = Object.keys(data).slice(0, 10);
+    const marketShares = companies.map(company => data[company].stats.market_share);
+    
+    if (marketShareChart) {
+        marketShareChart.destroy();
+    }
+    
+    marketShareChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: companies,
+            datasets: [{
+                data: marketShares,
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                    '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF',
+                    '#4BC0C0', '#FF6384'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+
+function createFuelTypeChart(data) {
+    const ctx = document.getElementById('fuelTypeChart').getContext('2d');
+    
+    const fuelTypes = Object.keys(data);
+    const marketShares = fuelTypes.map(fuel => data[fuel].market_share);
+    
+    if (fuelTypeChart) {
+        fuelTypeChart.destroy();
+    }
+    
+    fuelTypeChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: fuelTypes,
+            datasets: [{
+                label: 'Market Share (%)',
+                data: marketShares,
+                backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF']
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+}
+
+function createPriceTrendsChart(data) {
+    const ctx = document.getElementById('priceTrendsChart').getContext('2d');
+    
+    const years = Object.keys(data).sort();
+    const avgPrices = years.map(year => data[year].Price_mean);
+    
+    if (priceTrendsChart) {
+        priceTrendsChart.destroy();
+    }
+    
+    priceTrendsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: years,
+            datasets: [{
+                label: 'Average Price (₹)',
+                data: avgPrices,
+                borderColor: '#36A2EB',
+                backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        callback: function(value) {
+                            return '₹' + value.toLocaleString('en-IN');
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Avg Price: ₹' + context.parsed.y.toLocaleString('en-IN');
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createCityMarketChart(data) {
+    const ctx = document.getElementById('cityMarketChart').getContext('2d');
+    
+    const cities = Object.keys(data);
+    const avgPrices = cities.map(city => data[city].average_price);
+    
+    if (cityMarketChart) {
+        cityMarketChart.destroy();
+    }
+    
+    cityMarketChart = new Chart(ctx, {
+        type: 'horizontalBar',
+        data: {
+            labels: cities,
+            datasets: [{
+                label: 'Average Price (₹)',
+                data: avgPrices,
+                backgroundColor: '#FF6384'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '₹' + (value/1000).toFixed(0) + 'K';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Avg Price: ₹' + context.parsed.x.toLocaleString('en-IN');
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function displayMarketPredictions(data) {
+    const container = document.getElementById('market-predictions');
+    
+    let html = '<div class="row">';
+    
+    // Trending up companies
+    if (data.trending_up.length > 0) {
+        html += '<div class="col-12 mb-3">';
+        html += '<h6 class="text-success"><i class="fas fa-arrow-up"></i> Trending Up</h6>';
+        data.trending_up.forEach(item => {
+            html += `<div class="alert alert-success alert-sm">
+                        <strong>${item.company}</strong> - Market Share: ${item.market_share}%
+                     </div>`;
+        });
+        html += '</div>';
+    }
+    
+    // Recommendations
+    if (data.recommendations.length > 0) {
+        html += '<div class="col-12 mb-3">';
+        html += '<h6 class="text-info"><i class="fas fa-lightbulb"></i> Recommendations</h6>';
+        data.recommendations.forEach(rec => {
+            html += `<div class="alert alert-info alert-sm">
+                        <strong>${rec.type}:</strong> ${rec.description}
+                     </div>`;
+        });
+        html += '</div>';
+    }
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function showLoading(show) {
+    document.getElementById('loadingSpinner').style.display = show ? 'flex' : 'none';
+}
+
+// Smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Load market trends when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadMarketTrends();
+});
+</script>
+
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+</body>
+</html>

@@ -9,6 +9,7 @@ import Home from './components/Home';
 import SignIn from './components/SignIn';
 import Dashboard from './components/Dashboard';
 import CarPricePredictor from './components/CarPricePredictor';
+import MarketTrends from './components/MarketTrends';
 import SupabaseTest from './components/SupabaseTest';
 
 // Error Boundary Component
@@ -198,6 +199,12 @@ function App() {
               path="/car-price-predictor" 
               element={
                 isAuthenticated ? <CarPricePredictor /> : <Navigate to="/signin" />
+              } 
+            />
+            <Route 
+              path="/market-trends" 
+              element={
+                isAuthenticated ? <MarketTrends /> : <Navigate to="/signin" />
               } 
             />
             <Route path="/test" element={<SupabaseTest />} />

@@ -21,8 +21,9 @@ echo.
 echo To start the application:
 echo 1. Run: npm run run-all
 echo 2. Or run separately:
-echo    - Backend: python application.py
+echo    - Backend: python unified_app.py
 echo    - Frontend: cd client ^&^& npm start
+echo 3. Or use the startup script: start_app.bat
 echo.
 echo For authentication, use any email and any 6-digit OTP code!
 pause

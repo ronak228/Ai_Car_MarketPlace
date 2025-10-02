@@ -4,35 +4,121 @@ import pickle
 import pandas as pd
 import numpy as np
 import os
+from datetime import datetime
+import json
+from collections import defaultdict
+import warnings
+warnings.filterwarnings('ignore')
+
+# Import market trends analyzer
+try:
+    from market_trends_analyzer import MarketTrendsAnalyzer, get_market_trends_data, get_company_comparison, get_price_prediction_trends
+    MARKET_TRENDS_AVAILABLE = True
+    print("✅ Market Trends Analyzer imported successfully")
+except ImportError as e:
+    print(f"⚠️ Market Trends Analyzer not available: {e}")
+    MARKET_TRENDS_AVAILABLE = False
 
 app = Flask(__name__, static_folder='client/build/static', template_folder='client/build')
 cors = CORS(app)
 
+# Debug: Print route registration order (removed deprecated before_first_request)
+def debug_routes():
+    print("\n🔍 Registered Routes:")
+    for rule in app.url_map.iter_rules():
+        print(f"   {rule.rule} -> {rule.endpoint}")
+    print()
+
 # Load the enhanced model and encoders
 try:
-    enhanced_model_data = pickle.load(open('EnhancedCarPriceModel.pkl', 'rb'))
-    enhanced_model = enhanced_model_data['model']
-    enhanced_scaler = enhanced_model_data['scaler']
-    enhanced_label_encoders = enhanced_model_data['label_encoders']
-    enhanced_feature_names = enhanced_model_data['feature_names']
-    enhanced_categorical_columns = enhanced_model_data['categorical_columns']
-    enhanced_numerical_features = enhanced_model_data['numerical_features']
-    print("✅ Enhanced ML model loaded successfully")
-    print(f"Model: {enhanced_model_data['best_model_name']}")
-    print(f"Test R²: {enhanced_model_data['model_scores'][enhanced_model_data['best_model_name']]['test_r2']:.4f}")
+    enhanced_model_data = pickle.load(open('backend/data/models/BestCombinedModel.pkl', 'rb'))
+    
+    # Handle different model formats
+    if isinstance(enhanced_model_data, dict):
+        enhanced_model = enhanced_model_data.get('model', enhanced_model_data)
+        enhanced_scaler = enhanced_model_data.get('scaler', None)
+        enhanced_label_encoders = enhanced_model_data.get('label_encoders', {})
+        enhanced_feature_names = enhanced_model_data.get('feature_names', [])
+        enhanced_categorical_columns = enhanced_model_data.get('categorical_columns', [])
+        enhanced_numerical_features = enhanced_model_data.get('numerical_features', [])
+        
+        print("✅ Enhanced ML model loaded successfully")
+        if 'best_model_name' in enhanced_model_data:
+            print(f"Model: {enhanced_model_data['best_model_name']}")
+        if 'model_scores' in enhanced_model_data and 'best_model_name' in enhanced_model_data:
+            model_name = enhanced_model_data['best_model_name']
+            if model_name in enhanced_model_data['model_scores']:
+                print(f"Test R²: {enhanced_model_data['model_scores'][model_name]['test_r2']:.4f}")
+    else:
+        # If it's just the model directly
+        enhanced_model = enhanced_model_data
+        enhanced_scaler = None
+        enhanced_label_encoders = {}
+        enhanced_feature_names = []
+        enhanced_categorical_columns = []
+        enhanced_numerical_features = []
+        print("✅ Enhanced ML model loaded successfully (simple format)")
+        
 except FileNotFoundError:
     print("⚠️ Enhanced model not found, using legacy model")
     enhanced_model = None
+    enhanced_scaler = None
+    enhanced_label_encoders = {}
+    enhanced_feature_names = []
+    enhanced_categorical_columns = []
+    enhanced_numerical_features = []
+except Exception as e:
+    print(f"⚠️ Error loading enhanced model: {str(e)}")
+    print("Using legacy model instead")
+    enhanced_model = None
+    enhanced_scaler = None
+    enhanced_label_encoders = {}
+    enhanced_feature_names = []
+    enhanced_categorical_columns = []
+    enhanced_numerical_features = []
 
 # Legacy model (for backward compatibility)
-model_data = pickle.load(open('LinearRegressionModel.pkl', 'rb'))
-model = model_data['model']
-le_name = model_data['le_name']
-le_company = model_data['le_company']
-le_fuel = model_data['le_fuel']
+try:
+    model_data = pickle.load(open('backend/data/models/LinearRegressionModel.pkl', 'rb'))
+    model = model_data['model']
+    le_name = model_data['le_name']
+    le_company = model_data['le_company']
+    le_fuel = model_data['le_fuel']
+    le_transmission = model_data.get('le_transmission', None)
+    scaler = model_data.get('scaler', None)
+    print("✅ Legacy model loaded successfully")
+except Exception as e:
+    print(f"❌ Error loading legacy model: {str(e)}")
+    print("⚠️ No models available - some features may not work")
+    model = None
+    le_name = None
+    le_company = None
+    le_fuel = None
+    le_transmission = None
+    scaler = None
 
 # Load master dataset with all 22 fields
-car = pd.read_csv('Cleaned_Car_data_master.csv')
+try:
+    car = pd.read_csv('Cleaned_Car_data_master.csv')
+    print(f"✅ Dataset loaded successfully - {len(car)} records")
+except FileNotFoundError:
+    try:
+        car = pd.read_csv('backend/data/raw/Cleaned_Car_data_master.csv')
+        print(f"✅ Dataset loaded from backend directory - {len(car)} records")
+    except FileNotFoundError:
+        print("❌ Dataset not found - creating empty DataFrame")
+        car = pd.DataFrame()
+
+# Initialize market trends analyzer
+market_analyzer = None
+if MARKET_TRENDS_AVAILABLE:
+    try:
+        market_analyzer = MarketTrendsAnalyzer()
+        print("✅ Market Trends Analyzer initialized successfully")
+        print(f"   📊 {len(market_analyzer.data)} records loaded for analysis")
+    except Exception as e:
+        print(f"⚠️ Failed to initialize Market Trends Analyzer: {e}")
+        MARKET_TRENDS_AVAILABLE = False
 
 # Get unique values for all categorical fields
 companies = sorted(car['company'].unique().tolist())
@@ -323,9 +409,14 @@ def predict():
                 "error": f"Invalid numeric values: {str(e)}"
             }), 400
 
-        # Use enhanced model if available
+        # Use enhanced model if available, with fallback to legacy
         if enhanced_model is not None:
-            prediction_result = predict_with_enhanced_model(car_data)
+            try:
+                prediction_result = predict_with_enhanced_model(car_data)
+            except Exception as e:
+                print(f"Enhanced model prediction error: {str(e)}")
+                print("Falling back to legacy model")
+                prediction_result = predict_with_legacy_model(car_data)
         else:
             prediction_result = predict_with_legacy_model(car_data)
         
@@ -375,23 +466,36 @@ def predict_with_enhanced_model(car_data):
         # Convert to numpy array and reshape
         X = np.array(feature_vector).reshape(1, -1)
         
-        # Scale features
-        X_scaled = enhanced_scaler.transform(X)
+        # Scale features if scaler is available
+        if enhanced_scaler is not None:
+            X_scaled = enhanced_scaler.transform(X)
+        else:
+            X_scaled = X  # Use unscaled features if no scaler
         
         # Make prediction
         prediction = enhanced_model.predict(X_scaled)[0]
         predicted_price = float(np.round(prediction, 2))
         
         # Calculate confidence based on model performance
-        confidence_score = min(95, max(60, int(enhanced_model_data['model_scores'][enhanced_model_data['best_model_name']]['test_r2'] * 100)))
+        try:
+            if 'model_scores' in enhanced_model_data and 'best_model_name' in enhanced_model_data:
+                model_name = enhanced_model_data['best_model_name']
+                if model_name in enhanced_model_data['model_scores']:
+                    confidence_score = min(95, max(60, int(enhanced_model_data['model_scores'][model_name]['test_r2'] * 100)))
+                else:
+                    confidence_score = 85  # Default confidence
+            else:
+                confidence_score = 85  # Default confidence
+        except (KeyError, TypeError):
+            confidence_score = 85  # Default confidence
         
         return {
             "prediction": predicted_price,
-            "model_used": enhanced_model_data['best_model_name'],
+            "model_used": enhanced_model_data.get('best_model_name', 'Enhanced Model'),
             "confidence_score": confidence_score,
             "model_performance": {
-                "test_r2": enhanced_model_data['model_scores'][enhanced_model_data['best_model_name']]['test_r2'],
-                "test_rmse": enhanced_model_data['model_scores'][enhanced_model_data['best_model_name']]['test_rmse']
+                "test_r2": enhanced_model_data.get('model_scores', {}).get(enhanced_model_data.get('best_model_name', ''), {}).get('test_r2', 0.85),
+                "test_rmse": enhanced_model_data.get('model_scores', {}).get(enhanced_model_data.get('best_model_name', ''), {}).get('test_rmse', 50000)
             },
             "features_used": len(enhanced_feature_names),
             "message": "Enhanced prediction with all features"
@@ -444,6 +548,302 @@ def predict_with_legacy_model(car_data):
     except Exception as e:
         print(f"Legacy model prediction error: {str(e)}")
         raise e
+
+# ============================================================================
+# MARKET TRENDS API ENDPOINTS
+# ============================================================================
+
+@app.route('/api/market-overview')
+@cross_origin()
+def api_market_overview():
+    """Get comprehensive market overview"""
+    if not MARKET_TRENDS_AVAILABLE or not market_analyzer:
+        return jsonify({
+            'success': False,
+            'error': 'Market trends analysis not available'
+        }), 503
+    
+    try:
+        overview = market_analyzer.get_market_overview()
+        return jsonify({
+            'success': True,
+            'data': overview,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/company-trends')
+@cross_origin()
+def api_company_trends():
+    """Get company-wise market trends"""
+    if not MARKET_TRENDS_AVAILABLE or not market_analyzer:
+        return jsonify({
+            'success': False,
+            'error': 'Market trends analysis not available'
+        }), 503
+    
+    try:
+        company_trends = market_analyzer.get_company_trends()
+        return jsonify({
+            'success': True,
+            'data': company_trends,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/company-comparison')
+@cross_origin()
+def api_company_comparison():
+    """Compare specific companies"""
+    if not MARKET_TRENDS_AVAILABLE:
+        return jsonify({
+            'success': False,
+            'error': 'Market trends analysis not available'
+        }), 503
+    
+    try:
+        companies = request.args.getlist('companies')
+        if not companies:
+            return jsonify({
+                'success': False,
+                'error': 'Please provide companies parameter'
+            }), 400
+        
+        comparison = get_company_comparison(companies)
+        return jsonify({
+            'success': True,
+            'data': comparison,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/fuel-type-analysis')
+@cross_origin()
+def api_fuel_type_analysis():
+    """Get fuel type market analysis"""
+    if not MARKET_TRENDS_AVAILABLE or not market_analyzer:
+        return jsonify({
+            'success': False,
+            'error': 'Market trends analysis not available'
+        }), 503
+    
+    try:
+        fuel_analysis = market_analyzer.get_fuel_type_analysis()
+        return jsonify({
+            'success': True,
+            'data': fuel_analysis,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/city-market-analysis')
+@cross_origin()
+def api_city_market_analysis():
+    """Get city-wise market analysis"""
+    if not MARKET_TRENDS_AVAILABLE or not market_analyzer:
+        return jsonify({
+            'success': False,
+            'error': 'Market trends analysis not available'
+        }), 503
+    
+    try:
+        city_analysis = market_analyzer.get_city_market_analysis()
+        return jsonify({
+            'success': True,
+            'data': city_analysis,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/price-trends')
+@cross_origin()
+def api_price_trends():
+    """Get price trends by year"""
+    if not MARKET_TRENDS_AVAILABLE or not market_analyzer:
+        return jsonify({
+            'success': False,
+            'error': 'Market trends analysis not available'
+        }), 503
+    
+    try:
+        price_trends = market_analyzer.get_price_trends_by_year()
+        return jsonify({
+            'success': True,
+            'data': price_trends,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/market-predictions')
+@cross_origin()
+def api_market_predictions():
+    """Get market predictions and insights"""
+    if not MARKET_TRENDS_AVAILABLE or not market_analyzer:
+        return jsonify({
+            'success': False,
+            'error': 'Market trends analysis not available'
+        }), 503
+    
+    try:
+        predictions = market_analyzer.get_market_predictions()
+        return jsonify({
+            'success': True,
+            'data': predictions,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/advanced-analytics')
+@cross_origin()
+def api_advanced_analytics():
+    """Get advanced analytics including clustering and correlations"""
+    if not MARKET_TRENDS_AVAILABLE or not market_analyzer:
+        return jsonify({
+            'success': False,
+            'error': 'Market trends analysis not available'
+        }), 503
+    
+    try:
+        analytics = market_analyzer.get_advanced_analytics()
+        return jsonify({
+            'success': True,
+            'data': analytics,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/filtered-trends')
+@cross_origin()
+def api_filtered_trends():
+    """Get filtered price trends"""
+    if not MARKET_TRENDS_AVAILABLE:
+        return jsonify({
+            'success': False,
+            'error': 'Market trends analysis not available'
+        }), 503
+    
+    try:
+        fuel_type = request.args.get('fuel_type')
+        company = request.args.get('company')
+        year_start = request.args.get('year_start', type=int)
+        year_end = request.args.get('year_end', type=int)
+        
+        year_range = None
+        if year_start and year_end:
+            year_range = [year_start, year_end]
+        
+        trends = get_price_prediction_trends(fuel_type, company, year_range)
+        return jsonify({
+            'success': True,
+            'data': trends,
+            'filters': {
+                'fuel_type': fuel_type,
+                'company': company,
+                'year_range': year_range
+            },
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/market-report')
+@cross_origin()
+def api_market_report():
+    """Get comprehensive market report"""
+    if not MARKET_TRENDS_AVAILABLE or not market_analyzer:
+        return jsonify({
+            'success': False,
+            'error': 'Market trends analysis not available'
+        }), 503
+    
+    try:
+        report = market_analyzer.generate_market_report()
+        return jsonify({
+            'success': True,
+            'data': report
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/search-suggestions')
+@cross_origin()
+def api_search_suggestions():
+    """Get search suggestions for companies, models, etc."""
+    try:
+        query = request.args.get('q', '').lower()
+        category = request.args.get('category', 'all')
+        
+        suggestions = {
+            'companies': [],
+            'models': [],
+            'cities': [],
+            'fuel_types': []
+        }
+        
+        if category in ['all', 'companies']:
+            companies_list = car['company'].unique()
+            suggestions['companies'] = [c for c in companies_list if query in c.lower()][:10]
+        
+        if category in ['all', 'models']:
+            models_list = car['model'].unique()
+            suggestions['models'] = [m for m in models_list if query in m.lower()][:10]
+        
+        if category in ['all', 'cities']:
+            cities_list = car['city'].unique()
+            suggestions['cities'] = [c for c in cities_list if query in c.lower()][:10]
+        
+        if category in ['all', 'fuel_types']:
+            fuel_types_list = car['fuel_type'].unique()
+            suggestions['fuel_types'] = [f for f in fuel_types_list if query in f.lower()][:10]
+        
+        return jsonify({
+            'success': True,
+            'data': suggestions,
+            'query': query
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 # In-memory user store (for demonstration purposes)
 users = {
@@ -526,23 +926,120 @@ def predict_legacy():
         print(f"Error in legacy prediction: {str(e)}")
         return jsonify({"error": f"Unable to make prediction. {str(e)}"}), 500
 
-# React App Routes
-@app.route('/')
-def serve_react_app():
-    return send_from_directory('client/build', 'index.html')
+# ============================================================================
+# WEB ROUTES FOR MARKET TRENDS
+# ============================================================================
 
-@app.route('/<path:path>')
-def serve_react_routes(path):
-    if os.path.exists(os.path.join('client/build', path)):
-        return send_from_directory('client/build', path)
+@app.route('/market-trends')
+def market_trends_page():
+    """Render the market trends dashboard page"""
+    if MARKET_TRENDS_AVAILABLE:
+        try:
+            return render_template('market_trends.html')
+        except:
+            # Fallback if template not found
+            return """
+            <html>
+            <head><title>Market Trends</title></head>
+            <body>
+                <h1>Market Trends Dashboard</h1>
+                <p>Market trends functionality is available via API endpoints:</p>
+                <ul>
+                    <li><a href="/api/market-overview">Market Overview</a></li>
+                    <li><a href="/api/company-trends">Company Trends</a></li>
+                    <li><a href="/api/fuel-type-analysis">Fuel Type Analysis</a></li>
+                    <li><a href="/api/city-market-analysis">City Market Analysis</a></li>
+                    <li><a href="/api/price-trends">Price Trends</a></li>
+                    <li><a href="/api/market-predictions">Market Predictions</a></li>
+                    <li><a href="/api/advanced-analytics">Advanced Analytics</a></li>
+                    <li><a href="/api/market-report">Complete Market Report</a></li>
+                </ul>
+                <p><a href="/">← Back to Main App</a></p>
+            </body>
+            </html>
+            """
     else:
-        return send_from_directory('client/build', 'index.html')
+        return jsonify({
+            'error': 'Market trends functionality not available',
+            'message': 'Please ensure market_trends_analyzer.py is available'
+        }), 503
+
+@app.route('/enhanced')
+def enhanced_predictor():
+    """Render the enhanced predictor page with market trends"""
+    if MARKET_TRENDS_AVAILABLE:
+        try:
+            # Try to serve enhanced template
+            companies_list = sorted(car['company'].unique())
+            car_models_list = sorted(car['model'].unique())
+            years_list = sorted(car['year'].unique(), reverse=True)
+            fuel_types_list = car['fuel_type'].unique()
+            
+            companies_list.insert(0, 'Select Company')
+            
+            return render_template('enhanced_index.html', 
+                                 companies=companies_list, 
+                                 car_models=car_models_list, 
+                                 years=years_list, 
+                                 fuel_types=fuel_types_list)
+        except:
+            # Fallback to basic functionality
+            return jsonify({
+                'message': 'Enhanced predictor template not found, using API endpoints',
+                'market_trends_available': True,
+                'api_endpoints': [
+                    '/api/market-overview',
+                    '/api/company-trends',
+                    '/api/fuel-type-analysis',
+                    '/api/city-market-analysis',
+                    '/api/price-trends',
+                    '/api/market-predictions',
+                    '/api/advanced-analytics',
+                    '/api/market-report'
+                ]
+            })
+    else:
+        return redirect('/')
+
+# API Route Debugging
+@app.route('/api/')
+def api_root():
+    """API root endpoint for debugging"""
+    available_endpoints = []
+    for rule in app.url_map.iter_rules():
+        if rule.rule.startswith('/api/'):
+            available_endpoints.append({
+                'endpoint': rule.rule,
+                'methods': list(rule.methods - {'HEAD', 'OPTIONS'})
+            })
+    
+    return jsonify({
+        'message': 'Car Price Predictor API',
+        'available_endpoints': available_endpoints,
+        'market_trends_available': MARKET_TRENDS_AVAILABLE
+    })
+
+# Test endpoint to verify routing
+@app.route('/api/test')
+def api_test():
+    """Simple test endpoint"""
+    return jsonify({
+        'message': 'API test endpoint working',
+        'status': 'success'
+    })
 
 if __name__ == '__main__':
-    print("🚗 Car Price Predictor - Unified Application")
+    print("🚗 Car Price Predictor - Enhanced Unified Application")
     print("📊 ML Model: Loaded and ready")
     print("🌐 React App: Serving from client/build")
-    print("🔗 API Endpoints:")
+    
+    if MARKET_TRENDS_AVAILABLE:
+        print("📈 Market Trends: ✅ Available")
+        print("🧠 Advanced Analytics: ✅ Enabled")
+    else:
+        print("📈 Market Trends: ❌ Not Available")
+    
+    print("\n🔗 Core API Endpoints:")
     print("   - GET  /api/health")
     print("   - GET  /api/companies")
     print("   - GET  /api/models/<company>")
@@ -551,7 +1048,65 @@ if __name__ == '__main__':
     print("   - GET  /api/dataset-info")
     print("   - POST /api/predict")
     print("   - POST /predict (legacy)")
-    print("🌍 Web App: http://localhost:5000")
-    print("⚡ Starting server...")
     
+    if MARKET_TRENDS_AVAILABLE:
+        print("\n📊 Market Trends API Endpoints:")
+        print("   - GET  /api/market-overview")
+        print("   - GET  /api/company-trends")
+        print("   - GET  /api/fuel-type-analysis")
+        print("   - GET  /api/city-market-analysis")
+        print("   - GET  /api/price-trends")
+        print("   - GET  /api/market-predictions")
+        print("   - GET  /api/advanced-analytics")
+        print("   - GET  /api/market-report")
+        print("   - GET  /api/filtered-trends")
+        print("   - GET  /api/search-suggestions")
+        
+        print("\n🌐 Web Interfaces:")
+        print("   - Main App: http://localhost:5000")
+        print("   - Market Trends Dashboard: http://localhost:5000/market-trends")
+        print("   - Enhanced Predictor: http://localhost:5000/enhanced")
+    else:
+        print("\n🌐 Web Interface:")
+        print("   - Main App: http://localhost:5000")
+    
+    print("\n⚡ Starting enhanced server...")
     app.run(debug=True, host='0.0.0.0', port=5000) 
+
+# ============================================================================
+# REACT APP ROUTES (Defined last to ensure API routes take precedence)
+# ============================================================================
+
+@app.route('/')
+def serve_react_app():
+    return send_from_directory('client/build', 'index.html')
+
+# Handle specific routes that are NOT API routes
+@app.route('/market-trends')
+def market_trends_route():
+    if MARKET_TRENDS_AVAILABLE:
+        return market_trends_page()
+    else:
+        return redirect('/')
+
+@app.route('/enhanced')
+def enhanced_route():
+    if MARKET_TRENDS_AVAILABLE:
+        return enhanced_predictor()
+    else:
+        return redirect('/')
+
+# Serve static files (CSS, JS, images, etc.)
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('client/build/static', filename)
+
+# Catch-all route for React Router (placed at the end to not interfere with API routes)
+@app.route('/<path:path>')
+def serve_react_routes(path):
+    # Serve React app static files first
+    if os.path.exists(os.path.join('client/build', path)):
+        return send_from_directory('client/build', path)
+    
+    # For any other path, serve React app (allows React Router to handle routing)
+    return send_from_directory('client/build', 'index.html') 

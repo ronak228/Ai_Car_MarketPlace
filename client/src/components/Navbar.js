@@ -49,6 +49,12 @@ const Navbar = ({ isAuthenticated, onLogout, user }) => {
                     Price Predictor
                   </Link>
                 </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/market-trends">
+                    <i className="fas fa-chart-line me-1"></i>
+                    Market Trends
+                  </Link>
+                </li>
               </>
             )}
           </ul>

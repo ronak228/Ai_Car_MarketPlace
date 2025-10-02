@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Market Trends - CarPredict Pro</title>
+    <link rel="stylesheet" href="../static/css/enhanced_style.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+</head>
+<body class="bg-gradient">
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/"><i class="fas fa-car"></i> CarPredict Pro</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#"><i class="fas fa-chart-line"></i> Market Trends</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#analytics"><i class="fas fa-brain"></i> Analytics</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#reports"><i class="fas fa-file-alt"></i> Reports</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid mt-5 pt-4">
+    <!-- Header Section -->
+    <div class="hero-section text-center mb-4">
+        <div class="container">
+            <h1 class="display-4 text-white mb-3">
+                <i class="fas fa-chart-line"></i> Advanced Market Trends
+            </h1>
+            <p class="lead text-white-50">
+                Comprehensive market analysis and real-time insights
+            </p>
+            <div class="mt-4">
+                <button class="btn btn-light btn-lg mr-3" onclick="refreshData()">
+                    <i class="fas fa-sync-alt"></i> Refresh Data
+                </button>
+                <button class="btn btn-outline-light btn-lg" onclick="exportReport()">
+                    <i class="fas fa-download"></i> Export Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="container mb-4">
+        <div class="card shadow border-0">
+            <div class="card-header bg-info text-white">
+                <h5><i class="fas fa-filter"></i> Market Filters</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Company</label>
+                        <select class="form-control" id="filterCompany">
+                            <option value="">All Companies</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Fuel Type</label>
+                        <select class="form-control" id="filterFuelType">
+                            <option value="">All Fuel Types</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Year Range</label>
+                        <select class="form-control" id="filterYearRange">
+                            <option value="">All Years</option>
+                            <option value="2020-2024">2020-2024</option>
+                            <option value="2015-2019">2015-2019</option>
+                            <option value="2010-2014">2010-2014</option>
+                            <option value="2005-2009">2005-2009</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Price Range</label>
+                        <select class="form-control" id="filterPriceRange">
+                            <option value="">All Prices</option>
+                            <option value="0-200000">Under ₹2L</option>
+                            <option value="200000-500000">₹2L - ₹5L</option>
+                            <option value="500000-1000000">₹5L - ₹10L</option>
+                            <option value="1000000-999999999">Above ₹10L</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-primary" onclick="applyFilters()">
+                        <i class="fas fa-search"></i> Apply Filters
+                    </button>
+                    <button class="btn btn-secondary ml-2" onclick="clearFilters()">
+                        <i class="fas fa-times"></i> Clear Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Market Overview Dashboard -->
+    <div class="container mb-5">
+        <div class="row" id="kpi-cards">
+            <!-- KPI cards will be populated here -->
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="container mb-5">
+        <div class="row">
+            <!-- Market Share Analysis -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow border-0">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-chart-pie"></i> Market Share Analysis</h5>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-light" onclick="changeChartType('marketShareChart', 'pie')">Pie</button>
+                            <button class="btn btn-outline-light" onclick="changeChartType('marketShareChart', 'doughnut')">Doughnut</button>
+                            <button class="btn btn-outline-light" onclick="changeChartType('marketShareChart', 'bar')">Bar</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="marketShareChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price Trends -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow border-0">
+                    <div class="card-header bg-success text-white">
+                        <h5><i class="fas fa-chart-area"></i> Price Trends Over Time</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="priceTrendsChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Fuel Type Distribution -->
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow border-0">
+                    <div class="card-header bg-info text-white">
+                        <h5><i class="fas fa-gas-pump"></i> Fuel Type Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="fuelTypeChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- City Market Analysis -->
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow border-0">
+                    <div class="card-header bg-warning text-dark">
+                        <h5><i class="fas fa-city"></i> Top Cities by Volume</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="cityVolumeChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Depreciation Analysis -->
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow border-0">
+                    <div class="card-header bg-danger text-white">
+                        <h5><i class="fas fa-chart-line"></i> Depreciation Trends</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="depreciationChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Analytics Section -->
+    <section id="analytics" class="mb-5">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="text-white"><i class="fas fa-brain"></i> Advanced Analytics</h2>
+            </div>
+
+            <div class="row">
+                <!-- Market Predictions -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow border-0">
+                        <div class="card-header bg-purple text-white">
+                            <h5><i class="fas fa-crystal-ball"></i> Market Predictions</h5>
+                        </div>
+                        <div class="card-body" id="market-predictions">
+                            <!-- Predictions content -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Correlation Analysis -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow border-0">
+                        <div class="card-header bg-secondary text-white">
+                            <h5><i class="fas fa-project-diagram"></i> Price Correlations</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="correlationChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Segments -->
+            <div class="row">
+                <div class="col-12 mb-4">
+                    <div class="card shadow border-0">
+                        <div class="card-header bg-dark text-white">
+                            <h5><i class="fas fa-layer-group"></i> Market Segmentation Analysis</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="market-segments-content">
+                                <!-- Market segments content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Reports Section -->
+    <section id="reports" class="mb-5">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="text-white"><i class="fas fa-file-alt"></i> Detailed Reports</h2>
+            </div>
+
+            <!-- Company Comparison Table -->
+            <div class="card shadow border-0 mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="fas fa-table"></i> Company Performance Comparison</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="companyTable" class="table table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Market Share (%)</th>
+                                    <th>Avg Price (₹)</th>
+                                    <th>Total Listings</th>
+                                    <th>Reliability Score</th>
+                                    <th>Price Trend</th>
+                                    <th>Avg Depreciation (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Table data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fuel Type Analysis Table -->
+            <div class="card shadow border-0 mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-gas-pump"></i> Fuel Type Market Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="fuelTypeTable" class="table table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Fuel Type</th>
+                                    <th>Market Share (%)</th>
+                                    <th>Avg Price (₹)</th>
+                                    <th>Median Price (₹)</th>
+                                    <th>Avg Age (Years)</th>
+                                    <th>Depreciation Rate (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Table data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-spinner" id="loadingSpinner" style="display: none;">
+    <div class="text-center">
+        <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <h5 class="text-white">Loading Market Data...</h5>
+    </div>
+</div>
+
+<script>
+// Global variables
+let charts = {};
+let marketData = {};
+let filteredData = {};
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    loadAllMarketData();
+    setupEventListeners();
+});
+
+// Load all market data
+async function loadAllMarketData() {
+    try {
+        showLoading(true);
+        
+        // Load all data in parallel
+        const [overview, companies, fuelTypes, cities, predictions, analytics] = await Promise.all([
+            fetch('/api/market-overview').then(r => r.json()),
+            fetch('/api/company-trends').then(r => r.json()),
+            fetch('/api/fuel-type-analysis').then(r => r.json()),
+            fetch('/api/city-market-analysis').then(r => r.json()),
+            fetch('/api/market-predictions').then(r => r.json()),
+            fetch('/api/advanced-analytics').then(r => r.json())
+        ]);
+
+        // Store data globally
+        marketData = {
+            overview: overview.data,
+            companies: companies.data,
+            fuelTypes: fuelTypes.data,
+            cities: cities.data,
+            predictions: predictions.data,
+            analytics: analytics.data
+        };
+
+        // Initialize UI components
+        populateFilters();
+        displayKPICards(marketData.overview);
+        createAllCharts();
+        displayMarketPredictions(marketData.predictions);
+        displayMarketSegments(marketData.analytics.market_segments);
+        populateCompanyTable(marketData.companies);
+        populateFuelTypeTable(marketData.fuelTypes);
+
+        showLoading(false);
+        
+        Swal.fire({
+            title: 'Data Loaded Successfully!',
+            text: 'Market trends analysis is ready',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+        });
+
+    } catch (error) {
+        console.error('Error loading market data:', error);
+        showLoading(false);
+        Swal.fire('Error', 'Failed to load market data', 'error');
+    }
+}
+
+// Populate filter dropdowns
+function populateFilters() {
+    // Populate company filter
+    const companySelect = document.getElementById('filterCompany');
+    Object.keys(marketData.companies).forEach(company => {
+        const option = document.createElement('option');
+        option.value = company;
+        option.textContent = company;
+        companySelect.appendChild(option);
+    });
+
+    // Populate fuel type filter
+    const fuelSelect = document.getElementById('filterFuelType');
+    Object.keys(marketData.fuelTypes).forEach(fuel => {
+        const option = document.createElement('option');
+        option.value = fuel;
+        option.textContent = fuel;
+        fuelSelect.appendChild(option);
+    });
+}
+
+// Display KPI cards
+function displayKPICards(data) {
+    const container = document.getElementById('kpi-cards');
+    container.innerHTML = `
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white shadow hover-lift">
+                <div class="card-body text-center">
+                    <i class="fas fa-car fa-3x mb-3"></i>
+                    <h3>${data.total_listings.toLocaleString()}</h3>
+                    <p class="mb-0">Total Listings</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white shadow hover-lift">
+                <div class="card-body text-center">
+                    <i class="fas fa-rupee-sign fa-3x mb-3"></i>
+                    <h3>₹${(data.average_price/100000).toFixed(1)}L</h3>
+                    <p class="mb-0">Average Price</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white shadow hover-lift">
+                <div class="card-body text-center">
+                    <i class="fas fa-building fa-3x mb-3"></i>
+                    <h3>${data.total_companies}</h3>
+                    <p class="mb-0">Companies</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-white shadow hover-lift">
+                <div class="card-body text-center">
+                    <i class="fas fa-calendar fa-3x mb-3"></i>
+                    <h3>${data.average_age.toFixed(1)}</h3>
+                    <p class="mb-0">Avg Age (Years)</p>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Create all charts
+function createAllCharts() {
+    createMarketShareChart();
+    createPriceTrendsChart();
+    createFuelTypeChart();
+    createCityVolumeChart();
+    createDepreciationChart();
+    createCorrelationChart();
+}
+
+// Market Share Chart
+function createMarketShareChart() {
+    const ctx = document.getElementById('marketShareChart').getContext('2d');
+    const companies = Object.keys(marketData.companies).slice(0, 10);
+    const marketShares = companies.map(company => marketData.companies[company].stats.market_share);
+
+    charts.marketShare = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: companies,
+            datasets: [{
+                data: marketShares,
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+                    '#FF9F40', '#FF6384', '#C9CBCF', '#4BC0C0', '#FF6384'
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.parsed.toFixed(1) + '%';
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Price Trends Chart
+function createPriceTrendsChart() {
+    const ctx = document.getElementById('priceTrendsChart').getContext('2d');
+    
+    // Get price trends data from API
+    fetch('/api/price-trends')
+        .then(response => response.json())
+        .then(data => {
+            const years = Object.keys(data.data).sort();
+            const avgPrices = years.map(year => data.data[year].Price_mean);
+            const medianPrices = years.map(year => data.data[year].Price_median);
+
+            charts.priceTrends = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: 'Average Price',
+                        data: avgPrices,
+                        borderColor: '#36A2EB',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Median Price',
+                        data: medianPrices,
+                        borderColor: '#FF6384',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        fill: false,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + (value/100000).toFixed(1) + 'L';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ₹' + context.parsed.y.toLocaleString('en-IN');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+}
+
+// Fuel Type Chart
+function createFuelTypeChart() {
+    const ctx = document.getElementById('fuelTypeChart').getContext('2d');
+    const fuelTypes = Object.keys(marketData.fuelTypes);
+    const marketShares = fuelTypes.map(fuel => marketData.fuelTypes[fuel].market_share);
+
+    charts.fuelType = new Chart(ctx, {
+        type: 'polarArea',
+        data: {
+            labels: fuelTypes,
+            datasets: [{
+                data: marketShares,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 205, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)'
+                ],
+                borderColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(153, 102, 255)'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+
+// City Volume Chart
+function createCityVolumeChart() {
+    const ctx = document.getElementById('cityVolumeChart').getContext('2d');
+    const cities = Object.keys(marketData.cities);
+    const volumes = cities.map(city => marketData.cities[city].total_listings);
+
+    charts.cityVolume = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: cities,
+            datasets: [{
+                label: 'Total Listings',
+                data: volumes,
+                backgroundColor: 'rgba(255, 193, 7, 0.7)',
+                borderColor: 'rgb(255, 193, 7)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            indexAxis: 'y',
+            scales: {
+                x: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Depreciation Chart
+function createDepreciationChart() {
+    const ctx = document.getElementById('depreciationChart').getContext('2d');
+    const companies = Object.keys(marketData.companies).slice(0, 8);
+    const depreciationRates = companies.map(company => marketData.companies[company].avg_depreciation);
+
+    charts.depreciation = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: companies,
+            datasets: [{
+                label: 'Depreciation Rate (%)',
+                data: depreciationRates,
+                backgroundColor: depreciationRates.map(rate => 
+                    rate < 0 ? 'rgba(40, 167, 69, 0.7)' : 'rgba(220, 53, 69, 0.7)'
+                ),
+                borderColor: depreciationRates.map(rate => 
+                    rate < 0 ? 'rgb(40, 167, 69)' : 'rgb(220, 53, 69)'
+                ),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Correlation Chart
+function createCorrelationChart() {
+    const ctx = document.getElementById('correlationChart').getContext('2d');
+    const correlations = marketData.analytics.correlations.price_correlations;
+    const factors = Object.keys(correlations);
+    const values = factors.map(factor => correlations[factor]);
+
+    charts.correlation = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: factors,
+            datasets: [{
+                label: 'Correlation with Price',
+                data: values,
+                backgroundColor: values.map(val => 
+                    val > 0 ? 'rgba(40, 167, 69, 0.7)' : 'rgba(220, 53, 69, 0.7)'
+                ),
+                borderColor: values.map(val => 
+                    val > 0 ? 'rgb(40, 167, 69)' : 'rgb(220, 53, 69)'
+                ),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    min: -1,
+                    max: 1
+                }
+            }
+        }
+    });
+}
+
+// Display market predictions
+function displayMarketPredictions(data) {
+    const container = document.getElementById('market-predictions');
+    let html = '';
+
+    // Trending up companies
+    if (data.trending_up && data.trending_up.length > 0) {
+        html += '<div class="mb-3">';
+        html += '<h6 class="text-success"><i class="fas fa-arrow-up"></i> Trending Up</h6>';
+        data.trending_up.forEach(item => {
+            html += `<div class="alert alert-success alert-sm">
+                        <strong>${item.company}</strong><br>
+                        Market Share: ${item.market_share}%<br>
+                        Reliability: ${item.reliability_score}/100
+                     </div>`;
+        });
+        html += '</div>';
+    }
+
+    // Recommendations
+    if (data.recommendations && data.recommendations.length > 0) {
+        html += '<div class="mb-3">';
+        html += '<h6 class="text-info"><i class="fas fa-lightbulb"></i> Recommendations</h6>';
+        data.recommendations.forEach(rec => {
+            html += `<div class="alert alert-info alert-sm">
+                        <strong>${rec.type}:</strong><br>
+                        ${rec.description}<br>
+                        <small class="text-muted">Confidence: ${rec.confidence}</small>
+                     </div>`;
+        });
+        html += '</div>';
+    }
+
+    container.innerHTML = html;
+}
+
+// Display market segments
+function displayMarketSegments(segments) {
+    const container = document.getElementById('market-segments-content');
+    let html = '<div class="row">';
+
+    Object.keys(segments).forEach(segmentKey => {
+        const segment = segments[segmentKey];
+        html += `
+            <div class="col-md-4 mb-3">
+                <div class="card border-left-primary">
+                    <div class="card-body">
+                        <h6 class="card-title">${segmentKey}</h6>
+                        <p class="card-text">
+                            <strong>Size:</strong> ${segment.size} vehicles<br>
+                            <strong>Avg Price:</strong> ₹${segment.avg_price.toLocaleString('en-IN')}<br>
+                            <strong>Dominant Fuel:</strong> ${segment.dominant_fuel}<br>
+                            <strong>Top Company:</strong> ${segment.dominant_company}
+                        </p>
+                        <small class="text-muted">${segment.characteristics}</small>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// Populate company table
+function populateCompanyTable(companies) {
+    const tbody = document.querySelector('#companyTable tbody');
+    tbody.innerHTML = '';
+
+    Object.keys(companies).forEach(company => {
+        const data = companies[company];
+        const row = tbody.insertRow();
+        
+        row.innerHTML = `
+            <td><strong>${company}</strong></td>
+            <td>${data.stats.market_share}%</td>
+            <td>₹${Math.round(data.stats.Price_mean).toLocaleString('en-IN')}</td>
+            <td>${data.stats.Price_count}</td>
+            <td>${data.reliability_score}/100</td>
+            <td><span class="trend-indicator trend-${data.price_trend.toLowerCase()}">${data.price_trend}</span></td>
+            <td>${data.avg_depreciation.toFixed(1)}%</td>
+        `;
+    });
+
+    // Initialize DataTable
+    $('#companyTable').DataTable({
+        pageLength: 10,
+        order: [[1, 'desc']],
+        responsive: true
+    });
+}
+
+// Populate fuel type table
+function populateFuelTypeTable(fuelTypes) {
+    const tbody = document.querySelector('#fuelTypeTable tbody');
+    tbody.innerHTML = '';
+
+    Object.keys(fuelTypes).forEach(fuel => {
+        const data = fuelTypes[fuel];
+        const row = tbody.insertRow();
+        
+        row.innerHTML = `
+            <td><strong>${fuel}</strong></td>
+            <td>${data.market_share.toFixed(1)}%</td>
+            <td>₹${Math.round(data.average_price).toLocaleString('en-IN')}</td>
+            <td>₹${Math.round(data.median_price).toLocaleString('en-IN')}</td>
+            <td>${data.average_age.toFixed(1)}</td>
+            <td>${data.depreciation_rate.toFixed(1)}%</td>
+        `;
+    });
+
+    // Initialize DataTable
+    $('#fuelTypeTable').DataTable({
+        pageLength: 10,
+        order: [[1, 'desc']],
+        responsive: true
+    });
+}
+
+// Utility functions
+function showLoading(show) {
+    document.getElementById('loadingSpinner').style.display = show ? 'flex' : 'none';
+}
+
+function refreshData() {
+    location.reload();
+}
+
+function exportReport() {
+    Swal.fire('Feature Coming Soon', 'Export functionality will be available in the next update', 'info');
+}
+
+function changeChartType(chartId, newType) {
+    // Implementation for changing chart types
+    Swal.fire('Feature Coming Soon', 'Chart type switching will be available in the next update', 'info');
+}
+
+function applyFilters() {
+    // Implementation for applying filters
+    Swal.fire('Feature Coming Soon', 'Advanced filtering will be available in the next update', 'info');
+}
+
+function clearFilters() {
+    document.getElementById('filterCompany').value = '';
+    document.getElementById('filterFuelType').value = '';
+    document.getElementById('filterYearRange').value = '';
+    document.getElementById('filterPriceRange').value = '';
+}
+
+function setupEventListeners() {
+    // Add any additional event listeners here
+}
+
+// Smooth scrolling for navigation
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+</script>
+
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+</body>
+</html>
