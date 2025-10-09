@@ -82,4 +82,23 @@ instance/
 
 # Database
 *.db
-*.sqlite3 
+*.sqlite3
+
+# Large model files
+*.pkl
+*.joblib
+*.h5
+*.model
+
+# Large datasets
+*.csv
+enhanced_indian_car_dataset.csv
+
+# Test files
+test_*.py
+*_test.py
+verify_*.py
+
+# Generated files
+generate_*.py
+retrain_*.py 

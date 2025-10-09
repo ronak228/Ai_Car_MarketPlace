@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import json
+import os
 from collections import defaultdict
 import pickle
 from scipy import stats
@@ -33,29 +34,36 @@ def clean_for_json(obj):
         return obj
 
 class MarketTrendsAnalyzer:
-    def __init__(self, data_file='Cleaned_Car_data_master.csv', additional_data_file='generated_5000_strict.csv'):
+    def __init__(self, data_file='Cleaned_Car_data_master.csv', additional_data_file='generated_5000_strict.csv', enhanced_data_file='enhanced_indian_car_dataset.csv'):
         """Initialize the market trends analyzer with car data"""
         try:
-            # Load main dataset
-            data1 = pd.read_csv(data_file)
-            print(f"✅ Main dataset loaded for analysis - {len(data1)} records")
-            
-            # Try to load additional dataset
-            try:
-                data2 = pd.read_csv(additional_data_file)
-                print(f"✅ Additional dataset loaded for analysis - {len(data2)} records")
+            # Try to load enhanced dataset first
+            if os.path.exists(enhanced_data_file):
+                self.data = pd.read_csv(enhanced_data_file)
+                print(f"[OK] Enhanced dataset loaded for analysis - {len(self.data)} records")
+            else:
+                # Fallback to original datasets
+                data1 = pd.read_csv(data_file)
+                print(f"[OK] Main dataset loaded for analysis - {len(data1)} records")
                 
-                # Combine both datasets
-                self.data = pd.concat([data1, data2], ignore_index=True)
-                print(f"✅ Combined dataset for analysis - {len(self.data)} total records")
-                
-            except FileNotFoundError:
-                print(f"⚠️ Additional dataset not found: {additional_data_file}")
-                print("Using main dataset only")
-                self.data = data1
+                # Try to load additional dataset
+                try:
+                    data2 = pd.read_csv(additional_data_file)
+                    print(f"[OK] Additional dataset loaded for analysis - {len(data2)} records")
+                    
+                    # Combine both datasets
+                    self.data = pd.concat([data1, data2], ignore_index=True)
+                    print(f"[OK] Combined dataset for analysis - {len(self.data)} total records")
+                except FileNotFoundError:
+                    print(f"[WARNING] Additional dataset not found: {additional_data_file}")
+                    print("Using main dataset only")
+                    self.data = data1
                 
         except FileNotFoundError:
-            print(f"❌ Main dataset not found: {data_file}")
+            print(f"[ERROR] Main dataset not found: {data_file}")
+            raise
+        except Exception as e:
+            print(f"[ERROR] Error loading datasets: {str(e)}")
             raise
             
         self.current_year = datetime.now().year

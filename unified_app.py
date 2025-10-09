@@ -10,17 +10,39 @@ from collections import defaultdict
 import warnings
 warnings.filterwarnings('ignore')
 
+# Fix Windows console encoding for emoji characters
+import sys
+import os
+if sys.platform == "win32":
+    os.system("chcp 65001 > nul")
+
 # Import market trends analyzer
 try:
     from market_trends_analyzer import MarketTrendsAnalyzer, get_market_trends_data, get_company_comparison, get_price_prediction_trends
     MARKET_TRENDS_AVAILABLE = True
-    print("✅ Market Trends Analyzer imported successfully")
+    print("[OK] Market Trends Analyzer imported successfully")
 except ImportError as e:
-    print(f"⚠️ Market Trends Analyzer not available: {e}")
+    print(f"[WARNING] Market Trends Analyzer not available: {e}")
     MARKET_TRENDS_AVAILABLE = False
+
+# MongoDB authentication
+try:
+    from mongodb_config import get_sync_collections, test_connection
+    from auth_routes import auth_bp
+    from models import PredictionModel
+    MONGODB_AVAILABLE = True
+    print("[OK] MongoDB authentication available")
+except ImportError as e:
+    print(f"[WARNING] MongoDB authentication not available: {e}")
+    MONGODB_AVAILABLE = False
 
 app = Flask(__name__, static_folder='client/build/static', template_folder='client/build')
 cors = CORS(app)
+
+# Register authentication routes
+if MONGODB_AVAILABLE:
+    app.register_blueprint(auth_bp)
+    print("[OK] MongoDB authentication routes registered")
 
 # Debug: Print route registration order (removed deprecated before_first_request)
 def debug_routes():
@@ -46,11 +68,6 @@ try:
         enhanced_label_encoders = {}
         enhanced_feature_names = enhanced_categorical_columns + enhanced_numerical_features
         
-        print("✅ Enhanced ML model loaded successfully")
-        print(f"Model: {enhanced_model_name}")
-        if 'r2_score' in enhanced_performance:
-            print(f"R² Score: {enhanced_performance['r2_score']:.4f}")
-        print(f"Features: {len(enhanced_feature_names)} ({len(enhanced_categorical_columns)} categorical + {len(enhanced_numerical_features)} numerical)")
     else:
         # Fallback for unexpected format
         enhanced_model = None
@@ -61,10 +78,10 @@ try:
         enhanced_numerical_features = []
         enhanced_model_name = "Unknown"
         enhanced_performance = {}
-        print("⚠️ Enhanced model format not recognized")
+        print("[WARNING] Enhanced model format not recognized")
         
 except FileNotFoundError:
-    print("⚠️ Enhanced model not found, using legacy model")
+    print("[WARNING] Enhanced model not found, using legacy model")
     enhanced_model = None
     enhanced_scaler = None
     enhanced_label_encoders = {}
@@ -74,7 +91,7 @@ except FileNotFoundError:
     enhanced_model_name = "None"
     enhanced_performance = {}
 except Exception as e:
-    print(f"⚠️ Error loading enhanced model: {str(e)}")
+    print(f"[WARNING] Error loading enhanced model: {str(e)}")
     print("Using legacy model instead")
     enhanced_model = None
     enhanced_scaler = None
@@ -94,10 +111,9 @@ try:
     le_fuel = model_data['le_fuel']
     le_transmission = model_data.get('le_transmission', None)
     scaler = model_data.get('scaler', None)
-    print("✅ Legacy model loaded successfully")
 except Exception as e:
-    print(f"❌ Error loading legacy model: {str(e)}")
-    print("⚠️ No models available - some features may not work")
+    print(f"[ERROR] Error loading legacy model: {str(e)}")
+    print("[WARNING] No models available - some features may not work")
     model = None
     le_name = None
     le_company = None
@@ -105,23 +121,22 @@ except Exception as e:
     le_transmission = None
     scaler = None
 
-# Load master dataset with all 22 fields - combine multiple CSV files
+# Load master dataset with all 22 fields - use enhanced dataset
 try:
-    # Load the main dataset
-    car1 = pd.read_csv('Cleaned_Car_data_master.csv')
-    print(f"✅ Main dataset loaded - {len(car1)} records")
-    
-    # Load the additional dataset
-    car2 = pd.read_csv('generated_5000_strict.csv')
-    print(f"✅ Additional dataset loaded - {len(car2)} records")
-    
-    # Combine both datasets
-    car = pd.concat([car1, car2], ignore_index=True)
-    print(f"✅ Combined dataset created - {len(car)} total records")
+    # Try to load the enhanced dataset first
+    if os.path.exists('enhanced_indian_car_dataset.csv'):
+        car = pd.read_csv('enhanced_indian_car_dataset.csv')
+        print(f"[OK] Enhanced dataset loaded: {len(car)} records with {car['company'].nunique()} brands")
+    else:
+        # Fallback to original datasets
+        car1 = pd.read_csv('Cleaned_Car_data_master.csv')
+        car2 = pd.read_csv('generated_5000_strict.csv')
+        car = pd.concat([car1, car2], ignore_index=True)
+        print(f"[OK] Original datasets loaded: {len(car)} records")
     
 except FileNotFoundError as e:
-    print(f"❌ Dataset file not found: {e}")
-    print("❌ Creating empty DataFrame")
+    print(f"[ERROR] Dataset file not found: {e}")
+    print("[ERROR] Creating empty DataFrame")
     car = pd.DataFrame()
 
 # Initialize market trends analyzer
@@ -129,10 +144,7 @@ market_analyzer = None
 if MARKET_TRENDS_AVAILABLE:
     try:
         market_analyzer = MarketTrendsAnalyzer()
-        print("✅ Market Trends Analyzer initialized successfully")
-        print(f"   📊 {len(market_analyzer.data)} records loaded for analysis")
     except Exception as e:
-        print(f"⚠️ Failed to initialize Market Trends Analyzer: {e}")
         MARKET_TRENDS_AVAILABLE = False
 
 # Get unique values for all categorical fields
@@ -172,6 +184,53 @@ def get_all_models():
 def get_models_by_company(company):
     company_models = car[car['company'] == company]['model'].unique()
     return jsonify(sorted(company_models))
+
+@app.route('/api/models/<company>/<int:year>')
+def get_models_by_company_and_year(company, year):
+    """Get models for a specific company and year"""
+    try:
+        # Filter by company and year
+        filtered_cars = car[(car['company'] == company) & (car['year'] == year)]
+        
+        if filtered_cars.empty:
+            # If no exact match, find models available in that year range
+            # Look for models that were available around that year (±2 years)
+            year_range = car[(car['company'] == company) & 
+                           (car['year'] >= year - 2) & 
+                           (car['year'] <= year + 2)]
+            
+            if not year_range.empty:
+                models = sorted(year_range['model'].unique())
+                return jsonify({
+                    'models': models,
+                    'note': f'Models available around {year} (±2 years)',
+                    'exact_year_available': False
+                })
+            else:
+                # Fallback to all models for the company
+                all_models = sorted(car[car['company'] == company]['model'].unique())
+                return jsonify({
+                    'models': all_models,
+                    'note': f'All models for {company} (no data for {year})',
+                    'exact_year_available': False
+                })
+        else:
+            models = sorted(filtered_cars['model'].unique())
+            return jsonify({
+                'models': models,
+                'note': f'Models available in {year}',
+                'exact_year_available': True
+            })
+            
+    except Exception as e:
+        print(f"Error getting models for {company} in {year}: {str(e)}")
+        # Fallback to company models only
+        company_models = car[car['company'] == company]['model'].unique()
+        return jsonify({
+            'models': sorted(company_models),
+            'note': f'All models for {company} (error occurred)',
+            'exact_year_available': False
+        })
 
 @app.route('/api/years')
 def get_years():
@@ -435,6 +494,22 @@ def predict():
         else:
             prediction_result = predict_with_legacy_model(car_data)
         
+        
+        # Store prediction in MongoDB if available and user is authenticated
+        if MONGODB_AVAILABLE and 'user_id' in data:
+            try:
+                collections = get_sync_collections()
+                if collections:
+                    prediction_doc = PredictionModel.create_prediction_document(
+                        data['user_id'],
+                        car_data,
+                        prediction_result['prediction']
+                    )
+                    collections['predictions'].insert_one(prediction_doc)
+                    print(f"[OK] Prediction stored for user {data['user_id']}")
+            except Exception as e:
+                print(f"[WARNING] Failed to store prediction: {str(e)}")
+        
         return jsonify(prediction_result)
     
     except Exception as e:
@@ -514,6 +589,9 @@ def predict_with_enhanced_model(car_data):
         r2_score = enhanced_performance.get('r2_score', 0.85)
         confidence_score = min(95, max(60, int(r2_score * 100)))
         
+        # Get additional car information from dataset
+        car_info = get_car_info_from_dataset(car_data)
+        
         return {
             "prediction": predicted_price,
             "model_used": enhanced_model_name,
@@ -524,12 +602,102 @@ def predict_with_enhanced_model(car_data):
                 "mae": enhanced_performance.get('mae', 30000)
             },
             "features_used": len(enhanced_feature_names),
+            "car_info": car_info,
             "message": f"Enhanced prediction using {enhanced_model_name} with {len(enhanced_feature_names)} features"
         }
     
     except Exception as e:
         print(f"Enhanced model prediction error: {str(e)}")
         raise e
+
+def get_car_info_from_dataset(car_data):
+    """Get comprehensive car information from dataset"""
+    try:
+        # Filter dataset for similar cars
+        similar_cars = car[
+            (car['company'] == car_data['company']) & 
+            (car['model'] == car_data['model']) &
+            (car['year'] == car_data['year'])
+        ]
+        
+        if similar_cars.empty:
+            # If no exact match, find similar cars from the same company and year
+            similar_cars = car[
+                (car['company'] == car_data['company']) & 
+                (car['year'] == car_data['year'])
+            ]
+        
+        if similar_cars.empty:
+            # If still no match, find cars from the same company
+            similar_cars = car[car['company'] == car_data['company']]
+        
+        if not similar_cars.empty:
+            # Calculate statistics
+            avg_price = similar_cars['Price'].mean()
+            min_price = similar_cars['Price'].min()
+            max_price = similar_cars['Price'].max()
+            price_std = similar_cars['Price'].std()
+            
+            # Get fuel type distribution
+            fuel_distribution = similar_cars['fuel_type'].value_counts().to_dict()
+            
+            # Get transmission distribution
+            transmission_distribution = similar_cars['transmission'].value_counts().to_dict()
+            
+            # Get condition distribution
+            condition_distribution = similar_cars['car_condition'].value_counts().to_dict()
+            
+            # Get city distribution
+            city_distribution = similar_cars['city'].value_counts().head(10).to_dict()
+            
+            # Get year range for this company/model
+            year_range = {
+                'min': int(similar_cars['year'].min()),
+                'max': int(similar_cars['year'].max())
+            }
+            
+            # Get average kilometers
+            avg_kms = similar_cars['kms_driven'].mean()
+            
+            return {
+                'similar_cars_found': len(similar_cars),
+                'price_statistics': {
+                    'average': float(round(avg_price, 2)),
+                    'minimum': float(round(min_price, 2)),
+                    'maximum': float(round(max_price, 2)),
+                    'standard_deviation': float(round(price_std, 2)) if not pd.isna(price_std) else 0.0
+                },
+                'fuel_type_distribution': fuel_distribution,
+                'transmission_distribution': transmission_distribution,
+                'condition_distribution': condition_distribution,
+                'top_cities': city_distribution,
+                'year_range': year_range,
+                'average_kilometers': float(round(avg_kms, 0)),
+                'data_availability': {
+                    'exact_match': len(car[
+                        (car['company'] == car_data['company']) & 
+                        (car['model'] == car_data['model']) &
+                        (car['year'] == car_data['year'])
+                    ]) > 0,
+                    'company_year_match': len(car[
+                        (car['company'] == car_data['company']) & 
+                        (car['year'] == car_data['year'])
+                    ]) > 0,
+                    'company_match': len(car[car['company'] == car_data['company']]) > 0
+                }
+            }
+        else:
+            return {
+                'similar_cars_found': 0,
+                'message': 'No similar cars found in dataset'
+            }
+            
+    except Exception as e:
+        print(f"Error getting car info: {str(e)}")
+        return {
+            'similar_cars_found': 0,
+            'error': str(e)
+        }
 
 def predict_with_legacy_model(car_data):
     """Fallback to legacy model for backward compatibility"""
@@ -564,10 +732,14 @@ def predict_with_legacy_model(car_data):
         prediction = model.predict(input_encoded)
         predicted_price = float(np.round(prediction[0], 2))
         
+        # Get additional car information from dataset
+        car_info = get_car_info_from_dataset(car_data)
+        
         return {
             "prediction": predicted_price,
             "model_used": "Legacy Linear Regression",
             "confidence_score": 75,
+            "car_info": car_info,
             "message": "Legacy prediction (limited features)"
         }
     
@@ -829,6 +1001,375 @@ def api_market_report():
             'error': str(e)
         }), 500
 
+# ============================================================================
+# ENHANCED CHART DATA APIs
+# ============================================================================
+
+@app.route('/api/charts/price-trends-by-year')
+@cross_origin()
+def api_price_trends_chart():
+    """Get price trends by year for chart visualization"""
+    try:
+        # Get price trends by year directly from dataset
+        price_trends = car.groupby('year')['Price'].mean().round(2)
+        
+        # Format for chart.js
+        chart_data = {
+            'labels': [str(year) for year in price_trends.index],
+            'datasets': [
+                {
+                    'label': 'Average Price (₹)',
+                    'data': list(price_trends.values),
+                    'borderColor': 'rgb(75, 192, 192)',
+                    'backgroundColor': 'rgba(75, 192, 192, 0.2)',
+                    'tension': 0.1
+                }
+            ]
+        }
+        
+        return jsonify({
+            'success': True,
+            'data': chart_data,
+            'title': 'Car Price Trends by Year',
+            'description': 'Average car prices across different years'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/charts/company-market-share')
+@cross_origin()
+def api_company_market_share_chart():
+    """Get company market share data for pie chart - ALL BRANDS"""
+    try:
+        # Get company counts directly from dataset
+        company_counts = car['company'].value_counts()
+        
+        # Get ALL companies by count (sorted)
+        all_companies = [(company, count) for company, count in company_counts.items()]
+        all_companies.sort(key=lambda x: x[1], reverse=True)
+        
+        # Generate colors for all companies
+        colors = [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
+            '#C9CBCF', '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+            '#FF9F40', '#C9CBCF', '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+            '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384', '#36A2EB', '#FFCE56',
+            '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384', '#36A2EB',
+            '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384',
+            '#36A2EB', '#FFCE56'
+        ]
+        
+        # Format for chart.js pie chart
+        chart_data = {
+            'labels': [company[0] for company in all_companies],
+            'datasets': [
+                {
+                    'label': 'Market Share (Number of Cars)',
+                    'data': [company[1] for company in all_companies],
+                    'backgroundColor': colors[:len(all_companies)],
+                    'borderWidth': 2,
+                    'borderColor': '#fff'
+                }
+            ]
+        }
+        
+        return jsonify({
+            'success': True,
+            'data': chart_data,
+            'title': f'All {len(all_companies)} Companies by Market Share',
+            'description': f'Complete distribution of car listings across all {len(all_companies)} brands'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/charts/fuel-type-distribution')
+@cross_origin()
+def api_fuel_type_distribution_chart():
+    """Get fuel type distribution for chart"""
+    try:
+        # Get fuel type counts directly from dataset
+        fuel_counts = car['fuel_type'].value_counts()
+        
+        # Format for chart.js
+        chart_data = {
+            'labels': list(fuel_counts.keys()),
+            'datasets': [
+                {
+                    'label': 'Number of Cars',
+                    'data': [int(count) for count in fuel_counts.values],
+                    'backgroundColor': [
+                        '#FF6384',  # Petrol - Red
+                        '#36A2EB',  # Diesel - Blue
+                        '#FFCE56',  # CNG - Yellow
+                        '#4BC0C0',  # Electric - Teal
+                        '#9966FF',  # Hybrid - Purple
+                        '#FF9F40'   # LPG - Orange
+                    ],
+                    'borderWidth': 2,
+                    'borderColor': '#fff'
+                }
+            ]
+        }
+        
+        return jsonify({
+            'success': True,
+            'data': chart_data,
+            'title': 'Fuel Type Distribution',
+            'description': 'Distribution of cars by fuel type'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/charts/city-price-comparison')
+@cross_origin()
+def api_city_price_comparison_chart():
+    """Get city-wise price comparison for bar chart - ALL CITIES"""
+    try:
+        # Get city average prices directly from dataset
+        city_avg_prices = car.groupby('city')['Price'].agg(['mean', 'count']).round(2)
+        city_avg_prices = city_avg_prices.sort_values('mean', ascending=False)
+        
+        # Get ALL cities by average price (sorted)
+        all_cities = [(city, data['mean']) for city, data in city_avg_prices.iterrows()]
+        
+        # Format for chart.js bar chart
+        chart_data = {
+            'labels': [city[0] for city in all_cities],
+            'datasets': [
+                {
+                    'label': 'Average Price (₹)',
+                    'data': [city[1] for city in all_cities],
+                    'backgroundColor': 'rgba(54, 162, 235, 0.8)',
+                    'borderColor': 'rgba(54, 162, 235, 1)',
+                    'borderWidth': 1
+                }
+            ]
+        }
+        
+        return jsonify({
+            'success': True,
+            'data': chart_data,
+            'title': f'All {len(all_cities)} Cities by Average Car Price',
+            'description': f'Complete comparison of average car prices across all {len(all_cities)} Indian cities'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/charts/transmission-trends')
+@cross_origin()
+def api_transmission_trends_chart():
+    """Get transmission type trends over years"""
+    if not MARKET_TRENDS_AVAILABLE or not market_analyzer:
+        return jsonify({
+            'success': False,
+            'error': 'Market trends analysis not available'
+        }), 503
+    
+    try:
+        # Analyze transmission trends by year
+        transmission_trends = {}
+        
+        for year in sorted(car['year'].unique()):
+            year_data = car[car['year'] == year]
+            transmission_counts = year_data['transmission'].value_counts()
+            transmission_trends[year] = transmission_counts.to_dict()
+        
+        # Get unique transmission types
+        transmission_types = car['transmission'].unique()
+        
+        # Format for chart.js line chart
+        chart_data = {
+            'labels': list(transmission_trends.keys()),
+            'datasets': []
+        }
+        
+        colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+        
+        for i, transmission in enumerate(transmission_types):
+            data = [transmission_trends[year].get(transmission, 0) for year in transmission_trends.keys()]
+            chart_data['datasets'].append({
+                'label': transmission,
+                'data': data,
+                'borderColor': colors[i % len(colors)],
+                'backgroundColor': colors[i % len(colors)].replace('rgb', 'rgba').replace(')', ', 0.2)'),
+                'tension': 0.1
+            })
+        
+        return jsonify({
+            'success': True,
+            'data': chart_data,
+            'title': 'Transmission Type Trends Over Years',
+            'description': 'Popularity of different transmission types across years'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/charts/ev-vs-ice-trends')
+@cross_origin()
+def api_ev_vs_ice_trends_chart():
+    """Get EV vs ICE (Internal Combustion Engine) trends"""
+    if not MARKET_TRENDS_AVAILABLE or not market_analyzer:
+        return jsonify({
+            'success': False,
+            'error': 'Market trends analysis not available'
+        }), 503
+    
+    try:
+        # Analyze EV vs ICE trends by year
+        ev_ice_trends = {}
+        
+        for year in sorted(car['year'].unique()):
+            year_data = car[car['year'] == year]
+            
+            # Count EVs (Electric) vs ICE (Petrol, Diesel, CNG, LPG)
+            ev_count = len(year_data[year_data['fuel_type'] == 'Electric'])
+            ice_count = len(year_data[year_data['fuel_type'].isin(['Petrol', 'Diesel', 'CNG', 'LPG'])])
+            hybrid_count = len(year_data[year_data['fuel_type'] == 'Hybrid'])
+            
+            ev_ice_trends[year] = {
+                'Electric': ev_count,
+                'ICE': ice_count,
+                'Hybrid': hybrid_count
+            }
+        
+        # Format for chart.js line chart
+        chart_data = {
+            'labels': list(ev_ice_trends.keys()),
+            'datasets': [
+                {
+                    'label': 'Electric Vehicles',
+                    'data': [ev_ice_trends[year]['Electric'] for year in ev_ice_trends.keys()],
+                    'borderColor': '#4BC0C0',
+                    'backgroundColor': 'rgba(75, 192, 192, 0.2)',
+                    'tension': 0.1
+                },
+                {
+                    'label': 'ICE Vehicles',
+                    'data': [ev_ice_trends[year]['ICE'] for year in ev_ice_trends.keys()],
+                    'borderColor': '#FF6384',
+                    'backgroundColor': 'rgba(255, 99, 132, 0.2)',
+                    'tension': 0.1
+                },
+                {
+                    'label': 'Hybrid Vehicles',
+                    'data': [ev_ice_trends[year]['Hybrid'] for year in ev_ice_trends.keys()],
+                    'borderColor': '#FFCE56',
+                    'backgroundColor': 'rgba(255, 206, 86, 0.2)',
+                    'tension': 0.1
+                }
+            ]
+        }
+        
+        return jsonify({
+            'success': True,
+            'data': chart_data,
+            'title': 'EV vs ICE Vehicle Trends',
+            'description': 'Growth of Electric, ICE, and Hybrid vehicles over time'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/charts/price-vs-kms-scatter')
+@cross_origin()
+def api_price_vs_kms_scatter_chart():
+    """Get price vs kilometers driven scatter plot data"""
+    if not MARKET_TRENDS_AVAILABLE or not market_analyzer:
+        return jsonify({
+            'success': False,
+            'error': 'Market trends analysis not available'
+        }), 503
+    
+    try:
+        # Sample data for scatter plot (to avoid too many points)
+        sample_data = car.sample(min(1000, len(car)))
+        
+        # Format for chart.js scatter plot
+        chart_data = {
+            'datasets': [
+                {
+                    'label': 'Price vs Kilometers',
+                    'data': [
+                        {
+                            'x': int(row['kms_driven']),
+                            'y': int(row['Price'])
+                        }
+                        for _, row in sample_data.iterrows()
+                    ],
+                    'backgroundColor': 'rgba(54, 162, 235, 0.6)',
+                    'borderColor': 'rgba(54, 162, 235, 1)',
+                    'pointRadius': 3
+                }
+            ]
+        }
+        
+        return jsonify({
+            'success': True,
+            'data': chart_data,
+            'title': 'Price vs Kilometers Driven',
+            'description': 'Relationship between car price and kilometers driven'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/charts/company-price-comparison')
+@cross_origin()
+def api_company_price_comparison_chart():
+    """Get company-wise average price comparison - ALL BRANDS"""
+    try:
+        # Get company average prices directly from dataset
+        company_avg_prices = car.groupby('company')['Price'].agg(['mean', 'count']).round(2)
+        company_avg_prices = company_avg_prices.sort_values('mean', ascending=False)
+        
+        # Get ALL companies by average price (sorted)
+        all_companies = [(company, data['mean']) for company, data in company_avg_prices.iterrows()]
+        
+        # Format for chart.js bar chart
+        chart_data = {
+            'labels': [company[0] for company in all_companies],
+            'datasets': [
+                {
+                    'label': 'Average Price (₹)',
+                    'data': [company[1] for company in all_companies],
+                    'backgroundColor': 'rgba(255, 99, 132, 0.8)',
+                    'borderColor': 'rgba(255, 99, 132, 1)',
+                    'borderWidth': 1
+                }
+            ]
+        }
+        
+        return jsonify({
+            'success': True,
+            'data': chart_data,
+            'title': f'All {len(all_companies)} Companies by Average Price',
+            'description': f'Complete comparison of average car prices across all {len(all_companies)} brands'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @app.route('/api/search-suggestions')
 @cross_origin()
 def api_search_suggestions():
@@ -1055,48 +1596,26 @@ def api_test():
     })
 
 if __name__ == '__main__':
-    print("🚗 Car Price Predictor - Enhanced Unified Application")
-    print("📊 ML Model: Loaded and ready")
-    print("🌐 React App: Serving from client/build")
-    
-    if MARKET_TRENDS_AVAILABLE:
-        print("📈 Market Trends: ✅ Available")
-        print("🧠 Advanced Analytics: ✅ Enabled")
+    print("AI Car Marketplace - Enhanced Edition")
+    print("=" * 40)
+    print("[OK] ML Model: Ready")
+    if not car.empty:
+        print(f"[OK] Dataset: {len(car):,} cars from {car['company'].nunique()} brands")
+        ev_count = len(car[car['fuel_type'] == 'Electric'])
+        if ev_count > 0:
+            print(f"[OK] Electric Vehicles: {ev_count:,} models")
+        print(f"[OK] Cities: {car['city'].nunique()} locations")
     else:
-        print("📈 Market Trends: ❌ Not Available")
-    
-    print("\n🔗 Core API Endpoints:")
-    print("   - GET  /api/health")
-    print("   - GET  /api/companies")
-    print("   - GET  /api/models/<company>")
-    print("   - GET  /api/years")
-    print("   - GET  /api/fuel-types")
-    print("   - GET  /api/dataset-info")
-    print("   - POST /api/predict")
-    print("   - POST /predict (legacy)")
-    
-    if MARKET_TRENDS_AVAILABLE:
-        print("\n📊 Market Trends API Endpoints:")
-        print("   - GET  /api/market-overview")
-        print("   - GET  /api/company-trends")
-        print("   - GET  /api/fuel-type-analysis")
-        print("   - GET  /api/city-market-analysis")
-        print("   - GET  /api/price-trends")
-        print("   - GET  /api/market-predictions")
-        print("   - GET  /api/advanced-analytics")
-        print("   - GET  /api/market-report")
-        print("   - GET  /api/filtered-trends")
-        print("   - GET  /api/search-suggestions")
-        
-        print("\n🌐 Web Interfaces:")
-        print("   - Main App: http://localhost:5000")
-        print("   - Market Trends Dashboard: http://localhost:5000/market-trends")
-        print("   - Enhanced Predictor: http://localhost:5000/enhanced")
+        print("[WARNING] Dataset: Not loaded")
+    print("[OK] Authentication: Supabase + OTP")
+    if MONGODB_AVAILABLE:
+        print("[OK] MongoDB Atlas: Connected")
     else:
-        print("\n🌐 Web Interface:")
-        print("   - Main App: http://localhost:5000")
-    
-    print("\n⚡ Starting enhanced server...")
+        print("[WARNING] MongoDB: Not available")
+    print("=" * 40)
+    print("Backend: http://localhost:5000")
+    print("Frontend: http://localhost:3000")
+    print("=" * 40)
     app.run(debug=True, host='0.0.0.0', port=5000) 
 
 # ============================================================================

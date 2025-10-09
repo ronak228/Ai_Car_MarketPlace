@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -7,10 +7,15 @@ import './App.css';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import SignIn from './components/SignIn';
+import MongoSignIn from './components/MongoSignIn';
 import Dashboard from './components/Dashboard';
 import CarPricePredictor from './components/CarPricePredictor';
 import MarketTrends from './components/MarketTrends';
+import EnhancedMarketTrends from './components/EnhancedMarketTrends';
 import SupabaseTest from './components/SupabaseTest';
+
+// MongoDB Auth Client
+import mongoAuthClient from './mongoAuthClient';
 
 // Error Boundary Component
 class ErrorBoundary extends React.Component {
@@ -57,9 +62,9 @@ class ErrorBoundary extends React.Component {
 }
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [user, setUser] = React.useState(null);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleLogin = (userData) => {
     console.log('Handling login:', userData);
@@ -74,78 +79,100 @@ function App() {
     console.log('User logged in successfully');
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     console.log('Handling logout');
+    try {
+      // Try MongoDB logout first
+      if (mongoAuthClient.isAuthenticated()) {
+        await mongoAuthClient.logout();
+      }
+    } catch (error) {
+      console.error('MongoDB logout error:', error);
+    }
+    
     setIsAuthenticated(false);
     setUser(null);
     
-    // Clear all authentication data
+    // Clear localStorage
     localStorage.removeItem('auth_token');
     localStorage.removeItem('auth_user');
     localStorage.removeItem('auth_timestamp');
+    localStorage.removeItem('mongo_auth_token');
+    localStorage.removeItem('mongo_auth_user');
+    localStorage.removeItem('mongo_auth_timestamp');
     
     console.log('User logged out successfully');
   };
 
   // Check authentication state on app load
-  React.useEffect(() => {
+  useEffect(() => {
     const checkAuthState = async () => {
       try {
         setIsLoading(true);
         
-        const token = localStorage.getItem('auth_token');
-        const userData = localStorage.getItem('auth_user');
-        const timestamp = localStorage.getItem('auth_timestamp');
-        
-        console.log('Checking auth state:', { 
-          hasToken: !!token, 
-          hasUserData: !!userData, 
-          timestamp: timestamp ? new Date(parseInt(timestamp)).toLocaleString() : 'none'
-        });
-        
-        // Check if token exists and is not expired (24 hours)
-        if (token && userData && timestamp) {
-          const tokenAge = Date.now() - parseInt(timestamp);
-          const maxAge = 24 * 60 * 60 * 1000; // 24 hours
-          
-          if (tokenAge < maxAge) {
-            try {
-              const parsedUser = JSON.parse(userData);
-              console.log('Parsed user data:', parsedUser);
-              
-              // Validate user data structure
-              if (parsedUser && parsedUser.id && parsedUser.email) {
-                setIsAuthenticated(true);
-                setUser(parsedUser);
-                console.log('✅ User authenticated successfully from localStorage');
-              } else {
-                console.log('❌ Invalid user data structure, clearing storage');
-                clearAuthData();
-              }
-            } catch (parseError) {
-              console.error('❌ Error parsing user data:', parseError);
-              clearAuthData();
+        // Check MongoDB authentication first
+        if (mongoAuthClient.isAuthenticated()) {
+          try {
+            const isValid = await mongoAuthClient.verifyToken();
+            if (isValid) {
+              const currentUser = mongoAuthClient.getCurrentUser();
+              setIsAuthenticated(true);
+              setUser(currentUser);
+              console.log('[OK] User authenticated successfully with MongoDB');
+            } else {
+              console.log('[ERROR] MongoDB token verification failed');
+              mongoAuthClient.clearAuthData();
+              setIsAuthenticated(false);
+              setUser(null);
             }
-          } else {
-            console.log('❌ Token expired, clearing storage');
-            clearAuthData();
+          } catch (error) {
+            console.error('[ERROR] MongoDB auth check error:', error);
+            mongoAuthClient.clearAuthData();
+            setIsAuthenticated(false);
+            setUser(null);
           }
         } else {
-          console.log('❌ No valid auth data found');
-          clearAuthData();
+          // Fallback to Supabase/local auth
+          const authToken = localStorage.getItem('auth_token');
+          const authUser = localStorage.getItem('auth_user');
+          const authTimestamp = localStorage.getItem('auth_timestamp');
+          
+          if (authToken && authUser && authTimestamp) {
+            // Check if token is not expired (24 hours)
+            const tokenAge = Date.now() - parseInt(authTimestamp);
+            const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+            
+            if (tokenAge < maxAge) {
+              try {
+                const userData = JSON.parse(authUser);
+                setIsAuthenticated(true);
+                setUser(userData);
+                console.log('[OK] User authenticated successfully with Supabase');
+              } catch (error) {
+                console.error('[ERROR] Error parsing user data:', error);
+                localStorage.clear();
+                setIsAuthenticated(false);
+                setUser(null);
+              }
+            } else {
+              console.log('[INFO] Token expired, clearing auth data');
+              localStorage.clear();
+              setIsAuthenticated(false);
+              setUser(null);
+            }
+          } else {
+            console.log('[INFO] No valid auth data found');
+            setIsAuthenticated(false);
+            setUser(null);
+          }
         }
       } catch (error) {
-        console.error('❌ Error checking auth state:', error);
-        clearAuthData();
+        console.error('[ERROR] Error checking auth state:', error);
+        setIsAuthenticated(false);
+        setUser(null);
       } finally {
         setIsLoading(false);
       }
-    };
-
-    const clearAuthData = () => {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('auth_user');
-      localStorage.removeItem('auth_timestamp');
     };
 
     checkAuthState();
@@ -180,13 +207,25 @@ function App() {
             <Route 
               path="/signin" 
               element={
-                isAuthenticated ? <Navigate to="/dashboard" /> : <SignIn onLogin={handleLogin} isSignUp={false} />
+                isAuthenticated ? <Navigate to="/dashboard" /> : <MongoSignIn onLogin={handleLogin} isSignUp={false} />
               } 
             />
             <Route 
               path="/signup" 
               element={
-                isAuthenticated ? <Navigate to="/dashboard" /> : <SignIn onLogin={handleLogin} isSignUp={true} />
+                isAuthenticated ? <Navigate to="/dashboard" /> : <MongoSignIn onLogin={handleLogin} isSignUp={true} />
+              } 
+            />
+            <Route 
+              path="/mongo-signin" 
+              element={
+                isAuthenticated ? <Navigate to="/dashboard" /> : <MongoSignIn onLogin={handleLogin} isSignUp={false} />
+              } 
+            />
+            <Route 
+              path="/mongo-signup" 
+              element={
+                isAuthenticated ? <Navigate to="/dashboard" /> : <MongoSignIn onLogin={handleLogin} isSignUp={true} />
               } 
             />
             <Route 
@@ -204,7 +243,7 @@ function App() {
             <Route 
               path="/market-trends" 
               element={
-                isAuthenticated ? <MarketTrends /> : <Navigate to="/signin" />
+                isAuthenticated ? <EnhancedMarketTrends /> : <Navigate to="/signin" />
               } 
             />
             <Route path="/test" element={<SupabaseTest />} />

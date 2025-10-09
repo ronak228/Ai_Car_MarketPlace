@@ -26,6 +26,7 @@ const CarPricePredictor = () => {
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [carInfo, setCarInfo] = useState(null);
   const [options, setOptions] = useState({
     companies: [],
     models: [],
@@ -40,6 +41,8 @@ const CarPricePredictor = () => {
     insurance_eligible_types: [],
     maintenance_levels: []
   });
+
+  const [modelFilterInfo, setModelFilterInfo] = useState(null);
 
   const [datasetInfo, setDatasetInfo] = useState(null);
   const [datasetInfoLoading, setDatasetInfoLoading] = useState(true);
@@ -56,23 +59,73 @@ const CarPricePredictor = () => {
     fetchOptions();
   }, []);
 
+  // Update models when company changes
   useEffect(() => {
     if (formData.company && formData.company !== 'Select Company') {
+      if (formData.year) {
+        // If year is selected, get models for both company and year
+        axios.get(`/api/models/${formData.company}/${formData.year}`)
+          .then(res => {
+            setOptions(prev => ({
+              ...prev,
+              models: ['Select Model', ...res.data.models]
+            }));
+            setModelFilterInfo(res.data);
+            setFormData(prev => ({ ...prev, model: '' }));
+          })
+          .catch(err => {
+            // Fallback to company-only models
+            axios.get(`/api/models/${formData.company}`)
+              .then(res => {
+                setOptions(prev => ({
+                  ...prev,
+                  models: ['Select Model', ...res.data]
+                }));
+                setModelFilterInfo(null);
+                setFormData(prev => ({ ...prev, model: '' }));
+              })
+              .catch(err => {
+                setOptions(prev => ({ ...prev, models: ['Select Model'] }));
+              });
+          });
+      } else {
+        // If no year selected, get all models for company
       axios.get(`/api/models/${formData.company}`)
         .then(res => {
           setOptions(prev => ({
             ...prev,
             models: ['Select Model', ...res.data]
           }));
+            setModelFilterInfo(null);
           setFormData(prev => ({ ...prev, model: '' }));
         })
         .catch(err => {
           setOptions(prev => ({ ...prev, models: ['Select Model'] }));
         });
+      }
     } else {
       setOptions(prev => ({ ...prev, models: ['Select Model'] }));
     }
   }, [formData.company]);
+
+  // Update models when year changes (if company is already selected)
+  useEffect(() => {
+    if (formData.company && formData.company !== 'Select Company' && formData.year) {
+      axios.get(`/api/models/${formData.company}/${formData.year}`)
+        .then(res => {
+          setOptions(prev => ({
+            ...prev,
+            models: ['Select Model', ...res.data.models]
+          }));
+          setModelFilterInfo(res.data);
+          setFormData(prev => ({ ...prev, model: '' }));
+        })
+        .catch(err => {
+          console.error('Error fetching models by company and year:', err);
+          // Keep current models if API fails
+        });
+    }
+  }, [formData.year]);
 
   const fetchOptions = async () => {
     try {
@@ -197,8 +250,10 @@ const CarPricePredictor = () => {
       const confidenceScore = response.data.confidence_score;
       const modelPerformance = response.data.model_performance;
       const featuresUsed = response.data.features_used;
+      const carInfo = response.data.car_info;
       
       setPrediction(basePrice);
+      setCarInfo(carInfo);
       
       // Generate advanced prediction features
       const advanced = generateAdvancedPrediction(basePrice);
@@ -300,6 +355,20 @@ const CarPricePredictor = () => {
               <p className="text-muted text-center mb-4">
                 Get comprehensive price predictions with confidence scores, market trends, and multiple model comparisons
               </p>
+              
+              <div className="alert alert-info mb-4" role="alert">
+                <h6 className="alert-heading">
+                  <i className="fas fa-lightbulb me-2"></i>
+                  Smart Model Selection
+                </h6>
+                <p className="mb-2">
+                  <strong>For best results:</strong> Select Company → Year → Model. 
+                  This ensures you only see models that were actually available in your chosen year!
+                </p>
+                <small className="text-muted">
+                  The system will automatically filter models based on launch dates and availability.
+                </small>
+              </div>
 
               {error && (
                 <div className="alert alert-danger" role="alert">
@@ -346,6 +415,12 @@ const CarPricePredictor = () => {
                     </select>
                     {(!formData.company || formData.company === 'Select Company') && (
                       <small className="text-muted">Please select a company first</small>
+                    )}
+                    {modelFilterInfo && (
+                      <small className={`text-${modelFilterInfo.exact_year_available ? 'success' : 'warning'}`}>
+                        <i className="fas fa-info-circle me-1"></i>
+                        {modelFilterInfo.note}
+                      </small>
                     )}
                   </div>
 
@@ -741,6 +816,80 @@ const CarPricePredictor = () => {
                     </div>
                   </div>
 
+                  {/* Car Information */}
+                  {carInfo && carInfo.similar_cars_found > 0 && (
+                    <div className="row mt-4">
+                      <div className="col-12">
+                        <div className="card bg-info text-white">
+                          <div className="card-header">
+                            <h5 className="mb-0">📊 Car Information from Dataset</h5>
+                          </div>
+                          <div className="card-body">
+                            <div className="row">
+                              <div className="col-md-6">
+                                <h6>📈 Price Statistics</h6>
+                                <ul className="list-unstyled">
+                                  <li><strong>Similar Cars Found:</strong> {carInfo.similar_cars_found}</li>
+                                  <li><strong>Average Price:</strong> ₹{carInfo.price_statistics?.average?.toLocaleString()}</li>
+                                  <li><strong>Price Range:</strong> ₹{carInfo.price_statistics?.minimum?.toLocaleString()} - ₹{carInfo.price_statistics?.maximum?.toLocaleString()}</li>
+                                  <li><strong>Year Range:</strong> {carInfo.year_range?.min} - {carInfo.year_range?.max}</li>
+                                  <li><strong>Average KMs:</strong> {carInfo.average_kilometers?.toLocaleString()}</li>
+                                </ul>
+                              </div>
+                              <div className="col-md-6">
+                                <h6>🔍 Data Availability</h6>
+                                <ul className="list-unstyled">
+                                  <li><strong>Exact Match:</strong> {carInfo.data_availability?.exact_match ? '✅ Yes' : '❌ No'}</li>
+                                  <li><strong>Company + Year:</strong> {carInfo.data_availability?.company_year_match ? '✅ Yes' : '❌ No'}</li>
+                                  <li><strong>Company Only:</strong> {carInfo.data_availability?.company_match ? '✅ Yes' : '❌ No'}</li>
+                                </ul>
+                                
+                                <h6>🏙️ Top Cities</h6>
+                                <div className="row">
+                                  {Object.entries(carInfo.top_cities || {}).slice(0, 5).map(([city, count]) => (
+                                    <div key={city} className="col-6">
+                                      <small>{city}: {count}</small>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="row mt-3">
+                              <div className="col-md-4">
+                                <h6>⛽ Fuel Types</h6>
+                                {Object.entries(carInfo.fuel_type_distribution || {}).map(([fuel, count]) => (
+                                  <div key={fuel} className="d-flex justify-content-between">
+                                    <span>{fuel}:</span>
+                                    <span>{count}</span>
+                                  </div>
+                                ))}
+                              </div>
+                              <div className="col-md-4">
+                                <h6>🔧 Transmission</h6>
+                                {Object.entries(carInfo.transmission_distribution || {}).map(([trans, count]) => (
+                                  <div key={trans} className="d-flex justify-content-between">
+                                    <span>{trans}:</span>
+                                    <span>{count}</span>
+                                  </div>
+                                ))}
+                              </div>
+                              <div className="col-md-4">
+                                <h6>🚗 Condition</h6>
+                                {Object.entries(carInfo.condition_distribution || {}).map(([condition, count]) => (
+                                  <div key={condition} className="d-flex justify-content-between">
+                                    <span>{condition}:</span>
+                                    <span>{count}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Insights */}
                   <div className="row mt-4">
                     <div className="col-12">
@@ -748,10 +897,16 @@ const CarPricePredictor = () => {
                         <div className="card-body">
                           <h6 className="card-title">💡 AI Insights</h6>
                           <ul className="mb-0">
-                            <li>This prediction is based on {datasetInfo?.total_models || 'thousands'} of similar cars in our database</li>
+                            <li>This prediction is based on {carInfo?.similar_cars_found || datasetInfo?.total_models || 'thousands'} of similar cars in our database</li>
                             <li>Market trend shows prices are <strong>{advancedPrediction.marketTrend.toLowerCase()}</strong> for this segment</li>
                             <li>Our {advancedPrediction.modelComparison[2]?.name} model shows the highest accuracy at {advancedPrediction.modelComparison[2]?.accuracy}%</li>
                             <li>Consider factors like maintenance history and local market conditions for final pricing</li>
+                            {carInfo?.data_availability?.exact_match && (
+                              <li><strong>✅ Exact match found:</strong> We have data for this exact car model and year</li>
+                            )}
+                            {!carInfo?.data_availability?.exact_match && carInfo?.data_availability?.company_year_match && (
+                              <li><strong>⚠️ Similar data:</strong> Based on other {formData.company} models from {formData.year}</li>
+                            )}
                           </ul>
                         </div>
                       </div>
