@@ -23,20 +23,20 @@ const Home = ({ isAuthenticated }) => {
           <div className="row align-items-center">
             <div className="col-lg-6">
               <h1 className="display-4 fw-bold mb-4">
-                AI-Powered Car Price Predictor
+                <i className="fas fa-robot me-3"></i>CarPrice AI
               </h1>
               <p className="lead mb-4">
-                Get accurate car price predictions using advanced machine learning. 
-                Make informed decisions with confidence scores and market trends.
+                Advanced AI-powered car price prediction with real-time market analysis. 
+                Get accurate predictions for all Indian car brands including EVs, with confidence scores and market trends.
               </p>
               <div className="d-flex gap-3">
                 <button onClick={handleGetStarted} className="btn btn-light btn-lg">
                   {isAuthenticated ? 'Go to Predictor' : 'Get Started'}
                 </button>
                 {!isAuthenticated && (
-                  <Link to="/signin" className="btn btn-outline-light btn-lg">
-                    Sign In
-                  </Link>
+                <Link to="/signin" className="btn btn-outline-light btn-lg">
+                  <i className="fas fa-sign-in-alt me-2"></i>Sign In
+                </Link>
                 )}
               </div>
             </div>

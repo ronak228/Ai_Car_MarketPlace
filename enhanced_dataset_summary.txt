@@ -1,0 +1,58 @@
+Enhanced Indian Car Brands Dataset Summary
+==================================================
+
+Generated on: 2025-10-10 01:00:52
+Total Records: 50,000
+Total Brands: 21
+Total Models: 137
+Total Cities: 36
+Price Range: Rs.80,009 - Rs.19,864,460
+Year Range: 1956 - 2024
+
+Top 15 Brands:
+  Renault: 2,489 (5.0%)
+  Nissan: 2,438 (4.9%)
+  Audi: 2,432 (4.9%)
+  Ford: 2,416 (4.8%)
+  Maruti Suzuki: 2,413 (4.8%)
+  Mahindra: 2,407 (4.8%)
+  Mercedes-Benz: 2,405 (4.8%)
+  Hyundai: 2,397 (4.8%)
+  Jaguar: 2,390 (4.8%)
+  Toyota: 2,386 (4.8%)
+  Lexus: 2,377 (4.8%)
+  BMW: 2,376 (4.8%)
+  Land Rover: 2,373 (4.7%)
+  Skoda: 2,370 (4.7%)
+  MG Motor: 2,368 (4.7%)
+
+Fuel Type Distribution:
+  Petrol: 24,269 (48.5%)
+  Diesel: 17,318 (34.6%)
+  Electric: 4,506 (9.0%)
+  Hybrid: 2,577 (5.2%)
+  CNG: 1,330 (2.7%)
+
+City Distribution:
+  Kanpur: 1,469 (2.9%)
+  Agra: 1,455 (2.9%)
+  Kalyan-Dombivali: 1,444 (2.9%)
+  Meerut: 1,442 (2.9%)
+  Mumbai: 1,437 (2.9%)
+  Hyderabad: 1,425 (2.9%)
+  Aurangabad: 1,423 (2.8%)
+  Bhopal: 1,420 (2.8%)
+  Visakhapatnam: 1,416 (2.8%)
+  Indore: 1,409 (2.8%)
+
+Recent Years Distribution:
+  2015: 1,633 (3.3%)
+  2016: 1,755 (3.5%)
+  2017: 2,050 (4.1%)
+  2018: 2,317 (4.6%)
+  2019: 2,942 (5.9%)
+  2020: 3,755 (7.5%)
+  2021: 4,380 (8.8%)
+  2022: 5,287 (10.6%)
+  2023: 5,688 (11.4%)
+  2024: 5,682 (11.4%)

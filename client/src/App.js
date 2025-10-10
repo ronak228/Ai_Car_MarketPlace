@@ -7,11 +7,11 @@ import './App.css';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import SignIn from './components/SignIn';
-import MongoSignIn from './components/MongoSignIn';
+import CarPriceAI from './components/MongoSignIn';
 import Dashboard from './components/Dashboard';
 import CarPricePredictor from './components/CarPricePredictor';
 import MarketTrends from './components/MarketTrends';
-import EnhancedMarketTrends from './components/EnhancedMarketTrends';
+import RealTimeSalesDashboard from './components/RealTimeSalesDashboard';
 import SupabaseTest from './components/SupabaseTest';
 
 // MongoDB Auth Client
@@ -207,25 +207,25 @@ function App() {
             <Route 
               path="/signin" 
               element={
-                isAuthenticated ? <Navigate to="/dashboard" /> : <MongoSignIn onLogin={handleLogin} isSignUp={false} />
+            isAuthenticated ? <Navigate to="/dashboard" /> : <CarPriceAI onLogin={handleLogin} isSignUp={false} />
               } 
             />
             <Route 
               path="/signup" 
               element={
-                isAuthenticated ? <Navigate to="/dashboard" /> : <MongoSignIn onLogin={handleLogin} isSignUp={true} />
+            isAuthenticated ? <Navigate to="/dashboard" /> : <CarPriceAI onLogin={handleLogin} isSignUp={true} />
               } 
             />
             <Route 
               path="/mongo-signin" 
               element={
-                isAuthenticated ? <Navigate to="/dashboard" /> : <MongoSignIn onLogin={handleLogin} isSignUp={false} />
+                isAuthenticated ? <Navigate to="/dashboard" /> : <CarPriceAI onLogin={handleLogin} isSignUp={false} />
               } 
             />
             <Route 
               path="/mongo-signup" 
               element={
-                isAuthenticated ? <Navigate to="/dashboard" /> : <MongoSignIn onLogin={handleLogin} isSignUp={true} />
+                isAuthenticated ? <Navigate to="/dashboard" /> : <CarPriceAI onLogin={handleLogin} isSignUp={true} />
               } 
             />
             <Route 
@@ -243,7 +243,7 @@ function App() {
             <Route 
               path="/market-trends" 
               element={
-                isAuthenticated ? <EnhancedMarketTrends /> : <Navigate to="/signin" />
+            isAuthenticated ? <RealTimeSalesDashboard /> : <Navigate to="/signin" />
               } 
             />
             <Route path="/test" element={<SupabaseTest />} />

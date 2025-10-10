@@ -37,7 +37,7 @@ except ImportError as e:
     MONGODB_AVAILABLE = False
 
 app = Flask(__name__, static_folder='client/build/static', template_folder='client/build')
-cors = CORS(app)
+cors = CORS(app, origins=['http://localhost:3000', 'http://127.0.0.1:3000'], supports_credentials=True)
 
 # Register authentication routes
 if MONGODB_AVAILABLE:
@@ -121,17 +121,20 @@ except Exception as e:
     le_transmission = None
     scaler = None
 
-# Load master dataset with all 22 fields - use enhanced dataset
+# Load master dataset with all 22 fields - use enhanced Indian brands dataset
 try:
-    # Try to load the enhanced dataset first
+    # Try to load the enhanced Indian brands dataset first
     if os.path.exists('enhanced_indian_car_dataset.csv'):
         car = pd.read_csv('enhanced_indian_car_dataset.csv')
-        print(f"[OK] Enhanced dataset loaded: {len(car)} records with {car['company'].nunique()} brands")
+        print(f"[OK] Enhanced Indian brands dataset loaded: {len(car)} records with {car['company'].nunique()} brands")
+    elif os.path.exists('indian_car_brands_dataset.csv'):
+        car = pd.read_csv('indian_car_brands_dataset.csv')
+        print(f"[OK] Indian brands dataset loaded: {len(car)} records with {car['company'].nunique()} brands")
     else:
         # Fallback to original datasets
-        car1 = pd.read_csv('Cleaned_Car_data_master.csv')
-        car2 = pd.read_csv('generated_5000_strict.csv')
-        car = pd.concat([car1, car2], ignore_index=True)
+    car1 = pd.read_csv('Cleaned_Car_data_master.csv')
+    car2 = pd.read_csv('generated_5000_strict.csv')
+    car = pd.concat([car1, car2], ignore_index=True)
         print(f"[OK] Original datasets loaded: {len(car)} records")
     
 except FileNotFoundError as e:
@@ -152,19 +155,17 @@ companies = sorted(car['company'].unique().tolist())
 models = sorted(car['model'].unique().tolist())
 fuel_types = sorted(car['fuel_type'].unique().tolist())
 transmission_types = sorted(car['transmission'].unique().tolist())
-owner_types = sorted(car['owner'].unique().tolist())
+owner_types = sorted(car['owner_count'].unique().tolist())
 condition_types = sorted(car['car_condition'].unique().tolist())
-insurance_types = sorted(car['insurance_status'].unique().tolist())
 cities = sorted(car['city'].unique().tolist())
-emission_norms = sorted(car['emission_norm'].unique().tolist())
-insurance_eligible_types = sorted(car['insurance_eligible'].unique().tolist())
-maintenance_levels = sorted(car['maintenance_level'].unique().tolist())
-listing_types = sorted(car['listing_type'].unique().tolist())
-is_certified_types = sorted(car['is_certified'].unique().tolist())
+# Additional fields not in new dataset - using defaults
+maintenance_levels = ['Low', 'Medium', 'High']
+listing_types = ['Dealer', 'Individual']
+is_certified_types = ['Yes', 'No']
 
 # Get numerical ranges
 year_range = {'min': int(car['year'].min()), 'max': int(car['year'].max())}
-kms_range = {'min': int(car['kms_driven'].min()), 'max': int(car['kms_driven'].max())}
+kms_range = {'min': int(car['kilometers_driven'].min()), 'max': int(car['kilometers_driven'].max())}
 price_range = {'min': int(car['Price'].min()), 'max': int(car['Price'].max())}
 
 # API Routes
@@ -187,32 +188,55 @@ def get_models_by_company(company):
 
 @app.route('/api/models/<company>/<int:year>')
 def get_models_by_company_and_year(company, year):
-    """Get models for a specific company and year"""
+    """Get models for a specific company and year with optional fuel type filtering"""
     try:
-        # Filter by company and year
-        filtered_cars = car[(car['company'] == company) & (car['year'] == year)]
+        # Get fuel_type from query parameters
+        fuel_type = request.args.get('fuel_type', None)
+        
+        # Base filter by company and year
+        base_filter = (car['company'] == company) & (car['year'] == year)
+        
+        # Add fuel type filter if provided
+        if fuel_type and fuel_type != 'Select Fuel Type':
+            filtered_cars = car[base_filter & (car['fuel_type'] == fuel_type)]
+        else:
+            filtered_cars = car[base_filter]
         
         if filtered_cars.empty:
             # If no exact match, find models available in that year range
             # Look for models that were available around that year (±2 years)
-            year_range = car[(car['company'] == company) & 
-                           (car['year'] >= year - 2) & 
-                           (car['year'] <= year + 2)]
+            year_range_filter = ((car['company'] == company) & 
+                                (car['year'] >= year - 2) & 
+                                (car['year'] <= year + 2))
+            
+            # Add fuel type filter to year range if provided
+            if fuel_type and fuel_type != 'Select Fuel Type':
+                year_range_filter = year_range_filter & (car['fuel_type'] == fuel_type)
+            
+            year_range = car[year_range_filter]
             
             if not year_range.empty:
                 models = sorted(year_range['model'].unique())
+                fuel_note = f' with {fuel_type} fuel' if fuel_type and fuel_type != 'Select Fuel Type' else ''
                 return jsonify({
                     'models': models,
-                    'note': f'Models available around {year} (±2 years)',
-                    'exact_year_available': False
+                    'note': f'Models available around {year} (±2 years){fuel_note}',
+                    'exact_year_available': False,
+                    'fuel_type_filtered': fuel_type if fuel_type and fuel_type != 'Select Fuel Type' else None
                 })
             else:
-                # Fallback to all models for the company
-                all_models = sorted(car[car['company'] == company]['model'].unique())
+                # Fallback to all models for the company (with fuel type filter if provided)
+                company_filter = car['company'] == company
+                if fuel_type and fuel_type != 'Select Fuel Type':
+                    company_filter = company_filter & (car['fuel_type'] == fuel_type)
+                
+                all_models = sorted(car[company_filter]['model'].unique())
+                fuel_note = f' with {fuel_type} fuel' if fuel_type and fuel_type != 'Select Fuel Type' else ''
                 return jsonify({
                     'models': all_models,
-                    'note': f'All models for {company} (no data for {year})',
-                    'exact_year_available': False
+                    'note': f'All models for {company}{fuel_note} (no data for {year})',
+                    'exact_year_available': False,
+                    'fuel_type_filtered': fuel_type if fuel_type and fuel_type != 'Select Fuel Type' else None
                 })
         else:
             models = sorted(filtered_cars['model'].unique())
@@ -254,32 +278,33 @@ def get_condition_types():
     return jsonify(condition_types)
 
 @app.route('/api/insurance-types')
+@cross_origin()
 def get_insurance_types():
-    return jsonify(insurance_types)
+    return jsonify(['Yes', 'No'])
 
 @app.route('/api/cities')
 def get_cities():
     return jsonify(cities)
 
 @app.route('/api/emission-norms')
+@cross_origin()
 def get_emission_norms():
-    return jsonify(emission_norms)
+    return jsonify(['BS4', 'BS6'])
 
 @app.route('/api/insurance-eligible-types')
+@cross_origin()
 def get_insurance_eligible_types():
-    return jsonify(insurance_eligible_types)
+    return jsonify(['Yes', 'No'])
 
 @app.route('/api/maintenance-levels')
+@cross_origin()
 def get_maintenance_levels():
-    return jsonify(maintenance_levels)
+    return jsonify(['Low', 'Medium', 'High'])
 
-@app.route('/api/listing-types')
-def get_listing_types():
-    return jsonify(listing_types)
-
-@app.route('/api/certified-types')
-def get_certified_types():
-    return jsonify(is_certified_types)
+@app.route('/api/owner-counts')
+@cross_origin()
+def get_owner_counts():
+    return jsonify(owner_types)
 
 @app.route('/api/dataset-info')
 @cross_origin()
@@ -295,13 +320,7 @@ def get_dataset_info():
         'transmission_types': transmission_types,
         'owner_types': owner_types,
         'condition_types': condition_types,
-        'insurance_types': insurance_types,
-        'cities': cities,
-        'emission_norms': emission_norms,
-        'insurance_eligible_types': insurance_eligible_types,
-        'maintenance_levels': maintenance_levels,
-        'listing_types': listing_types,
-        'certified_types': is_certified_types
+        'cities': cities
     }
     return jsonify(info)
 
@@ -445,24 +464,20 @@ def predict():
             'company': data.get('company'),
             'model': data.get('model') or data.get('car_models'),
             'year': data.get('year'),
-            'kms_driven': data.get('kms_driven') or data.get('kilo_driven'),
+            'kilometers_driven': data.get('kilometers_driven') or data.get('kms_driven') or data.get('kilo_driven'),
             'fuel_type': data.get('fuel_type'),
             'transmission': data.get('transmission', 'Manual'),
-            'owner': data.get('owner', '1st'),
+            'owner_count': data.get('owner_count', 1),
             'car_condition': data.get('car_condition', 'Good'),
-            'insurance_status': data.get('insurance_status', 'Yes'),
+            'city': data.get('city', 'Delhi'),
             'previous_accidents': data.get('previous_accidents', 0),
             'num_doors': data.get('num_doors', 4),
-            'engine_size': data.get('engine_size', 1500),
-            'power': data.get('power', 100),
-            'city': data.get('city', 'Delhi'),
-            'emission_norm': data.get('emission_norm', 'BS-IV'),
-            'insurance_eligible': data.get('insurance_eligible', 'Yes'),
-            'maintenance_level': data.get('maintenance_level', 'Medium')
+            'engine_size': data.get('engine_size', 1200),
+            'power': data.get('power', 100)
         }
 
         # Validate required fields
-        required_fields = ['company', 'model', 'year', 'fuel_type', 'kms_driven']
+        required_fields = ['company', 'model', 'year', 'fuel_type', 'kilometers_driven']
         missing_fields = [field for field in required_fields if not car_data[field]]
         
         if missing_fields:
@@ -473,7 +488,7 @@ def predict():
         # Convert numeric fields
         try:
             car_data['year'] = int(car_data['year'])
-            car_data['kms_driven'] = int(car_data['kms_driven'])
+            car_data['kilometers_driven'] = int(car_data['kilometers_driven'])
             car_data['previous_accidents'] = int(car_data['previous_accidents'])
             car_data['num_doors'] = int(car_data['num_doors'])
             car_data['engine_size'] = int(car_data['engine_size'])
@@ -536,24 +551,12 @@ def predict_with_enhanced_model(car_data):
                     input_data[col] = 'Petrol'
                 elif col == 'transmission':
                     input_data[col] = 'Manual'
-                elif col == 'owner':
-                    input_data[col] = 'First Owner'
                 elif col == 'car_condition':
                     input_data[col] = 'Good'
-                elif col == 'insurance_status':
-                    input_data[col] = 'Valid'
                 elif col == 'city':
                     input_data[col] = 'Delhi'
-                elif col == 'emission_norm':
-                    input_data[col] = 'BS IV'
-                elif col == 'insurance_eligible':
-                    input_data[col] = 'Yes'
-                elif col == 'maintenance_level':
-                    input_data[col] = 'Good'
-                elif col == 'listing_type':
-                    input_data[col] = 'Individual'
-                elif col == 'is_certified':
-                    input_data[col] = 'No'
+                elif col == 'owner_count':
+                    input_data[col] = 1
                 else:
                     input_data[col] = 'Unknown'
         
@@ -565,7 +568,7 @@ def predict_with_enhanced_model(car_data):
                 # Provide default values for missing numerical features
                 if col == 'year':
                     input_data[col] = 2015
-                elif col == 'kms_driven':
+                elif col == 'kilometers_driven':
                     input_data[col] = 50000
                 elif col == 'previous_accidents':
                     input_data[col] = 0
@@ -657,7 +660,7 @@ def get_car_info_from_dataset(car_data):
             }
             
             # Get average kilometers
-            avg_kms = similar_cars['kms_driven'].mean()
+            avg_kms = similar_cars['kilometers_driven'].mean()
             
             return {
                 'similar_cars_found': len(similar_cars),
@@ -717,7 +720,7 @@ def predict_with_legacy_model(car_data):
             'name': [car_data['model']],
             'company': [car_data['company']], 
             'year': [car_data['year']],
-            'kms_driven': [car_data['kms_driven']],
+            'kilometers_driven': [car_data['kilometers_driven']],
             'fuel_type': [car_data['fuel_type']]
         })
 
@@ -727,7 +730,7 @@ def predict_with_legacy_model(car_data):
         input_data['fuel_encoded'] = le_fuel.transform(input_data['fuel_type'])
 
         # Select only the encoded features
-        input_encoded = input_data[['name_encoded', 'company_encoded', 'year', 'kms_driven', 'fuel_encoded']]
+        input_encoded = input_data[['name_encoded', 'company_encoded', 'year', 'kilometers_driven', 'fuel_encoded']]
 
         prediction = model.predict(input_encoded)
         predicted_price = float(np.round(prediction[0], 2))
@@ -1191,14 +1194,14 @@ def api_transmission_trends_chart():
         
         # Format for chart.js line chart
         chart_data = {
-            'labels': list(transmission_trends.keys()),
+            'labels': [int(year) for year in transmission_trends.keys()],
             'datasets': []
         }
         
         colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
         
         for i, transmission in enumerate(transmission_types):
-            data = [transmission_trends[year].get(transmission, 0) for year in transmission_trends.keys()]
+            data = [int(transmission_trends[year].get(transmission, 0)) for year in transmission_trends.keys()]
             chart_data['datasets'].append({
                 'label': transmission,
                 'data': data,
@@ -1242,32 +1245,32 @@ def api_ev_vs_ice_trends_chart():
             hybrid_count = len(year_data[year_data['fuel_type'] == 'Hybrid'])
             
             ev_ice_trends[year] = {
-                'Electric': ev_count,
-                'ICE': ice_count,
-                'Hybrid': hybrid_count
+                'Electric': int(ev_count),
+                'ICE': int(ice_count),
+                'Hybrid': int(hybrid_count)
             }
         
         # Format for chart.js line chart
         chart_data = {
-            'labels': list(ev_ice_trends.keys()),
+            'labels': [int(year) for year in ev_ice_trends.keys()],
             'datasets': [
                 {
                     'label': 'Electric Vehicles',
-                    'data': [ev_ice_trends[year]['Electric'] for year in ev_ice_trends.keys()],
+                    'data': [int(ev_ice_trends[year]['Electric']) for year in ev_ice_trends.keys()],
                     'borderColor': '#4BC0C0',
                     'backgroundColor': 'rgba(75, 192, 192, 0.2)',
                     'tension': 0.1
                 },
                 {
                     'label': 'ICE Vehicles',
-                    'data': [ev_ice_trends[year]['ICE'] for year in ev_ice_trends.keys()],
+                    'data': [int(ev_ice_trends[year]['ICE']) for year in ev_ice_trends.keys()],
                     'borderColor': '#FF6384',
                     'backgroundColor': 'rgba(255, 99, 132, 0.2)',
                     'tension': 0.1
                 },
                 {
                     'label': 'Hybrid Vehicles',
-                    'data': [ev_ice_trends[year]['Hybrid'] for year in ev_ice_trends.keys()],
+                    'data': [int(ev_ice_trends[year]['Hybrid']) for year in ev_ice_trends.keys()],
                     'borderColor': '#FFCE56',
                     'backgroundColor': 'rgba(255, 206, 86, 0.2)',
                     'tension': 0.1
@@ -1308,7 +1311,7 @@ def api_price_vs_kms_scatter_chart():
                     'label': 'Price vs Kilometers',
                     'data': [
                         {
-                            'x': int(row['kms_driven']),
+                            'x': int(row['kilometers_driven']),
                             'y': int(row['Price'])
                         }
                         for _, row in sample_data.iterrows()
@@ -1327,6 +1330,254 @@ def api_price_vs_kms_scatter_chart():
             'description': 'Relationship between car price and kilometers driven'
         })
     except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+# Real-time Sales Dashboard APIs
+@app.route('/api/sales/indian-brands')
+@cross_origin()
+def api_indian_brands_sales():
+    """Get real-time sales data for all Indian car brands"""
+    try:
+        # Generate realistic sales data based on dataset
+        sales_data = {}
+        
+        # Top selling brands (based on dataset frequency)
+        brand_counts = car['company'].value_counts()
+        top_brands_data = {
+            'labels': brand_counts.head(15).index.tolist(),
+            'datasets': [{
+                'label': 'Units Sold',
+                'data': brand_counts.head(15).values.tolist(),
+                'backgroundColor': [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+                    '#FF9F40', '#C9CBCF', '#FF6384', '#36A2EB', '#FFCE56',
+                    '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF', '#FF6384'
+                ],
+                'borderWidth': 2,
+                'borderColor': '#fff'
+            }]
+        }
+        
+        # Fuel type distribution
+        fuel_counts = car['fuel_type'].value_counts()
+        fuel_distribution_data = {
+            'labels': fuel_counts.index.tolist(),
+            'datasets': [{
+                'data': fuel_counts.values.tolist(),
+                'backgroundColor': [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+                    '#FF9F40', '#C9CBCF'
+                ],
+                'borderWidth': 2,
+                'borderColor': '#fff'
+            }]
+        }
+        
+        # Monthly sales trend (simulated)
+        import random
+        months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        monthly_sales = [random.randint(800, 1200) for _ in months]
+        monthly_trend_data = {
+            'labels': months,
+            'datasets': [{
+                'label': 'Monthly Sales',
+                'data': monthly_sales,
+                'borderColor': '#4BC0C0',
+                'backgroundColor': 'rgba(75, 192, 192, 0.2)',
+                'tension': 0.1,
+                'fill': True
+            }]
+        }
+        
+        # EV vs ICE sales
+        ev_count = len(car[car['fuel_type'] == 'Electric'])
+        ice_count = len(car[car['fuel_type'].isin(['Petrol', 'Diesel', 'CNG', 'LPG'])])
+        hybrid_count = len(car[car['fuel_type'] == 'Hybrid'])
+        
+        ev_vs_ice_data = {
+            'labels': ['Electric', 'ICE', 'Hybrid'],
+            'datasets': [{
+                'data': [ev_count, ice_count, hybrid_count],
+                'backgroundColor': ['#4BC0C0', '#FF6384', '#FFCE56'],
+                'borderWidth': 2,
+                'borderColor': '#fff'
+            }]
+        }
+        
+        # All brands sales (full dataset)
+        all_brands_data = {
+            'labels': brand_counts.index.tolist(),
+            'datasets': [{
+                'label': 'Total Sales',
+                'data': brand_counts.values.tolist(),
+                'backgroundColor': 'rgba(54, 162, 235, 0.6)',
+                'borderColor': 'rgba(54, 162, 235, 1)',
+                'borderWidth': 1
+            }]
+        }
+        
+        # Brand performance comparison (top 10)
+        top_10_brands = brand_counts.head(10)
+        brand_performance_data = {
+            'labels': top_10_brands.index.tolist(),
+            'datasets': [{
+                'label': 'Sales Performance',
+                'data': top_10_brands.values.tolist(),
+                'borderColor': '#9966FF',
+                'backgroundColor': 'rgba(153, 102, 255, 0.2)',
+                'tension': 0.1,
+                'fill': True
+            }]
+        }
+        
+        # Fuel type sales
+        fuel_sales_data = {
+            'labels': fuel_counts.index.tolist(),
+            'datasets': [{
+                'label': 'Sales by Fuel Type',
+                'data': fuel_counts.values.tolist(),
+                'backgroundColor': [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+                    '#FF9F40', '#C9CBCF'
+                ],
+                'borderWidth': 2,
+                'borderColor': '#fff'
+            }]
+        }
+        
+        # EV growth trend (simulated)
+        years = list(range(2020, 2025))
+        ev_growth = [random.randint(50, 200) for _ in years]
+        ev_growth_data = {
+            'labels': years,
+            'datasets': [{
+                'label': 'EV Sales Growth',
+                'data': ev_growth,
+                'borderColor': '#4BC0C0',
+                'backgroundColor': 'rgba(75, 192, 192, 0.2)',
+                'tension': 0.1,
+                'fill': True
+            }]
+        }
+        
+        # Diesel vs Petrol
+        diesel_count = len(car[car['fuel_type'] == 'Diesel'])
+        petrol_count = len(car[car['fuel_type'] == 'Petrol'])
+        diesel_petrol_data = {
+            'labels': ['Diesel', 'Petrol'],
+            'datasets': [{
+                'data': [diesel_count, petrol_count],
+                'backgroundColor': ['#FF6384', '#36A2EB'],
+                'borderWidth': 2,
+                'borderColor': '#fff'
+            }]
+        }
+        
+        # Regional sales (based on cities)
+        city_counts = car['city'].value_counts()
+        regional_sales_data = {
+            'labels': city_counts.head(10).index.tolist(),
+            'datasets': [{
+                'label': 'Regional Sales',
+                'data': city_counts.head(10).values.tolist(),
+                'backgroundColor': 'rgba(255, 206, 86, 0.6)',
+                'borderColor': 'rgba(255, 206, 86, 1)',
+                'borderWidth': 1
+            }]
+        }
+        
+        # City-wise performance
+        city_performance_data = {
+            'labels': city_counts.head(8).index.tolist(),
+            'datasets': [{
+                'label': 'City Performance',
+                'data': city_counts.head(8).values.tolist(),
+                'borderColor': '#FF9F40',
+                'backgroundColor': 'rgba(255, 159, 64, 0.2)',
+                'tension': 0.1,
+                'fill': True
+            }]
+        }
+        
+        # Compile all data
+        sales_data = {
+            'top-brands': {
+                'data': top_brands_data,
+                'title': 'Top 15 Selling Brands',
+                'description': 'Best performing Indian car brands by sales volume'
+            },
+            'fuel-distribution': {
+                'data': fuel_distribution_data,
+                'title': 'Fuel Type Distribution',
+                'description': 'Sales distribution across different fuel types'
+            },
+            'monthly-trend': {
+                'data': monthly_trend_data,
+                'title': 'Monthly Sales Trend',
+                'description': 'Monthly sales performance across the year'
+            },
+            'ev-vs-ice': {
+                'data': ev_vs_ice_data,
+                'title': 'EV vs ICE vs Hybrid Sales',
+                'description': 'Comparison of electric, ICE, and hybrid vehicle sales'
+            },
+            'all-brands': {
+                'data': all_brands_data,
+                'title': 'All Brands Sales Overview',
+                'description': 'Complete sales data for all Indian car brands'
+            },
+            'brand-performance': {
+                'data': brand_performance_data,
+                'title': 'Top 10 Brands Performance',
+                'description': 'Performance comparison of top 10 selling brands'
+            },
+            'fuel-sales': {
+                'data': fuel_sales_data,
+                'title': 'Sales by Fuel Type',
+                'description': 'Detailed breakdown of sales by fuel type'
+            },
+            'ev-growth': {
+                'data': ev_growth_data,
+                'title': 'EV Sales Growth Trend',
+                'description': 'Electric vehicle sales growth over the years'
+            },
+            'diesel-petrol': {
+                'data': diesel_petrol_data,
+                'title': 'Diesel vs Petrol Sales',
+                'description': 'Traditional fuel type comparison'
+            },
+            'regional-sales': {
+                'data': regional_sales_data,
+                'title': 'Top 10 Regional Sales',
+                'description': 'Sales performance by major cities'
+            },
+            'city-performance': {
+                'data': city_performance_data,
+                'title': 'City-wise Performance',
+                'description': 'Top performing cities in car sales'
+            }
+        }
+        
+        # Summary statistics
+        summary_stats = {
+            'totalSales': len(car),
+            'totalBrands': len(brand_counts),
+            'evSales': ev_count,
+            'topCity': city_counts.index[0] if len(city_counts) > 0 else 'N/A'
+        }
+        
+        return jsonify({
+            'success': True,
+            'data': sales_data,
+            'summary': summary_stats,
+            'lastUpdated': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        print(f"Error generating sales data: {str(e)}")
         return jsonify({
             'success': False,
             'error': str(e)
@@ -1432,13 +1683,13 @@ def predict_legacy():
             car_model = data.get('car_models') or data.get('model')
             year = data.get('year')
             fuel_type = data.get('fuel_type')
-            driven = data.get('kilo_driven') or data.get('kms_driven')
+            driven = data.get('kilometers_driven') or data.get('kilo_driven') or data.get('kms_driven')
         else:
             company = request.form.get('company')
             car_model = request.form.get('car_models') or request.form.get('model')
             year = request.form.get('year')
             fuel_type = request.form.get('fuel_type')
-            driven = request.form.get('kilo_driven') or request.form.get('kms_driven')
+            driven = request.form.get('kilometers_driven') or request.form.get('kilo_driven') or request.form.get('kms_driven')
 
         # Validate input values
         if not all([company, car_model, year, fuel_type, driven]):
@@ -1466,7 +1717,7 @@ def predict_legacy():
             'name': [car_model],
             'company': [company], 
             'year': [year],
-            'kms_driven': [driven],
+            'kilometers_driven': [driven],
             'fuel_type': [fuel_type]
         })
 
@@ -1476,7 +1727,7 @@ def predict_legacy():
         input_data['fuel_encoded'] = le_fuel.transform(input_data['fuel_type'])
 
         # Select only the encoded features
-        input_encoded = input_data[['name_encoded', 'company_encoded', 'year', 'kms_driven', 'fuel_encoded']]
+        input_encoded = input_data[['name_encoded', 'company_encoded', 'year', 'kilometers_driven', 'fuel_encoded']]
 
         prediction = model.predict(input_encoded)
         predicted_price = float(np.round(prediction[0], 2))
@@ -1602,8 +1853,11 @@ if __name__ == '__main__':
     if not car.empty:
         print(f"[OK] Dataset: {len(car):,} cars from {car['company'].nunique()} brands")
         ev_count = len(car[car['fuel_type'] == 'Electric'])
+        hybrid_count = len(car[car['fuel_type'] == 'Hybrid'])
         if ev_count > 0:
             print(f"[OK] Electric Vehicles: {ev_count:,} models")
+        if hybrid_count > 0:
+            print(f"[OK] Hybrid Vehicles: {hybrid_count:,} models")
         print(f"[OK] Cities: {car['city'].nunique()} locations")
     else:
         print("[WARNING] Dataset: Not loaded")

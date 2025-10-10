@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import Swal from 'sweetalert2';
 import PredictionStorage from '../utils/predictionStorage';
 
@@ -64,7 +64,11 @@ const CarPricePredictor = () => {
     if (formData.company && formData.company !== 'Select Company') {
       if (formData.year) {
         // If year is selected, get models for both company and year
-        axios.get(`/api/models/${formData.company}/${formData.year}`)
+        const fuelParam = formData.fuel_type && formData.fuel_type !== 'Select Fuel Type' 
+          ? `?fuel_type=${encodeURIComponent(formData.fuel_type)}` 
+          : '';
+        
+        api.get(`/api/models/${formData.company}/${formData.year}${fuelParam}`)
           .then(res => {
             setOptions(prev => ({
               ...prev,
@@ -75,43 +79,47 @@ const CarPricePredictor = () => {
           })
           .catch(err => {
             // Fallback to company-only models
-            axios.get(`/api/models/${formData.company}`)
-              .then(res => {
-                setOptions(prev => ({
-                  ...prev,
-                  models: ['Select Model', ...res.data]
-                }));
-                setModelFilterInfo(null);
-                setFormData(prev => ({ ...prev, model: '' }));
-              })
-              .catch(err => {
-                setOptions(prev => ({ ...prev, models: ['Select Model'] }));
-              });
-          });
-      } else {
-        // If no year selected, get all models for company
-      axios.get(`/api/models/${formData.company}`)
+            api.get(`/api/models/${formData.company}`)
         .then(res => {
           setOptions(prev => ({
             ...prev,
             models: ['Select Model', ...res.data]
           }));
-            setModelFilterInfo(null);
+                setModelFilterInfo(null);
           setFormData(prev => ({ ...prev, model: '' }));
         })
         .catch(err => {
           setOptions(prev => ({ ...prev, models: ['Select Model'] }));
+              });
+        });
+    } else {
+        // If no year selected, get all models for company
+      api.get(`/api/models/${formData.company}`)
+        .then(res => {
+          setOptions(prev => ({
+            ...prev,
+            models: ['Select Model', ...res.data]
+          }));
+          setModelFilterInfo(null);
+          setFormData(prev => ({ ...prev, model: '' }));
+        })
+        .catch(err => {
+      setOptions(prev => ({ ...prev, models: ['Select Model'] }));
         });
       }
     } else {
       setOptions(prev => ({ ...prev, models: ['Select Model'] }));
     }
-  }, [formData.company]);
+  }, [formData.company, formData.fuel_type]);
 
   // Update models when year changes (if company is already selected)
   useEffect(() => {
     if (formData.company && formData.company !== 'Select Company' && formData.year) {
-      axios.get(`/api/models/${formData.company}/${formData.year}`)
+      const fuelParam = formData.fuel_type && formData.fuel_type !== 'Select Fuel Type' 
+        ? `?fuel_type=${encodeURIComponent(formData.fuel_type)}` 
+        : '';
+      
+      api.get(`/api/models/${formData.company}/${formData.year}${fuelParam}`)
         .then(res => {
           setOptions(prev => ({
             ...prev,
@@ -125,7 +133,7 @@ const CarPricePredictor = () => {
           // Keep current models if API fails
         });
     }
-  }, [formData.year]);
+  }, [formData.year, formData.fuel_type]);
 
   const fetchOptions = async () => {
     try {
@@ -145,18 +153,18 @@ const CarPricePredictor = () => {
         maintenanceLevelsRes,
         datasetInfoRes
       ] = await Promise.all([
-        axios.get('/api/companies'),
-        axios.get('/api/years'),
-        axios.get('/api/fuel-types'),
-        axios.get('/api/transmission-types'),
-        axios.get('/api/owner-types'),
-        axios.get('/api/condition-types'),
-        axios.get('/api/insurance-types'),
-        axios.get('/api/cities'),
-        axios.get('/api/emission-norms'),
-        axios.get('/api/insurance-eligible-types'),
-        axios.get('/api/maintenance-levels'),
-        axios.get('/api/dataset-info')
+        api.get('/api/companies'),
+        api.get('/api/years'),
+        api.get('/api/fuel-types'),
+        api.get('/api/transmission-types'),
+        api.get('/api/owner-types'),
+        api.get('/api/condition-types'),
+        api.get('/api/insurance-types'),
+        api.get('/api/cities'),
+        api.get('/api/emission-norms'),
+        api.get('/api/insurance-eligible-types'),
+        api.get('/api/maintenance-levels'),
+        api.get('/api/dataset-info')
       ]);
 
       setOptions({
@@ -244,7 +252,7 @@ const CarPricePredictor = () => {
     });
 
     try {
-      const response = await axios.post('/api/predict', formData);
+      const response = await api.post('/api/predict', formData);
       const basePrice = response.data.prediction;
       const modelUsed = response.data.model_used;
       const confidenceScore = response.data.confidence_score;

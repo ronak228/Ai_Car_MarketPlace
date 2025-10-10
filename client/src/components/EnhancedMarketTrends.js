@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Line, Bar, Pie, Doughnut, Scatter } from 'react-chartjs-2';
+import { Line, Bar, Pie, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -27,11 +27,12 @@ ChartJS.register(
   ArcElement
 );
 
-const EnhancedMarketTrends = () => {
-  const [charts, setCharts] = useState({});
+const RealTimeSalesDashboard = () => {
+  const [salesData, setSalesData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('overview');
+  const [lastUpdated, setLastUpdated] = useState(new Date());
 
   const chartOptions = {
     responsive: true,

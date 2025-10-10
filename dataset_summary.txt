@@ -1,0 +1,8 @@
+Indian Car Brands Dataset Summary
+========================================
+
+Generated on: 2025-10-10 00:15:34
+Total Records: 14,986
+Total Brands: 23
+Total Models: 166
+Total Cities: 30

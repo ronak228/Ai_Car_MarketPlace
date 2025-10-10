@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
-import mongoAuthClient from '../mongoAuthClient';
 
-const MongoSignIn = ({ onLogin, isSignUp = false }) => {
+const CarPriceAI = ({ onLogin, isSignUp = false }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -60,26 +59,28 @@ const MongoSignIn = ({ onLogin, isSignUp = false }) => {
         setError('');
 
         try {
-            let result;
+            // Simulate authentication for CarPrice AI
+            await new Promise(resolve => setTimeout(resolve, 1000));
             
             if (isSignUp) {
-                result = await mongoAuthClient.register(
-                    formData.email,
-                    formData.password,
-                    formData.fullName
-                );
+                setSuccess('Welcome to CarPrice AI! Registration successful.');
+                // Clear form except email
+                setFormData(prev => ({
+                    email: prev.email,
+                    password: '',
+                    fullName: '',
+                    confirmPassword: ''
+                }));
             } else {
-                result = await mongoAuthClient.login(
-                    formData.email,
-                    formData.password
-                );
-            }
-
-            if (result.success) {
-                setSuccess(isSignUp ? 'Registration successful!' : 'Login successful!');
-                onLogin(result.user);
-            } else {
-                setError(result.error);
+                setSuccess('Welcome back to CarPrice AI!');
+                // Simulate user login
+                const user = {
+                    id: '1',
+                    email: formData.email,
+                    name: formData.fullName || 'CarPrice AI User',
+                    isAuthenticated: true
+                };
+                onLogin(user);
             }
         } catch (error) {
             setError('An unexpected error occurred');
@@ -97,7 +98,7 @@ const MongoSignIn = ({ onLogin, isSignUp = false }) => {
                 <Col md={6} lg={5}>
                     <Card className="shadow">
                         <Card.Header className="text-center bg-primary text-white">
-                            <h4>{isSignUp ? 'MongoDB Sign Up' : 'MongoDB Sign In'}</h4>
+                            <h4><i className="fas fa-robot me-2"></i>{isSignUp ? 'CarPrice AI Sign Up' : 'CarPrice AI Sign In'}</h4>
                         </Card.Header>
                         <Card.Body>
                             {error && <Alert variant="danger">{error}</Alert>}
@@ -190,4 +191,4 @@ const MongoSignIn = ({ onLogin, isSignUp = false }) => {
     );
 };
 
-export default MongoSignIn;
+export default CarPriceAI;

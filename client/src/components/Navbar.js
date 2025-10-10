@@ -52,7 +52,7 @@ const Navbar = ({ isAuthenticated, onLogout, user }) => {
                 <li className="nav-item">
                   <Link className="nav-link" to="/market-trends">
                     <i className="fas fa-chart-line me-1"></i>
-                    Market Trends
+                    Sales Dashboard
                   </Link>
                 </li>
               </>
