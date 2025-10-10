@@ -43,19 +43,19 @@ class MarketTrendsAnalyzer:
                 print(f"[OK] Enhanced dataset loaded for analysis - {len(self.data)} records")
             else:
                 # Fallback to original datasets
-            data1 = pd.read_csv(data_file)
+                data1 = pd.read_csv(data_file)
                 print(f"[OK] Main dataset loaded for analysis - {len(data1)} records")
             
             # Try to load additional dataset
             try:
                 data2 = pd.read_csv(additional_data_file)
-                    print(f"[OK] Additional dataset loaded for analysis - {len(data2)} records")
+                print(f"[OK] Additional dataset loaded for analysis - {len(data2)} records")
                 
                 # Combine both datasets
                 self.data = pd.concat([data1, data2], ignore_index=True)
-                    print(f"[OK] Combined dataset for analysis - {len(self.data)} total records")
+                print(f"[OK] Combined dataset for analysis - {len(self.data)} total records")
             except FileNotFoundError:
-                    print(f"[WARNING] Additional dataset not found: {additional_data_file}")
+                print(f"[WARNING] Additional dataset not found: {additional_data_file}")
                 print("Using main dataset only")
                 self.data = data1
                 

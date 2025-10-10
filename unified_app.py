@@ -132,9 +132,9 @@ try:
         print(f"[OK] Indian brands dataset loaded: {len(car)} records with {car['company'].nunique()} brands")
     else:
         # Fallback to original datasets
-    car1 = pd.read_csv('Cleaned_Car_data_master.csv')
-    car2 = pd.read_csv('generated_5000_strict.csv')
-    car = pd.concat([car1, car2], ignore_index=True)
+        car1 = pd.read_csv('Cleaned_Car_data_master.csv')
+        car2 = pd.read_csv('generated_5000_strict.csv')
+        car = pd.concat([car1, car2], ignore_index=True)
         print(f"[OK] Original datasets loaded: {len(car)} records")
     
 except FileNotFoundError as e:
