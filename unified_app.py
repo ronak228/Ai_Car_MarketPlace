@@ -328,20 +328,98 @@ def get_owner_counts():
 @app.route('/api/dataset-info')
 @cross_origin()
 def get_dataset_info():
-    info = {
-        'total_companies': len(companies),
-        'total_models': len(models),
-        'total_records': len(car),
-        'year_range': year_range,
-        'kms_range': kms_range,
-        'price_range': price_range,
-        'fuel_types': fuel_types,
-        'transmission_types': transmission_types,
-        'owner_types': owner_types,
-        'condition_types': condition_types,
-        'cities': cities
-    }
-    return jsonify(info)
+    """Get comprehensive dataset information from the enhanced dataset"""
+    try:
+        # Use the comprehensive dataset for accurate statistics
+        comprehensive_df = pd.read_csv('enhanced_indian_car_dataset.csv')
+        
+        # Calculate comprehensive statistics
+        total_records = len(comprehensive_df)
+        total_companies = len(comprehensive_df['company'].unique())
+        total_models = len(comprehensive_df['model'].unique())
+        total_cities = len(comprehensive_df['city'].unique())
+        
+        # Year range
+        year_min = int(comprehensive_df['year'].min())
+        year_max = int(comprehensive_df['year'].max())
+        
+        # Price range
+        price_min = int(comprehensive_df['Price'].min())
+        price_max = int(comprehensive_df['Price'].max())
+        price_mean = int(comprehensive_df['Price'].mean())
+        price_median = int(comprehensive_df['Price'].median())
+        
+        # Kilometers range
+        kms_min = int(comprehensive_df['kilometers_driven'].min())
+        kms_max = int(comprehensive_df['kilometers_driven'].max())
+        kms_mean = int(comprehensive_df['kilometers_driven'].mean())
+        
+        # Fuel type distribution
+        fuel_distribution = comprehensive_df['fuel_type'].value_counts().to_dict()
+        
+        # Transmission distribution
+        transmission_distribution = comprehensive_df['transmission'].value_counts().to_dict()
+        
+        # Top companies
+        top_companies = comprehensive_df['company'].value_counts().head(10).to_dict()
+        
+        # Top models
+        top_models = comprehensive_df['model'].value_counts().head(10).to_dict()
+        
+        # Top cities
+        top_cities = comprehensive_df['city'].value_counts().head(10).to_dict()
+        
+        info = {
+            'total_companies': total_companies,
+            'total_models': total_models,
+            'total_records': total_records,
+            'cities_available': total_cities,
+            'year_range': {
+                'min': year_min,
+                'max': year_max
+            },
+            'kms_range': {
+                'min': kms_min,
+                'max': kms_max,
+                'mean': kms_mean
+            },
+            'price_range': {
+                'min': price_min,
+                'max': price_max,
+                'mean': price_mean,
+                'median': price_median
+            },
+            'fuel_types': fuel_distribution,
+            'transmission_types': transmission_distribution,
+            'top_companies': top_companies,
+            'top_models': top_models,
+            'top_cities': top_cities,
+            'dataset_source': 'enhanced_indian_car_dataset.csv',
+            'last_updated': '2024-10-11',
+            'brands_supported': sorted(comprehensive_df['company'].unique().tolist())
+        }
+        
+        print(f"[OK] Dataset info: {total_records} records, {total_companies} brands, {year_min}-{year_max}")
+        return jsonify(info)
+        
+    except Exception as e:
+        print(f"[ERROR] Dataset info error: {str(e)}")
+        # Fallback to original data
+        info = {
+            'total_companies': len(companies),
+            'total_models': len(models),
+            'total_records': len(car),
+            'year_range': year_range,
+            'kms_range': kms_range,
+            'price_range': price_range,
+            'fuel_types': fuel_types,
+            'transmission_types': transmission_types,
+            'owner_types': owner_types,
+            'condition_types': condition_types,
+            'cities': cities,
+            'error': str(e)
+        }
+        return jsonify(info)
 
 # Query endpoints for car data
 @app.route('/api/cars')
