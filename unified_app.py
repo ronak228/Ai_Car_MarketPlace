@@ -53,7 +53,22 @@ def debug_routes():
 
 # Load the enhanced model and encoders
 try:
-    enhanced_model_data = pickle.load(open('BestCombinedModel.pkl', 'rb'))
+    # Try to load the comprehensive model first
+    if os.path.exists('Comprehensive_Model.pkl'):
+        enhanced_model_data = pickle.load(open('Comprehensive_Model.pkl', 'rb'))
+        print("[OK] Comprehensive Model loaded successfully")
+    elif os.path.exists('Debug_Enhanced_Model.pkl'):
+        enhanced_model_data = pickle.load(open('Debug_Enhanced_Model.pkl', 'rb'))
+        print("[OK] Debug Enhanced Model loaded successfully")
+    elif os.path.exists('Fixed_Enhanced_Model.pkl'):
+        enhanced_model_data = pickle.load(open('Fixed_Enhanced_Model.pkl', 'rb'))
+        print("[OK] Fixed Enhanced Model loaded successfully")
+    elif os.path.exists('Enhanced_Real_Price_Model.pkl'):
+        enhanced_model_data = pickle.load(open('Enhanced_Real_Price_Model.pkl', 'rb'))
+        print("[OK] Enhanced Real Price Model loaded successfully")
+    else:
+        enhanced_model_data = pickle.load(open('BestCombinedModel.pkl', 'rb'))
+        print("[OK] Best Combined Model loaded successfully")
     
     # Handle the actual model structure
     if isinstance(enhanced_model_data, dict):
@@ -67,6 +82,10 @@ try:
         enhanced_scaler = None
         enhanced_label_encoders = {}
         enhanced_feature_names = enhanced_categorical_columns + enhanced_numerical_features
+        
+        print(f"[OK] Model: {enhanced_model_name}")
+        print(f"[OK] Features: {len(enhanced_feature_names)} total")
+        print(f"[OK] Performance: R² = {enhanced_performance.get('r2_score', 0):.4f}")
         
     else:
         # Fallback for unexpected format
@@ -532,59 +551,136 @@ def predict():
         return jsonify({"error": f"Unable to make prediction. {str(e)}"}), 500
 
 def predict_with_enhanced_model(car_data):
-    """Predict using the enhanced model (Pipeline) with all features"""
+    """Predict using the comprehensive model with robust error handling"""
     try:
-        # Create DataFrame with input data - the Pipeline expects all features
+        # Create input data dictionary with proper feature order
         input_data = {}
         
-        # Add all categorical features
-        for col in enhanced_categorical_columns:
-            if col in car_data:
-                input_data[col] = car_data[col]
-            else:
-                # Provide default values for missing categorical features
-                if col == 'company':
-                    input_data[col] = 'Maruti Suzuki'
-                elif col == 'model':
-                    input_data[col] = 'Alto'
-                elif col == 'fuel_type':
-                    input_data[col] = 'Petrol'
-                elif col == 'transmission':
-                    input_data[col] = 'Manual'
-                elif col == 'car_condition':
-                    input_data[col] = 'Good'
-                elif col == 'city':
-                    input_data[col] = 'Delhi'
-                elif col == 'owner_count':
-                    input_data[col] = 1
-                else:
-                    input_data[col] = 'Unknown'
+        # Helper function to safely get values
+        def safe_get(key, default_value):
+            try:
+                value = car_data.get(key, default_value)
+                if value is None or value == '' or str(value).lower() == 'nan':
+                    return default_value
+                return value
+            except:
+                return default_value
         
-        # Add all numerical features
-        for col in enhanced_numerical_features:
-            if col in car_data:
-                input_data[col] = car_data[col]
-            else:
-                # Provide default values for missing numerical features
-                if col == 'year':
-                    input_data[col] = 2015
-                elif col == 'kilometers_driven':
-                    input_data[col] = 50000
-                elif col == 'previous_accidents':
-                    input_data[col] = 0
-                elif col == 'num_doors':
-                    input_data[col] = 4
-                elif col == 'engine_size':
-                    input_data[col] = 1200
-                elif col == 'power':
-                    input_data[col] = 80
-                else:
-                    input_data[col] = 0
+        # Add categorical features in exact order
+        input_data['company'] = str(safe_get('company', 'Maruti Suzuki')).strip()
+        input_data['model'] = str(safe_get('model', 'Alto')).strip()
+        input_data['fuel_type'] = str(safe_get('fuel_type', 'Petrol')).strip()
+        input_data['transmission'] = str(safe_get('transmission', 'Manual')).strip()
+        input_data['owner_count'] = str(safe_get('owner_count', '1st')).strip()
+        input_data['car_condition'] = str(safe_get('car_condition', 'Good')).strip()
+        input_data['city'] = str(safe_get('city', 'Delhi')).strip()
+        input_data['emission_norm'] = str(safe_get('emission_norm', 'BS-IV')).strip()
+        input_data['maintenance_level'] = str(safe_get('maintenance_level', 'Medium')).strip()
+        input_data['insurance_eligible'] = str(safe_get('insurance_eligible', 'Yes')).strip()
+        input_data['listing_type'] = str(safe_get('listing_type', 'Dealer')).strip()
         
-        # Create DataFrame with single row
+        # Add numerical features in exact order with robust conversion
+        try:
+            input_data['year'] = int(float(safe_get('year', 2015)))
+        except:
+            input_data['year'] = 2015
+            
+        try:
+            input_data['kilometers_driven'] = int(float(safe_get('kilometers_driven', 50000)))
+        except:
+            input_data['kilometers_driven'] = 50000
+            
+        try:
+            input_data['engine_size'] = int(float(safe_get('engine_size', 1200)))
+        except:
+            input_data['engine_size'] = 1200
+            
+        try:
+            input_data['power'] = int(float(safe_get('power', 80)))
+        except:
+            input_data['power'] = 80
+            
+        try:
+            input_data['num_doors'] = int(float(safe_get('num_doors', 4)))
+        except:
+            input_data['num_doors'] = 4
+            
+        try:
+            input_data['previous_accidents'] = int(float(safe_get('previous_accidents', 0)))
+        except:
+            input_data['previous_accidents'] = 0
+        
+        # Feature engineering with robust calculations
+        current_year = 2024
+        input_data['age'] = max(0, current_year - input_data['year'])
+        
+        # Calculate price_per_km based on similar cars in dataset
+        try:
+            similar_cars = car[(car['company'] == input_data['company']) & 
+                              (car['model'] == input_data['model']) & 
+                              (car['year'] == input_data['year'])]
+            if len(similar_cars) > 0:
+                avg_price = similar_cars['Price'].mean()
+                input_data['price_per_km'] = avg_price / (input_data['kilometers_driven'] + 1)
+            else:
+                # Fallback calculation based on brand
+                brand_cars = car[car['company'] == input_data['company']]
+                if len(brand_cars) > 0:
+                    avg_price = brand_cars['Price'].mean()
+                    input_data['price_per_km'] = avg_price / (input_data['kilometers_driven'] + 1)
+                else:
+                    input_data['price_per_km'] = 1000000 / (input_data['kilometers_driven'] + 1)
+        except:
+            input_data['price_per_km'] = 1000000 / (input_data['kilometers_driven'] + 1)
+        
+        try:
+            input_data['engine_power_ratio'] = float(input_data['power']) / (float(input_data['engine_size']) + 1)
+        except:
+            input_data['engine_power_ratio'] = 0.1
+        
+        # Binary features with robust conversion
+        input_data['is_electric'] = 1 if str(input_data['fuel_type']).lower() == 'electric' else 0
+        input_data['is_hybrid'] = 1 if str(input_data['fuel_type']).lower() == 'hybrid' else 0
+        input_data['is_automatic'] = 1 if str(input_data['transmission']).lower() == 'automatic' else 0
+        input_data['is_first_owner'] = 1 if str(input_data['owner_count']).lower() == '1st' else 0
+        input_data['is_certified'] = 0
+        
+        # Create DataFrame with features in exact order from the loaded model
+        if hasattr(enhanced_model_data, 'get') and enhanced_model_data.get('categorical_features'):
+            # Use feature order from the loaded model
+            feature_order = enhanced_model_data['categorical_features'] + enhanced_model_data['numerical_features']
+        else:
+            # Fallback to global feature order
+            feature_order = enhanced_categorical_columns + enhanced_numerical_features
+        
+        # Create DataFrame with proper data types
         input_df = pd.DataFrame([input_data])
         
-        # Make prediction using the Pipeline (it handles encoding and scaling internally)
+        # Ensure all columns exist and are properly typed
+        for col in feature_order:
+            if col not in input_df.columns:
+                if col in enhanced_categorical_columns:
+                    input_df[col] = 'Unknown'
+                else:
+                    input_df[col] = 0.0
+        
+        # Reorder columns to match feature order
+        input_df = input_df[feature_order]
+        
+        # Ensure all numerical columns are properly typed
+        for col in enhanced_numerical_features:
+            if col in input_df.columns:
+                input_df[col] = pd.to_numeric(input_df[col], errors='coerce').fillna(0)
+        
+        # Ensure no NaN values in categorical columns
+        for col in enhanced_categorical_columns:
+            if col in input_df.columns:
+                input_df[col] = input_df[col].fillna('Unknown')
+        
+        # Final check for any remaining NaN values
+        input_df = input_df.fillna(0)
+        
+        # Make prediction
         prediction = enhanced_model.predict(input_df)[0]
         predicted_price = float(np.round(prediction, 2))
         
@@ -606,11 +702,13 @@ def predict_with_enhanced_model(car_data):
             },
             "features_used": len(enhanced_feature_names),
             "car_info": car_info,
-            "message": f"Enhanced prediction using {enhanced_model_name} with {len(enhanced_feature_names)} features"
+            "message": f"Comprehensive prediction using {enhanced_model_name} with {len(enhanced_feature_names)} features"
         }
     
     except Exception as e:
         print(f"Enhanced model prediction error: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise e
 
 def get_car_info_from_dataset(car_data):
