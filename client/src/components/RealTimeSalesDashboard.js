@@ -282,16 +282,16 @@ const RealTimeSalesDashboard = () => {
 
   return (
     <div className="container-fluid py-4">
-      {/* Welcome Banner */}
+      {/* Header */}
       <div className="row mb-4">
         <div className="col-12">
-          <div className="card bg-gradient-primary text-white">
+          <div className="card bg-gradient-success text-white">
             <div className="card-body">
               <div className="row align-items-center">
                 <div className="col-md-8">
                   <h2 className="card-title mb-2">
                     <i className="fas fa-chart-line me-2"></i>
-                    Welcome back, CarCrafter AI User! <span role="img" aria-label="dashboard">📊</span>
+                    Real-Time Indian Car Sales Dashboard
                   </h2>
                   <p className="card-text mb-0">
                     Live sales data for all Indian car brands including EV, Petrol, Diesel, CNG, and Hybrid vehicles

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
 
-const CarCrafterAI = ({ onLogin, isSignUp = false }) => {
+const CarPriceAI = ({ onLogin, isSignUp = false }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -59,11 +59,11 @@ const CarCrafterAI = ({ onLogin, isSignUp = false }) => {
         setError('');
 
         try {
-            // Simulate authentication for CarCrafter AI
+            // Simulate authentication for CarPrice AI
             await new Promise(resolve => setTimeout(resolve, 1000));
             
             if (isSignUp) {
-                setSuccess('Welcome to CarCrafter AI! Registration successful.');
+                setSuccess('Welcome to CarPrice AI! Registration successful.');
                 // Clear form except email
                 setFormData(prev => ({
                     email: prev.email,
@@ -72,12 +72,12 @@ const CarCrafterAI = ({ onLogin, isSignUp = false }) => {
                     confirmPassword: ''
                 }));
             } else {
-                setSuccess('Welcome back to CarCrafter AI!');
+                setSuccess('Welcome back to CarPrice AI!');
                 // Simulate user login
                 const user = {
                     id: '1',
                     email: formData.email,
-                    name: formData.fullName || 'CarCrafter AI User',
+                    name: formData.fullName || 'CarPrice AI User',
                     isAuthenticated: true
                 };
                 onLogin(user);
@@ -98,7 +98,7 @@ const CarCrafterAI = ({ onLogin, isSignUp = false }) => {
                 <Col md={6} lg={5}>
                     <Card className="shadow">
                         <Card.Header className="text-center bg-primary text-white">
-                            <h4><i className="fas fa-robot me-2"></i>{isSignUp ? 'CarCrafter AI Sign Up' : 'CarCrafter AI Sign In'}</h4>
+                            <h4><i className="fas fa-robot me-2"></i>{isSignUp ? 'CarPrice AI Sign Up' : 'CarPrice AI Sign In'}</h4>
                         </Card.Header>
                         <Card.Body>
                             {error && <Alert variant="danger">{error}</Alert>}
@@ -191,4 +191,4 @@ const CarCrafterAI = ({ onLogin, isSignUp = false }) => {
     );
 };
 
-export default CarCrafterAI;
+export default CarPriceAI;

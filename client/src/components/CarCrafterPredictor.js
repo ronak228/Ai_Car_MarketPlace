@@ -3,7 +3,7 @@ import api from '../api';
 import Swal from 'sweetalert2';
 import PredictionStorage from '../utils/predictionStorage';
 
-const CarCrafterPredictor = () => {
+const CarPricePredictor = () => {
   const [formData, setFormData] = useState({
     company: '',
     model: '',
@@ -214,12 +214,13 @@ const CarCrafterPredictor = () => {
     const trends = ['Rising', 'Stable', 'Falling'];
     const marketTrend = trends[Math.floor(Math.random() * trends.length)];
 
-    // Model Comparison (simulated multiple models)
+    // Model Comparison (simulated multiple models with dynamic predictions)
+    // Each model gets a different variation to ensure different predictions
     const models = [
-      { name: 'Linear Regression', accuracy: 82, prediction: basePrice * (0.98 + Math.random() * 0.04) },
-      { name: 'Random Forest', accuracy: 89, prediction: basePrice * (0.97 + Math.random() * 0.06) },
-      { name: 'XGBoost', accuracy: 91, prediction: basePrice * (0.96 + Math.random() * 0.08) },
-      { name: 'Neural Network', accuracy: 87, prediction: basePrice * (0.99 + Math.random() * 0.02) }
+      { name: 'Linear Regression', accuracy: 82, prediction: basePrice * (0.92 + Math.random() * 0.08) },
+      { name: 'Random Forest', accuracy: 89, prediction: basePrice * (0.94 + Math.random() * 0.12) },
+      { name: 'XGBoost', accuracy: 91, prediction: basePrice * (0.90 + Math.random() * 0.15) },
+      { name: 'Neural Network', accuracy: 87, prediction: basePrice * (0.95 + Math.random() * 0.10) }
     ];
 
     return {
@@ -965,4 +966,4 @@ const CarCrafterPredictor = () => {
   );
 };
 
-export default CarCrafterPredictor;
+export default CarPricePredictor;
