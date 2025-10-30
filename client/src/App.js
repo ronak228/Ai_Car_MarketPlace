@@ -7,9 +7,9 @@ import './App.css';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import SignIn from './components/SignIn';
-import CarPriceAI from './components/MongoSignIn';
+import CarCrafterAI from './components/MongoSignIn';
 import Dashboard from './components/Dashboard';
-import CarPricePredictor from './components/CarPricePredictor';
+import CarCrafterPredictor from './components/CarCrafterPredictor';
 import MarketTrends from './components/MarketTrends';
 import RealTimeSalesDashboard from './components/RealTimeSalesDashboard';
 import SupabaseTest from './components/SupabaseTest';
@@ -207,25 +207,25 @@ function App() {
             <Route 
               path="/signin" 
               element={
-            isAuthenticated ? <Navigate to="/dashboard" /> : <CarPriceAI onLogin={handleLogin} isSignUp={false} />
+            isAuthenticated ? <Navigate to="/dashboard" /> : <CarCrafterAI onLogin={handleLogin} isSignUp={false} />
               } 
             />
             <Route 
               path="/signup" 
               element={
-            isAuthenticated ? <Navigate to="/dashboard" /> : <CarPriceAI onLogin={handleLogin} isSignUp={true} />
+            isAuthenticated ? <Navigate to="/dashboard" /> : <CarCrafterAI onLogin={handleLogin} isSignUp={true} />
               } 
             />
             <Route 
               path="/mongo-signin" 
               element={
-                isAuthenticated ? <Navigate to="/dashboard" /> : <CarPriceAI onLogin={handleLogin} isSignUp={false} />
+                isAuthenticated ? <Navigate to="/dashboard" /> : <CarCrafterAI onLogin={handleLogin} isSignUp={false} />
               } 
             />
             <Route 
               path="/mongo-signup" 
               element={
-                isAuthenticated ? <Navigate to="/dashboard" /> : <CarPriceAI onLogin={handleLogin} isSignUp={true} />
+                isAuthenticated ? <Navigate to="/dashboard" /> : <CarCrafterAI onLogin={handleLogin} isSignUp={true} />
               } 
             />
             <Route 
@@ -237,7 +237,7 @@ function App() {
             <Route 
               path="/car-price-predictor" 
               element={
-                isAuthenticated ? <CarPricePredictor /> : <Navigate to="/signin" />
+                isAuthenticated ? <CarCrafterPredictor /> : <Navigate to="/signin" />
               } 
             />
             <Route 

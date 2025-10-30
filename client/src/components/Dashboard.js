@@ -455,10 +455,10 @@ const Dashboard = ({ user }) => {
         <div className="col-12">
           <div className="card bg-primary text-white">
             <div className="card-body">
-              <h2 className="card-title">Welcome back, {user?.name || 'CarPrice AI User'}! <i className="fas fa-robot"></i></h2>
-              <p className="card-text">
-                Your CarPrice AI dashboard with advanced car price prediction, real-time market analysis, and comprehensive insights for all Indian car brands.
-              </p>
+              <h2 className="card-title">Welcome back, {user?.name || 'CarCrafter AI User'}! <i className="fas fa-robot"></i></h2>
+            <p className="card-text">
+              Your CarCrafter AI dashboard with advanced car price prediction, real-time market analysis, and comprehensive insights for all Indian car brands.
+            </p>
             </div>
           </div>
         </div>
@@ -1315,4 +1315,4 @@ const DatasetInfoComponent = () => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;

@@ -23,7 +23,7 @@ const Home = ({ isAuthenticated }) => {
           <div className="row align-items-center">
             <div className="col-lg-6">
               <h1 className="display-4 fw-bold mb-4">
-                <i className="fas fa-robot me-3"></i>CarPrice AI
+                <i className="fas fa-robot me-3"></i>CarCrafter AI
               </h1>
               <p className="lead mb-4">
                 Advanced AI-powered car price prediction with real-time market analysis. 
@@ -177,4 +177,4 @@ const Home = ({ isAuthenticated }) => {
   );
 };
 
-export default Home; 
+export default Home;

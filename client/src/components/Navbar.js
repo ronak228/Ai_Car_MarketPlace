@@ -18,7 +18,7 @@ const Navbar = ({ isAuthenticated, onLogout, user }) => {
       <div className="container">
         <Link className="navbar-brand d-flex align-items-center" to="/">
           <span className="navbar-brand-icon me-2">🤖</span>
-          <span className="navbar-brand-text">CarPrice AI</span>
+          <span className="navbar-brand-text">CarCrafter AI</span>
         </Link>
         
         <button 
@@ -64,7 +64,7 @@ const Navbar = ({ isAuthenticated, onLogout, user }) => {
               <>
                 <li className="nav-item">
                   <span className="nav-link">
-                    Welcome, {user?.name || 'User'}!
+                    Welcome, {user?.name || 'CarCrafter AI User'}!
                   </span>
                 </li>
                 <li className="nav-item">
@@ -96,4 +96,4 @@ const Navbar = ({ isAuthenticated, onLogout, user }) => {
   );
 };
 
-export default Navbar; 
+export default Navbar;

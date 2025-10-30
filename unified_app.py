@@ -375,7 +375,7 @@ price_range = {'min': int(car['Price'].min()), 'max': int(car['Price'].max())}
 
 def health_check():
 
-    return jsonify({"status": "healthy", "message": "Car Price Predictor API is running"})
+    return jsonify({"status": "healthy", "message": "CarCrafter AI API is running"})
 
 
 
@@ -3756,7 +3756,7 @@ def api_root():
 
     return jsonify({
 
-        'message': 'Car Price Predictor API',
+        'message': 'CarCrafter AI API',
 
         'available_endpoints': available_endpoints,
 

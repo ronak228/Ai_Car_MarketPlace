@@ -3,7 +3,7 @@ import api from '../api';
 import Swal from 'sweetalert2';
 import PredictionStorage from '../utils/predictionStorage';
 
-const CarPricePredictor = () => {
+const CarCrafterPredictor = () => {
   const [formData, setFormData] = useState({
     company: '',
     model: '',
@@ -965,4 +965,4 @@ const CarPricePredictor = () => {
   );
 };
 
-export default CarPricePredictor; 
+export default CarCrafterPredictor;
