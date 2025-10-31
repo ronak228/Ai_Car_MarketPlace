@@ -328,6 +328,11 @@ const CarPricePredictor = () => {
           html: `
             <div class="text-start">
               <p><strong>Car:</strong> ${formData.company} ${formData.model}</p>
+              ${advancedPrediction && advancedPrediction.original_price ? 
+                `<p><strong>Original Price:</strong> ₹${Math.round(advancedPrediction.original_price).toLocaleString()}</p>
+                <p><strong>Showroom Depreciation (${advancedPrediction.depreciation_rate || 0}%):</strong> ₹${Math.round(advancedPrediction.original_price - basePrice).toLocaleString()}</p>` 
+                : ''
+              }
               <p><strong>Base Price:</strong> ₹${Math.round(basePrice).toLocaleString()}</p>
               <p><strong>GST (${gstPct}%):</strong> ₹${Math.round(final - basePrice).toLocaleString()}</p>
               <p><strong>Final Price:</strong> ₹${Math.round(final).toLocaleString()}</p>
@@ -742,6 +747,12 @@ const CarPricePredictor = () => {
                     <div className="col-12">
                       <div className="alert alert-primary text-center" role="alert">
                         <h4 className="alert-heading">Enhanced Prediction</h4>
+                        {advancedPrediction && advancedPrediction.original_price ? (
+                          <>
+                            <div className="mb-1"><strong>Original Price:</strong> ₹{Math.round(advancedPrediction.original_price).toLocaleString()}</div>
+                            <div className="mb-1"><strong>Showroom Depreciation ({advancedPrediction.depreciation_rate || 0}%):</strong> ₹{Math.round(advancedPrediction.original_price - prediction).toLocaleString()}</div>
+                          </>
+                        ) : null}
                         <div className="mb-1"><strong>Predicted Base Price:</strong> ₹{prediction.toLocaleString()}</div>
                         {finalPrice != null && (
                           <>
@@ -752,12 +763,12 @@ const CarPricePredictor = () => {
                         <p className="mb-0 mt-2">
                           Based on our advanced machine learning model with all 22 features
                         </p>
-                        {advancedPrediction.modelUsed && (
+                        {advancedPrediction && advancedPrediction.modelUsed && (
                           <div className="mt-3">
                             <small className="text-muted">
                               Model: {advancedPrediction.modelUsed} | 
-                              Features Used: {advancedPrediction.featuresUsed} | 
-                              Confidence: {advancedPrediction.confidenceScore}%
+                              Features Used: {advancedPrediction.featuresUsed || 'N/A'} | 
+                              Confidence: {advancedPrediction.confidenceScore || 0}%
                             </small>
                           </div>
                         )}
@@ -776,10 +787,10 @@ const CarPricePredictor = () => {
                         <div className="card-body text-center">
                           <div className="mb-3">
                             <span className="badge bg-success fs-6 me-2">
-                              Min: ₹{advancedPrediction.priceRange.min.toLocaleString()}
+                              Min: ₹{advancedPrediction && advancedPrediction.priceRange ? Math.round(advancedPrediction.priceRange.min).toLocaleString() : '0'}
                             </span>
                             <span className="badge bg-danger fs-6">
-                              Max: ₹{advancedPrediction.priceRange.max.toLocaleString()}
+                              Max: ₹{advancedPrediction && advancedPrediction.priceRange ? Math.round(advancedPrediction.priceRange.max).toLocaleString() : '0'}
                             </span>
                           </div>
                           <p className="card-text">
@@ -797,8 +808,8 @@ const CarPricePredictor = () => {
                         </div>
                         <div className="card-body text-center">
                           <div className="mb-3">
-                            <span className={`badge bg-${getConfidenceColor(advancedPrediction.confidenceScore)} fs-1`}>
-                              {advancedPrediction.confidenceScore}%
+                            <span className={`badge bg-${getConfidenceColor(advancedPrediction && advancedPrediction.confidenceScore ? advancedPrediction.confidenceScore : 0)} fs-1`}>
+                              {advancedPrediction && advancedPrediction.confidenceScore ? advancedPrediction.confidenceScore : 0}%
                             </span>
                           </div>
                           <p className="card-text">
@@ -816,8 +827,8 @@ const CarPricePredictor = () => {
                         </div>
                         <div className="card-body text-center">
                           <div className="mb-3">
-                            <span className={`badge bg-${getTrendColor(advancedPrediction.marketTrend)} fs-5`}>
-                              {advancedPrediction.marketTrend}
+                            <span className={`badge bg-${getTrendColor(advancedPrediction && advancedPrediction.marketTrend ? advancedPrediction.marketTrend : 'Stable')} fs-5`}>
+                              {advancedPrediction && advancedPrediction.marketTrend ? advancedPrediction.marketTrend : 'Stable'}
                             </span>
                           </div>
                           <p className="card-text">
@@ -836,17 +847,17 @@ const CarPricePredictor = () => {
                         </div>
                         <div className="card-body">
                           <div className="row g-2">
-                            {advancedPrediction.modelComparison.map((model, index) => (
+                            {advancedPrediction && advancedPrediction.modelComparison ? advancedPrediction.modelComparison.map((model, index) => (
                               <div key={index} className="col-12">
                                 <div className="d-flex justify-content-between align-items-center">
-                                  <small className="fw-bold">{model.name}</small>
+                                  <small className="fw-bold">{model.name || 'Unknown'}</small>
                                   <div>
-                                    <span className="badge bg-primary me-1">{model.accuracy}%</span>
-                                    <span className="badge bg-info">₹{model.prediction.toLocaleString()}</span>
+                                    <span className="badge bg-primary me-1">{model.accuracy || 0}%</span>
+                                    <span className="badge bg-info">₹{model.prediction ? model.prediction.toLocaleString() : '0'}</span>
                                   </div>
                                 </div>
                               </div>
-                            ))}
+                            )) : <div className="text-center">No model comparison data available</div>}
                           </div>
                         </div>
                       </div>

@@ -88,6 +88,7 @@ gst_rates = {
     2022: 25,
     2023: 26,
     2024: 28,
+    2025: 28,
     2025: 28
 }
 DEFAULT_GST_PERCENTAGE = 18
@@ -1055,6 +1056,32 @@ def predict():
             gst_percentage = float(gst_rates.get(int(car_data.get('year', 2018)), DEFAULT_GST_PERCENTAGE))
 
         base_price = float(prediction_result.get('prediction'))
+        
+        # Apply showroom depreciation if it's a new car
+        is_showroom_new = car_data.get('is_showroom_new', False)
+        if is_showroom_new or car_data.get('kilometers_driven', 5000) < 1000:
+            # Determine price category for depreciation rate
+            if base_price < 500000:
+                price_category = 'Budget'
+                depreciation_rate = 15
+            elif base_price < 1000000:
+                price_category = 'Mid-Range'
+                depreciation_rate = 20
+            elif base_price < 2000000:
+                price_category = 'Premium'
+                depreciation_rate = 25
+            else:
+                price_category = 'Luxury'
+                depreciation_rate = 30
+                
+            # Apply depreciation
+            depreciated_price = base_price * (1 - (depreciation_rate / 100))
+            prediction_result['is_showroom_new'] = True
+            prediction_result['depreciation_rate'] = depreciation_rate
+            prediction_result['original_price'] = base_price
+            base_price = depreciated_price
+        
+        # Apply GST
         final_price = round(base_price + (base_price * gst_percentage / 100.0), 2)
 
         # Enrich response with GST details
