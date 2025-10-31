@@ -21,9 +21,12 @@ const CarPricePredictor = () => {
     city: 'Delhi',
     emission_norm: 'BS-IV',
     insurance_eligible: 'Yes',
-    maintenance_level: 'Medium'
+    maintenance_level: 'Medium',
+    gst_percentage: ''
   });
   const [prediction, setPrediction] = useState(null);
+  const [finalPrice, setFinalPrice] = useState(null);
+  const [gstPercentage, setGstPercentage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [carInfo, setCarInfo] = useState(null);
@@ -64,15 +67,14 @@ const CarPricePredictor = () => {
     if (formData.company && formData.company !== 'Select Company') {
       if (formData.year) {
         // If year is selected, get models for both company and year
-        const fuelParam = formData.fuel_type && formData.fuel_type !== 'Select Fuel Type' 
-          ? `?fuel_type=${encodeURIComponent(formData.fuel_type)}` 
-          : '';
-        
-        api.get(`/api/models/${formData.company}/${formData.year}${fuelParam}`)
+        const q = new URLSearchParams();
+        q.set('strict', '1');
+        if (formData.fuel_type && formData.fuel_type !== 'Select Fuel Type') q.set('fuel_type', formData.fuel_type);
+        api.get(`/api/models/${formData.company}/${formData.year}?${q.toString()}`)
           .then(res => {
             setOptions(prev => ({
               ...prev,
-              models: ['Select Model', ...res.data.models]
+              models: res.data.exact_year_available ? ['Select Model', ...res.data.models] : ['Select Model']
             }));
             setModelFilterInfo(res.data);
             setFormData(prev => ({ ...prev, model: '' }));
@@ -115,15 +117,14 @@ const CarPricePredictor = () => {
   // Update models when year changes (if company is already selected)
   useEffect(() => {
     if (formData.company && formData.company !== 'Select Company' && formData.year) {
-      const fuelParam = formData.fuel_type && formData.fuel_type !== 'Select Fuel Type' 
-        ? `?fuel_type=${encodeURIComponent(formData.fuel_type)}` 
-        : '';
-      
-      api.get(`/api/models/${formData.company}/${formData.year}${fuelParam}`)
+      const q = new URLSearchParams();
+      q.set('strict', '1');
+      if (formData.fuel_type && formData.fuel_type !== 'Select Fuel Type') q.set('fuel_type', formData.fuel_type);
+      api.get(`/api/models/${formData.company}/${formData.year}?${q.toString()}`)
         .then(res => {
           setOptions(prev => ({
             ...prev,
-            models: ['Select Model', ...res.data.models]
+            models: res.data.exact_year_available ? ['Select Model', ...res.data.models] : ['Select Model']
           }));
           setModelFilterInfo(res.data);
           setFormData(prev => ({ ...prev, model: '' }));
@@ -200,6 +201,15 @@ const CarPricePredictor = () => {
     }));
   };
 
+  // Auto-set GST when year changes
+  useEffect(() => {
+    const map = {2018:18,2019:18,2020:20,2021:22,2022:25,2023:26,2024:28,2025:28};
+    if (formData.year) {
+      const pct = map[parseInt(formData.year)] || 18;
+      setFormData(prev => ({ ...prev, gst_percentage: pct }));
+    }
+  }, [formData.year]);
+
   // Generate advanced prediction features
   const generateAdvancedPrediction = (basePrice) => {
     // Price Range (10% variation)
@@ -236,6 +246,7 @@ const CarPricePredictor = () => {
     
     // Validate all required fields are filled
     if (!formData.company || formData.company === 'Select Company' ||
+        options.models.length <= 1 ||
         !formData.model || formData.model === 'Select Model' ||
         !formData.year || !formData.fuel_type || !formData.kms_driven) {
       setError('Please fill in all required fields before submitting.');
@@ -254,7 +265,9 @@ const CarPricePredictor = () => {
 
     try {
       const response = await api.post('/api/predict', formData);
-      const basePrice = response.data.prediction;
+      const basePrice = response.data.base_price ?? response.data.prediction;
+      const gstPct = response.data.gst_percentage ?? formData.gst_percentage ?? 18;
+      const final = response.data.final_price ?? Math.round(basePrice + (basePrice * gstPct / 100));
       const modelUsed = response.data.model_used;
       const confidenceScore = response.data.confidence_score;
       const modelPerformance = response.data.model_performance;
@@ -262,6 +275,8 @@ const CarPricePredictor = () => {
       const carInfo = response.data.car_info;
       
       setPrediction(basePrice);
+      setFinalPrice(final);
+      setGstPercentage(gstPct);
       setCarInfo(carInfo);
       
       // Generate advanced prediction features
@@ -294,6 +309,8 @@ const CarPricePredictor = () => {
         insurance_eligible: formData.insurance_eligible,
         maintenance_level: formData.maintenance_level,
         predictedPrice: Math.round(basePrice),
+        finalPrice: Math.round(final),
+        gstPercentage: Number(gstPct),
         confidence: confidenceScore,
         modelUsed,
         modelPerformance,
@@ -311,7 +328,10 @@ const CarPricePredictor = () => {
           html: `
             <div class="text-start">
               <p><strong>Car:</strong> ${formData.company} ${formData.model}</p>
-              <p><strong>Predicted Price:</strong> ₹${Math.round(basePrice).toLocaleString()}</p>
+              <p><strong>Base Price:</strong> ₹${Math.round(basePrice).toLocaleString()}</p>
+              <p><strong>GST (${gstPct}%):</strong> ₹${Math.round(final - basePrice).toLocaleString()}</p>
+              <p><strong>Final Price:</strong> ₹${Math.round(final).toLocaleString()}</p>
+              <hr/>
               <p><strong>Confidence:</strong> ${confidenceScore}%</p>
               <p><strong>Model Used:</strong> ${modelUsed}</p>
             </div>
@@ -368,15 +388,17 @@ const CarPricePredictor = () => {
               <div className="alert alert-info mb-4" role="alert">
                 <h6 className="alert-heading">
                   <i className="fas fa-lightbulb me-2"></i>
-                  Smart Model Selection
+                  Smart Pricing Insights
                 </h6>
                 <p className="mb-2">
-                  <strong>For best results:</strong> Select Company → Year → Model. 
-                  This ensures you only see models that were actually available in your chosen year!
+                  We predict a fair market price using brand history, year, kilometers, fuel type,
+                  and comparable vehicles. Then we add GST transparently so you see base, tax, and final.
                 </p>
-                <small className="text-muted">
-                  The system will automatically filter models based on launch dates and availability.
-                </small>
+                <ul className="mb-0 small">
+                  <li>Base price reflects similar cars and technical specs.</li>
+                  <li>GST is applied on top: Base + (Base × GST%).</li>
+                  <li>Confidence shows model certainty for your inputs.</li>
+                </ul>
               </div>
 
               {error && (
@@ -414,7 +436,7 @@ const CarPricePredictor = () => {
                       value={formData.model}
                       onChange={handleChange}
                       required
-                      disabled={!formData.company || formData.company === 'Select Company'}
+                      disabled={!formData.company || formData.company === 'Select Company' || options.models.length <= 1}
                     >
                       {options.models.map((model, index) => (
                         <option key={index} value={model}>
@@ -424,6 +446,9 @@ const CarPricePredictor = () => {
                     </select>
                     {(!formData.company || formData.company === 'Select Company') && (
                       <small className="text-muted">Please select a company first</small>
+                    )}
+                    {options.models.length <= 1 && formData.company && (
+                      <small className="text-warning d-block">No models available for the selected filters. Try a different year or fuel type.</small>
                     )}
                     {modelFilterInfo && (
                       <small className={`text-${modelFilterInfo.exact_year_available ? 'success' : 'warning'}`}>
@@ -717,7 +742,13 @@ const CarPricePredictor = () => {
                     <div className="col-12">
                       <div className="alert alert-primary text-center" role="alert">
                         <h4 className="alert-heading">Enhanced Prediction</h4>
-                        <h2 className="text-primary mb-0">₹{prediction.toLocaleString()}</h2>
+                        <div className="mb-1"><strong>Predicted Base Price:</strong> ₹{prediction.toLocaleString()}</div>
+                        {finalPrice != null && (
+                          <>
+                            <div className="mb-1"><strong>GST ({gstPercentage}%):</strong> ₹{(finalPrice - prediction).toLocaleString()}</div>
+                            <h2 className="text-success mb-0">Final Price: ₹{finalPrice.toLocaleString()}</h2>
+                          </>
+                        )}
                         <p className="mb-0 mt-2">
                           Based on our advanced machine learning model with all 22 features
                         </p>
@@ -737,7 +768,7 @@ const CarPricePredictor = () => {
                   {/* Advanced Features Grid */}
                   <div className="row g-4">
                     {/* Price Range */}
-                    <div className="col-md-6">
+                    <div className="col-lg-4 col-md-6">
                       <div className="card h-100">
                         <div className="card-header bg-info text-white">
                           <h5 className="mb-0">📈 Price Range Prediction</h5>
@@ -759,7 +790,7 @@ const CarPricePredictor = () => {
                     </div>
 
                     {/* Confidence Score */}
-                    <div className="col-md-6">
+                    <div className="col-lg-4 col-md-6">
                       <div className="card h-100">
                         <div className="card-header bg-success text-white">
                           <h5 className="mb-0">🎯 Confidence Score</h5>
@@ -778,7 +809,7 @@ const CarPricePredictor = () => {
                     </div>
 
                     {/* Market Trend */}
-                    <div className="col-md-6">
+                    <div className="col-lg-4 col-md-6">
                       <div className="card h-100">
                         <div className="card-header bg-warning text-white">
                           <h5 className="mb-0">📊 Market Trend Analysis</h5>
@@ -796,7 +827,8 @@ const CarPricePredictor = () => {
                       </div>
                     </div>
 
-                    {/* Model Comparison */}
+                  {/* Model Comparison (hidden as requested) */}
+                  {false && (
                     <div className="col-md-6">
                       <div className="card h-100">
                         <div className="card-header bg-secondary text-white">
@@ -809,12 +841,8 @@ const CarPricePredictor = () => {
                                 <div className="d-flex justify-content-between align-items-center">
                                   <small className="fw-bold">{model.name}</small>
                                   <div>
-                                    <span className="badge bg-primary me-1">
-                                      {model.accuracy}%
-                                    </span>
-                                    <span className="badge bg-info">
-                                      ₹{model.prediction.toLocaleString()}
-                                    </span>
+                                    <span className="badge bg-primary me-1">{model.accuracy}%</span>
+                                    <span className="badge bg-info">₹{model.prediction.toLocaleString()}</span>
                                   </div>
                                 </div>
                               </div>
@@ -823,6 +851,7 @@ const CarPricePredictor = () => {
                         </div>
                       </div>
                     </div>
+                  )}
                   </div>
 
                   {/* Car Information */}
@@ -904,18 +933,13 @@ const CarPricePredictor = () => {
                     <div className="col-12">
                       <div className="card bg-light">
                         <div className="card-body">
-                          <h6 className="card-title">💡 AI Insights</h6>
+                          <h6 className="card-title">💡 Smart Pricing Tips</h6>
                           <ul className="mb-0">
-                            <li>This prediction is based on {carInfo?.similar_cars_found || datasetInfo?.total_models || 'thousands'} of similar cars in our database</li>
-                            <li>Market trend shows prices are <strong>{advancedPrediction.marketTrend.toLowerCase()}</strong> for this segment</li>
-                            <li>Our {advancedPrediction.modelComparison[2]?.name} model shows the highest accuracy at {advancedPrediction.modelComparison[2]?.accuracy}%</li>
-                            <li>Consider factors like maintenance history and local market conditions for final pricing</li>
-                            {carInfo?.data_availability?.exact_match && (
-                              <li><strong>✅ Exact match found:</strong> We have data for this exact car model and year</li>
-                            )}
-                            {!carInfo?.data_availability?.exact_match && carInfo?.data_availability?.company_year_match && (
-                              <li><strong>⚠️ Similar data:</strong> Based on other {formData.company} models from {formData.year}</li>
-                            )}
+                            <li>We show a transparent breakdown: Base price + GST = Final price.</li>
+                            <li>Key factors that can move your price: year, kilometers, fuel type, brand, and condition.</li>
+                            <li>Improve your price by highlighting service records, single ownership, and recent maintenance.</li>
+                            <li>Local market demand varies by city; similar cars nearby influence the estimate.</li>
+                            <li>Use the price range as guidance to negotiate confidently.</li>
                           </ul>
                         </div>
                       </div>
@@ -924,40 +948,42 @@ const CarPricePredictor = () => {
                 </div>
               )}
 
-              {/* Dataset Information */}
-              <div className="mt-4">
-                <div className="card bg-light">
-                  <div className="card-body">
-                    <h6 className="card-title">📊 Dataset Information</h6>
-                    {datasetInfoLoading ? (
-                      <p className="card-text small">Loading dataset info...</p>
-                    ) : datasetInfo ? (
-                      <>
-                        <p className="card-text small mb-1">
-                          <strong>Total Companies:</strong> {datasetInfo.total_companies}
-                        </p>
-                        <p className="card-text small mb-1">
-                          <strong>Total Models:</strong> {datasetInfo.total_models}
-                        </p>
-                        <p className="card-text small mb-1">
-                          <strong>Total Records:</strong> {datasetInfo.total_records}
-                        </p>
-                        <p className="card-text small mb-1">
-                          <strong>Cities Available:</strong> {datasetInfo.cities?.length || 0}
-                        </p>
-                        <p className="card-text small mb-1">
-                          <strong>Price Range:</strong> ₹{datasetInfo.price_range?.min?.toLocaleString()} - ₹{datasetInfo.price_range?.max?.toLocaleString()}
-                        </p>
-                        <p className="card-text small mb-0">
-                          <strong>Year Range:</strong> {datasetInfo.year_range.min} - {datasetInfo.year_range.max}
-                        </p>
-                      </>
-                    ) : (
-                      <p className="card-text small text-danger">Could not load dataset info.</p>
-                    )}
+              {/* Dataset Information (hidden as requested) */}
+              {false && (
+                <div className="mt-4">
+                  <div className="card bg-light">
+                    <div className="card-body">
+                      <h6 className="card-title">📊 Dataset Information</h6>
+                      {datasetInfoLoading ? (
+                        <p className="card-text small">Loading dataset info...</p>
+                      ) : datasetInfo ? (
+                        <>
+                          <p className="card-text small mb-1">
+                            <strong>Total Companies:</strong> {datasetInfo.total_companies}
+                          </p>
+                          <p className="card-text small mb-1">
+                            <strong>Total Models:</strong> {datasetInfo.total_models}
+                          </p>
+                          <p className="card-text small mb-1">
+                            <strong>Total Records:</strong> {datasetInfo.total_records}
+                          </p>
+                          <p className="card-text small mb-1">
+                            <strong>Cities Available:</strong> {datasetInfo.cities?.length || 0}
+                          </p>
+                          <p className="card-text small mb-1">
+                            <strong>Price Range:</strong> ₹{datasetInfo.price_range?.min?.toLocaleString()} - ₹{datasetInfo.price_range?.max?.toLocaleString()}
+                          </p>
+                          <p className="card-text small mb-0">
+                            <strong>Year Range:</strong> {datasetInfo.year_range.min} - {datasetInfo.year_range.max}
+                          </p>
+                        </>
+                      ) : (
+                        <p className="card-text small text-danger">Could not load dataset info.</p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

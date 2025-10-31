@@ -55,6 +55,18 @@
                         </select>
                     </div>
                     <div class="col-md-10 form-group" style="text-align: center">
+                        <label><b>GST Percentage:</b> </label><br>
+                        <select class="selectpicker form-control" id="gst_percentage" name="gst_percentage" required="1">
+                            <option value="18">18%</option>
+                            <option value="20">20%</option>
+                            <option value="22">22%</option>
+                            <option value="25">25%</option>
+                            <option value="26">26%</option>
+                            <option value="28" selected>28%</option>
+                        </select>
+                        <small class="text-muted">Auto-selected based on year; you can adjust.</small>
+                    </div>
+                    <div class="col-md-10 form-group" style="text-align: center">
                         <label><b>Select the Fuel Type:</b> </label><br>
                         <select class="selectpicker form-control" id="fuel_type" name="fuel_type" required="1">
                             {% for fuel in fuel_types %}
@@ -74,7 +86,9 @@
                 <br>
                 <div class="row">
                     <div class="col-12" style="text-align: center">
-                        <h4><span id="prediction"></span></h4>
+                        <h5><span id="base_price"></span></h5>
+                        <h6><span id="gst_amount"></span></h6>
+                        <h4><span id="final_price"></span></h4>
                     </div>
                 </div>
             </div>
@@ -112,12 +126,29 @@
         {% endfor %}
     }
 
+    // Auto-select GST based on year mapping
+    (function setupGstAutoSelect(){
+        var yearEl = document.getElementById('year');
+        var gstEl = document.getElementById('gst_percentage');
+        function updateGst(){
+            var y = parseInt(yearEl.value);
+            var map = {2018:18,2019:18,2020:20,2021:22,2022:25,2023:26,2024:28,2025:28};
+            var pct = map[y] || 18;
+            gstEl.value = pct.toString();
+        }
+        if(yearEl && gstEl){
+            yearEl.addEventListener('change', updateGst);
+            updateGst();
+        }
+    })();
+
     function send_data()
     {
         // Get form data
         var company = document.getElementById('company').value;
         var car_model = document.getElementById('car_models').value;
         var year = document.getElementById('year').value;
+        var gst_percentage = document.getElementById('gst_percentage').value;
         var fuel_type = document.getElementById('fuel_type').value;
         var kilo_driven = document.getElementById('kilo_driven').value;
         
@@ -147,19 +178,33 @@
         fd.append('company', company);
         fd.append('car_models', car_model);
         fd.append('year', year);
+        fd.append('gst_percentage', gst_percentage);
         fd.append('fuel_type', fuel_type);
         fd.append('kilo_driven', kilo_driven);
 
         var xhr= new XMLHttpRequest();
 
         xhr.open('POST','/predict',true);
-        document.getElementById('prediction').innerHTML="Wait! Predicting Price.....";
+        document.getElementById('base_price').innerHTML="Wait! Predicting Price.....";
+        document.getElementById('gst_amount').innerHTML="";
+        document.getElementById('final_price').innerHTML="";
         xhr.onreadystatechange = function(){
             if(xhr.readyState == XMLHttpRequest.DONE){
                 if(xhr.status === 200) {
-                    document.getElementById('prediction').innerHTML="Prediction: ₹"+xhr.responseText;
+                    try {
+                        var res = JSON.parse(xhr.responseText);
+                        var base = parseFloat(res.base_price || res.prediction);
+                        var final = parseFloat(res.final_price);
+                        var gstPct = (res.gst_percentage || gst_percentage);
+                        var gstAmt = final - base;
+                        document.getElementById('base_price').innerHTML = "Predicted Base Price: ₹" + base.toLocaleString('en-IN');
+                        document.getElementById('gst_amount').innerHTML = "GST (" + gstPct + "%): ₹" + gstAmt.toLocaleString('en-IN');
+                        document.getElementById('final_price').innerHTML = "Final Price: ₹" + final.toLocaleString('en-IN');
+                    } catch (e) {
+                        document.getElementById('base_price').innerHTML = "Prediction: ₹" + xhr.responseText;
+                    }
                 } else {
-                    document.getElementById('prediction').innerHTML="Error: " + xhr.responseText;
+                    document.getElementById('base_price').innerHTML="Error: " + xhr.responseText;
                 }
             }
         };

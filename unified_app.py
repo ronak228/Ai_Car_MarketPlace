@@ -79,6 +79,20 @@ app = Flask(__name__, static_folder='client/build/static', template_folder='clie
 cors = CORS(app, origins=['http://localhost:3000', 'http://127.0.0.1:3000'], supports_credentials=True)
 
 
+# Year-wise GST mapping
+gst_rates = {
+    2018: 18,
+    2019: 18,
+    2020: 20,
+    2021: 22,
+    2022: 25,
+    2023: 26,
+    2024: 28,
+    2025: 28
+}
+DEFAULT_GST_PERCENTAGE = 18
+
+
 
 # Register authentication routes
 
@@ -437,6 +451,16 @@ def get_models_by_company_and_year(company, year):
 
         
 
+        strict = request.args.get('strict') in ['1', 'true', 'True']
+        if filtered_cars.empty and strict:
+            fuel_note = f' with {fuel_type} fuel' if fuel_type and fuel_type != 'Select Fuel Type' else ''
+            return jsonify({
+                'models': [],
+                'note': f'No models available in {year}{fuel_note}',
+                'exact_year_available': False,
+                'fuel_type_filtered': fuel_type if fuel_type and fuel_type != 'Select Fuel Type' else None
+            })
+
         if filtered_cars.empty:
 
             # If no exact match, find models available in that year range
@@ -548,10 +572,11 @@ def get_models_by_company_and_year(company, year):
 @app.route('/api/years')
 
 def get_years():
-
-    years = sorted(car['year'].unique(), reverse=True)
-
-    return jsonify([int(y) for y in years])
+    # Return a fixed, consistent UI range independent of dataset
+    min_year = 1995
+    max_year = 2025
+    years = list(range(max_year, min_year - 1, -1))
+    return jsonify(years)
 
 
 
@@ -1020,6 +1045,23 @@ def predict():
 
         
 
+        # Determine GST percentage from input or year mapping
+        try:
+            provided_gst = data.get('gst_percentage') if isinstance(data, dict) else None
+            gst_percentage = float(provided_gst) if provided_gst not in (None, '') else None
+        except Exception:
+            gst_percentage = None
+        if gst_percentage is None:
+            gst_percentage = float(gst_rates.get(int(car_data.get('year', 2018)), DEFAULT_GST_PERCENTAGE))
+
+        base_price = float(prediction_result.get('prediction'))
+        final_price = round(base_price + (base_price * gst_percentage / 100.0), 2)
+
+        # Enrich response with GST details
+        prediction_result['base_price'] = base_price
+        prediction_result['gst_percentage'] = gst_percentage
+        prediction_result['final_price'] = final_price
+
         # Store prediction in MongoDB if available and user is authenticated
 
         if MONGODB_AVAILABLE and 'user_id' in data:
@@ -1040,6 +1082,9 @@ def predict():
 
                     )
 
+                    prediction_doc['gst_percentage'] = gst_percentage
+                    prediction_doc['final_price'] = final_price
+
                     collections['predictions'].insert_one(prediction_doc)
 
                     print(f"[OK] Prediction stored for user {data['user_id']}")
@@ -1050,6 +1095,8 @@ def predict():
 
         
 
+        # Log both for analysis
+        print(f"Prediction (base): {base_price} | GST %: {gst_percentage} | Final: {final_price}")
         return jsonify(prediction_result)
 
     
@@ -1127,7 +1174,10 @@ def predict_with_enhanced_model(car_data):
             input_data['previous_accidents'] = 0
         
         # Feature engineering with robust calculations
-        current_year = 2024
+        try:
+            current_year = datetime.now().year
+        except Exception:
+            current_year = 2025
         input_data['age'] = max(0, current_year - input_data['year'])
         
         # Calculate price_per_km based on similar cars in dataset
@@ -3928,13 +3978,28 @@ def predict_legacy():
 
         
 
-        print(f"Legacy Prediction: {predicted_price}")
+        # Determine GST percentage
+        try:
+            provided_gst = data.get('gst_percentage') if request.is_json else request.form.get('gst_percentage')
+            gst_percentage = float(provided_gst) if provided_gst not in (None, '') else None
+        except Exception:
+            gst_percentage = None
+        if gst_percentage is None:
+            try:
+                gst_percentage = float(gst_rates.get(int(year), DEFAULT_GST_PERCENTAGE))
+            except Exception:
+                gst_percentage = float(DEFAULT_GST_PERCENTAGE)
 
+        final_price = round(predicted_price + (predicted_price * gst_percentage / 100.0), 2)
 
+        print(f"Legacy Prediction: base={predicted_price}, gst%={gst_percentage}, final={final_price}")
 
         return jsonify({
 
             "prediction": predicted_price,
+            "base_price": predicted_price,
+            "gst_percentage": gst_percentage,
+            "final_price": final_price,
 
             "model_used": "Legacy Linear Regression",
 
@@ -4044,7 +4109,8 @@ def enhanced_predictor():
 
             car_models_list = sorted(car['model'].unique())
 
-            years_list = sorted(car['year'].unique(), reverse=True)
+            # Use a consistent UI range regardless of dataset
+            years_list = list(range(2025, 1994, -1))
 
             fuel_types_list = car['fuel_type'].unique()
 

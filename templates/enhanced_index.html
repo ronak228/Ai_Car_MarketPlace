@@ -96,6 +96,18 @@
                                         </select>
                                     </div>
                                     <div class="col-md-4 mb-3">
+                                        <label class="form-label"><strong>GST Percentage:</strong></label>
+                                        <select class="form-control form-control-lg" id="gst_percentage" name="gst_percentage" required="1">
+                                            <option value="18">18%</option>
+                                            <option value="20">20%</option>
+                                            <option value="22">22%</option>
+                                            <option value="25">25%</option>
+                                            <option value="26">26%</option>
+                                            <option value="28" selected>28%</option>
+                                        </select>
+                                        <small class="text-muted">Auto-selected based on year; adjustable.</small>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
                                         <label class="form-label"><strong>Fuel Type:</strong></label>
                                         <select class="form-control form-control-lg" id="fuel_type" name="fuel_type" required="1">
                                             {% for fuel in fuel_types %}
@@ -118,8 +130,14 @@
                             
                             <!-- Prediction Result -->
                             <div class="prediction-result mt-4" id="prediction-container" style="display: none;">
+                                <div class="alert alert-primary text-center mb-2">
+                                    <h5 class="mb-0"><i class="fas fa-rupee-sign"></i> <span id="base_price"></span></h5>
+                                </div>
+                                <div class="alert alert-info text-center mb-2">
+                                    <h6 class="mb-0"><i class="fas fa-receipt"></i> <span id="gst_amount"></span></h6>
+                                </div>
                                 <div class="alert alert-success text-center">
-                                    <h4 class="mb-0"><i class="fas fa-rupee-sign"></i> <span id="prediction"></span></h4>
+                                    <h4 class="mb-0"><i class="fas fa-rupee-sign"></i> <span id="final_price"></span></h4>
                                 </div>
                             </div>
                         </div>
@@ -259,6 +277,7 @@ function send_data() {
     var company = document.getElementById('company').value;
     var car_model = document.getElementById('car_models').value;
     var year = document.getElementById('year').value;
+    var gst_percentage = document.getElementById('gst_percentage').value;
     var fuel_type = document.getElementById('fuel_type').value;
     var kilo_driven = document.getElementById('kilo_driven').value;
     
@@ -288,6 +307,7 @@ function send_data() {
     fd.append('company', company);
     fd.append('car_models', car_model);
     fd.append('year', year);
+    fd.append('gst_percentage', gst_percentage);
     fd.append('fuel_type', fuel_type);
     fd.append('kilo_driven', kilo_driven);
 
@@ -295,24 +315,35 @@ function send_data() {
     xhr.open('POST', '/predict', true);
     
     // Show loading
-    document.getElementById('prediction').innerHTML = "Calculating...";
+    document.getElementById('base_price').innerHTML = "Calculating...";
+    document.getElementById('gst_amount').innerHTML = "";
+    document.getElementById('final_price').innerHTML = "";
     document.getElementById('prediction-container').style.display = 'block';
     
     xhr.onreadystatechange = function(){
         if(xhr.readyState == XMLHttpRequest.DONE){
             if(xhr.status === 200) {
-                document.getElementById('prediction').innerHTML = "₹" + parseFloat(xhr.responseText).toLocaleString('en-IN');
-                
-                // Show success animation
-                Swal.fire({
-                    title: 'Prediction Complete!',
-                    text: `Estimated Price: ₹${parseFloat(xhr.responseText).toLocaleString('en-IN')}`,
-                    icon: 'success',
-                    timer: 3000,
-                    showConfirmButton: false
-                });
+                try {
+                    var res = JSON.parse(xhr.responseText);
+                    var base = parseFloat(res.base_price || res.prediction);
+                    var final = parseFloat(res.final_price);
+                    var gstPct = (res.gst_percentage || gst_percentage);
+                    var gstAmt = final - base;
+                    document.getElementById('base_price').innerHTML = "Predicted Base Price: ₹" + base.toLocaleString('en-IN');
+                    document.getElementById('gst_amount').innerHTML = `GST (${gstPct}%): ₹` + gstAmt.toLocaleString('en-IN');
+                    document.getElementById('final_price').innerHTML = "Final Price: ₹" + final.toLocaleString('en-IN');
+                    Swal.fire({
+                        title: 'Prediction Complete!',
+                        html: `<div class=\"text-start\"><p><strong>Base:</strong> ₹${base.toLocaleString('en-IN')}</p><p><strong>GST (${gstPct}%):</strong> ₹${gstAmt.toLocaleString('en-IN')}</p><p><strong>Final:</strong> ₹${final.toLocaleString('en-IN')}</p></div>`,
+                        icon: 'success',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                } catch(e) {
+                    document.getElementById('base_price').innerHTML = "₹" + parseFloat(xhr.responseText).toLocaleString('en-IN');
+                }
             } else {
-                document.getElementById('prediction').innerHTML = "Error occurred";
+                document.getElementById('base_price').innerHTML = "Error occurred";
                 Swal.fire('Error', xhr.responseText, 'error');
             }
         }
@@ -320,6 +351,21 @@ function send_data() {
 
     xhr.send(fd);
 }
+// Auto-select GST based on year mapping
+(function setupGstAutoSelect(){
+    var yearEl = document.getElementById('year');
+    var gstEl = document.getElementById('gst_percentage');
+    function updateGst(){
+        var y = parseInt(yearEl.value);
+        var map = {2018:18,2019:18,2020:20,2021:22,2022:25,2023:26,2024:28,2025:28};
+        var pct = map[y] || 18;
+        gstEl.value = pct.toString();
+    }
+    if(yearEl && gstEl){
+        yearEl.addEventListener('change', updateGst);
+        updateGst();
+    }
+})();
 
 // Load market trends data
 async function loadMarketTrends() {

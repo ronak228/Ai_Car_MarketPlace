@@ -35,6 +35,8 @@ const Dashboard = ({ user }) => {
         id: p.id,
         car: `${p.company} ${p.model}`,
         predictedPrice: p.predictedPrice,
+        finalPrice: p.finalPrice,
+        gstPercentage: p.gstPercentage,
         confidence: p.confidence,
         date: p.date,
         actualPrice: p.actualPrice,
@@ -304,6 +306,7 @@ const Dashboard = ({ user }) => {
         <div class="text-start">
           <p><strong>Car:</strong> ${prediction.car}</p>
           <p><strong>Predicted Price:</strong> ₹${prediction.predictedPrice.toLocaleString()}</p>
+          ${prediction.finalPrice ? `<p><strong>Price Including GST (${prediction.gstPercentage}%):</strong> ₹${prediction.finalPrice.toLocaleString()}</p>` : ''}
           <p><strong>Date:</strong> ${prediction.date}</p>
           ${prediction.saved ? '<p><span class="badge bg-warning">⭐ Saved</span></p>' : ''}
         </div>

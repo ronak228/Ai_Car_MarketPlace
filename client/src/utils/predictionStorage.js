@@ -114,13 +114,15 @@ export const PredictionStorage = {
   exportPredictions: () => {
     const predictions = PredictionStorage.getAllPredictions();
     const csvContent = [
-      ['Car', 'Company', 'Model', 'Year', 'Predicted Price', 'Confidence', 'Date', 'Accuracy', 'Saved'],
+      ['Car', 'Company', 'Model', 'Year', 'Predicted Price', 'GST %', 'Final Price', 'Confidence', 'Date', 'Accuracy', 'Saved'],
       ...predictions.map(p => [
         `${p.company} ${p.model}`,
         p.company,
         p.model,
         p.year,
         p.predictedPrice,
+        p.gstPercentage ?? '',
+        p.finalPrice ?? '',
         p.confidence + '%',
         p.date,
         p.accuracy || 'Pending',
