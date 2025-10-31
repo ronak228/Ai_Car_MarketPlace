@@ -92,21 +92,9 @@ Every UI component maintains visual consistency, ensuring a professional and eng
 
 ---
 
-## 📊 Performance Evaluation
-| Algorithm | R² Score | MAE | RMSE |
-|------------|-----------|------|------|
-| Linear Regression | 0.87 | 1.15 | 2.05 |
-| Decision Tree | 0.91 | 0.92 | 1.60 |
-| Random Forest | 0.94 | 0.75 | 1.28 |
-| XGBoost | **0.96** | **0.62** | **1.04** |
-
-The **XGBoost Regressor** achieved the best overall accuracy and is used in deployment.
-
----
-
 ## 🚀 Installation & Setup
 
 ### Step 1 – Clone the Repository
 ```bash
 git clone https://github.com/ronak228/CarCRafter-A_Car_Price_Predictor.git
-cd CarCrafter-AI
+
