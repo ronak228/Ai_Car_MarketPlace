@@ -108,5 +108,5 @@ The **XGBoost Regressor** achieved the best overall accuracy and is used in depl
 
 ### Step 1 – Clone the Repository
 ```bash
-git clone https://github.com/yourusername/CarCrafter-AI.git
+git clone https://github.com/ronak228/CarCRafter-A_Car_Price_Predictor.git
 cd CarCrafter-AI
