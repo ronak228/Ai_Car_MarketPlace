@@ -26,11 +26,17 @@ PRIMARY_CANDIDATES = [
 # GST mapping used across the project
 GST_RATES: Dict[int, int] = {2019: 18, 2020: 20, 2021: 22, 2022: 25, 2023: 26, 2024: 28, 2025: 28}
 
-# Canonical list of Indian brands commonly present in consumer car datasets
-# Note: "Maruti Suzuki" often appears as "Maruti" or "Maruti Suzuki"
+# Comprehensive list of car brands in India
+# Including both Indian and international brands available in the Indian market
 INDIAN_BRANDS_CANONICAL: List[str] = [
-    'Maruti Suzuki', 'Maruti', 'Tata', 'Mahindra',
-    'Hindustan', 'Force', 'Premier'
+    # Indian brands
+    'Maruti Suzuki', 'Maruti', 'Tata', 'Mahindra', 'Hindustan', 'Force', 'Premier',
+    # International brands available in India
+    'Hyundai', 'Honda', 'Toyota', 'Kia', 'MG', 'Renault', 'Nissan', 'Datsun', 
+    'Volkswagen', 'Skoda', 'Ford', 'Fiat', 'Jeep', 'Citroen', 'Mercedes-Benz', 
+    'BMW', 'Audi', 'Volvo', 'Jaguar', 'Land Rover', 'Lexus', 'Mini', 'Porsche',
+    'Lamborghini', 'Ferrari', 'Rolls-Royce', 'Bentley', 'Aston Martin', 'Maserati',
+    'Isuzu', 'Mitsubishi', 'Chevrolet', 'Opel'
 ]
 
 YEARS_TARGET = list(range(2019, 2026))

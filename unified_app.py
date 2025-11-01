@@ -338,7 +338,9 @@ models = sorted(car['model'].unique().tolist())
 
 fuel_types = sorted(car['fuel_type'].unique().tolist())
 
-transmission_types = sorted(car['transmission'].unique().tolist())
+# Handle mixed types in transmission column by converting all to strings first
+transmission_values = car['transmission'].fillna('').astype(str).unique().tolist()
+transmission_types = sorted([t for t in transmission_values if t != ''])
 
 # Use 'owner' column instead of 'owner_count' if it exists, otherwise use default values
 try:
@@ -351,9 +353,13 @@ try:
 except:
     owner_types = ['First Owner', 'Second Owner', 'Third Owner', 'Fourth & Above Owner']
 
-condition_types = sorted(car['car_condition'].unique().tolist())
+# Handle mixed types in car_condition column
+condition_values = car['car_condition'].fillna('').astype(str).unique().tolist()
+condition_types = sorted([c for c in condition_values if c != ''])
 
-cities = sorted(car['city'].unique().tolist())
+# Handle mixed types in city column
+city_values = car['city'].fillna('').astype(str).unique().tolist()
+cities = sorted([c for c in city_values if c != ''])
 
 # Additional fields not in new dataset - using defaults
 
