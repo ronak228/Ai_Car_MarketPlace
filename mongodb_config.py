@@ -17,7 +17,9 @@ MONGODB_DATABASE = "car_marketplace"
 COLLECTIONS = {
     'users': 'users',
     'predictions': 'predictions',
-    'market_trends': 'market_trends'
+    'market_trends': 'market_trends',
+    'car_dataset': 'car_dataset',
+    'user_car_data': 'user_car_data'  # New collection for user-specific car data
 }
 
 # Global client variables

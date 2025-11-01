@@ -99,9 +99,62 @@ DEFAULT_GST_PERCENTAGE = 18
 
 if MONGODB_AVAILABLE:
 
+    # Import require_auth from auth_routes
+    from auth_routes import require_auth
+    
     app.register_blueprint(auth_bp)
 
     print("[OK] MongoDB authentication routes registered")
+    
+    # User-specific car data API endpoints
+    @app.route('/api/user/cars', methods=['GET', 'POST'])
+    @require_auth
+    def user_cars():
+        """Get or add user-specific cars"""
+        user_id = request.current_user.get('user_id')
+        
+        if request.method == 'GET':
+            # Get user-specific cars
+            if 'load_car_data_for_user' in app.config:
+                user_df = app.config['load_car_data_for_user'](user_id)
+                if user_df is not None and not user_df.empty:
+                    return jsonify({
+                        'cars': user_df.to_dict('records'),
+                        'total': len(user_df)
+                    })
+            
+            # No user-specific cars found
+            return jsonify({
+                'cars': [],
+                'total': 0
+            })
+        
+        elif request.method == 'POST':
+            # Add a car to user's collection
+            try:
+                car_data = request.get_json()
+                
+                # Connect to MongoDB
+                client = get_sync_client()
+                if not client:
+                    return jsonify({'error': 'Database connection failed'}), 500
+                
+                db = client[MONGODB_DATABASE]
+                user_car_collection = db[COLLECTIONS['user_car_data']]
+                
+                # Add user_id to car data
+                car_data['user_id'] = user_id
+                
+                # Insert car data
+                result = user_car_collection.insert_one(car_data)
+                
+                return jsonify({
+                    'success': True,
+                    'car_id': str(result.inserted_id)
+                })
+            
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
 
 
 
@@ -277,40 +330,94 @@ except Exception as e:
 
 
 
-# Load master dataset with all 22 fields - use enhanced Indian brands dataset
-
+# Load master dataset from MongoDB
 try:
-
-    # Try to load the enhanced Indian brands dataset first
-
-    if os.path.exists('enhanced_indian_car_dataset.csv'):
-
-        car = pd.read_csv('enhanced_indian_car_dataset.csv')
-
-        print(f"[OK] Enhanced Indian brands dataset loaded: {len(car)} records with {car['company'].nunique()} brands")
-
-    elif os.path.exists('indian_car_brands_dataset.csv'):
-
-        car = pd.read_csv('indian_car_brands_dataset.csv')
-
-        print(f"[OK] Indian brands dataset loaded: {len(car)} records with {car['company'].nunique()} brands")
-
-    else:
-        # Fallback to original datasets
-        car1 = pd.read_csv('Cleaned_Car_data_master.csv')
-        car2 = pd.read_csv('generated_5000_strict.csv')
-        car = pd.concat([car1, car2], ignore_index=True)
-        print(f"[OK] Original datasets loaded: {len(car)} records")
-
+    # Connect to MongoDB and load data
+    from mongodb_config import get_sync_client, MONGODB_DATABASE, COLLECTIONS
     
-
-except FileNotFoundError as e:
-
-    print(f"[ERROR] Dataset file not found: {e}")
-
-    print("[ERROR] Creating empty DataFrame")
-
-    car = pd.DataFrame()
+    client = get_sync_client()
+    if client:
+        db = client[MONGODB_DATABASE]
+        
+        # First check for user-specific car data collection
+        user_collection = db[COLLECTIONS['user_car_data']]
+        main_collection = db[COLLECTIONS['car_dataset']]
+        
+        # Function to get user-specific data
+        def get_user_specific_data(user_id=None):
+            if user_id:
+                # If user_id is provided, get user-specific data
+                user_data = list(user_collection.find({"user_id": user_id}))
+                if user_data:
+                    return pd.DataFrame(user_data)
+            return None
+        
+        # Global function to load car data for a specific user
+        def load_car_data_for_user(user_id=None):
+            # Try to get user-specific data first
+            user_df = get_user_specific_data(user_id)
+            
+            # If user has specific data, use it
+            if user_df is not None and not user_df.empty:
+                # Remove MongoDB _id field if it exists
+                if '_id' in user_df.columns:
+                    user_df = user_df.drop('_id', axis=1)
+                if 'user_id' in user_df.columns:
+                    user_df = user_df.drop('user_id', axis=1)
+                    
+                print(f"[OK] User-specific dataset loaded: {len(user_df)} records")
+                return user_df
+            
+            # Otherwise, fall back to main dataset
+            if COLLECTIONS['car_dataset'] in db.list_collection_names() and main_collection.count_documents({}) > 0:
+                # Convert MongoDB documents to DataFrame
+                car_data = list(main_collection.find({}))
+                main_df = pd.DataFrame(car_data)
+                
+                # Remove MongoDB _id field if it exists
+                if '_id' in main_df.columns:
+                    main_df = main_df.drop('_id', axis=1)
+                    
+                print(f"[OK] Dataset loaded from MongoDB: {len(main_df)} records with {main_df['company'].nunique()} brands")
+                return main_df
+            else:
+                # Fallback to local files if MongoDB collection is empty
+                print("[WARNING] MongoDB collection is empty, falling back to local files")
+                raise FileNotFoundError("MongoDB collection is empty")
+        
+        # Load the default dataset (no user-specific filtering)
+        car = load_car_data_for_user()
+        
+        # Make the function available globally
+        app.config['load_car_data_for_user'] = load_car_data_for_user
+    else:
+        # Fallback to local files if MongoDB connection fails
+        print("[WARNING] MongoDB connection failed, falling back to local files")
+        raise FileNotFoundError("MongoDB connection failed")
+        
+except Exception as e:
+    print(f"[WARNING] Error loading from MongoDB: {str(e)}")
+    print("[INFO] Falling back to local CSV files")
+    
+    try:
+        # Try to load the enhanced Indian brands dataset first
+        if os.path.exists('enhanced_indian_car_dataset.csv'):
+            car = pd.read_csv('enhanced_indian_car_dataset.csv')
+            print(f"[OK] Enhanced Indian brands dataset loaded: {len(car)} records with {car['company'].nunique()} brands")
+        elif os.path.exists('indian_car_brands_dataset.csv'):
+            car = pd.read_csv('indian_car_brands_dataset.csv')
+            print(f"[OK] Indian brands dataset loaded: {len(car)} records with {car['company'].nunique()} brands")
+        else:
+            # Fallback to original datasets
+            car1 = pd.read_csv('Cleaned_Car_data_master.csv')
+            car2 = pd.read_csv('generated_5000_strict.csv')
+            car = pd.concat([car1, car2], ignore_index=True)
+            print(f"[OK] Original datasets loaded: {len(car)} records")
+    
+    except FileNotFoundError as e:
+        print(f"[ERROR] Dataset file not found: {e}")
+        print("[ERROR] Creating empty DataFrame")
+        car = pd.DataFrame()
 
 
 
@@ -739,9 +846,49 @@ def get_cars():
 
         
 
-        # Start with all cars
+        # Get user ID from token if available
 
-        filtered_cars = car.copy()
+        user_id = None
+
+        auth_header = request.headers.get('Authorization')
+
+        if auth_header:
+
+            try:
+
+                token = auth_header.split(' ')[1]  # Bearer <token>
+
+                from auth_routes import verify_jwt_token
+
+                payload = verify_jwt_token(token)
+
+                if payload:
+
+                    user_id = payload.get('user_id')
+
+                    print(f"[INFO] Loading data for user: {user_id}")
+
+            except (IndexError, ImportError) as e:
+
+                print(f"[WARNING] Auth error: {str(e)}")
+
+        
+
+        # Load user-specific data if available
+
+        if user_id and 'load_car_data_for_user' in app.config:
+
+            # Use the user-specific data loading function
+
+            filtered_cars = app.config['load_car_data_for_user'](user_id).copy()
+
+            print(f"[INFO] Loaded user-specific data: {len(filtered_cars)} records")
+
+        else:
+
+            # Start with all cars from global dataset
+
+            filtered_cars = car.copy()
 
         
 
@@ -783,7 +930,9 @@ def get_cars():
 
             'total_found': len(cars_list),
 
-            'total_in_dataset': len(car)
+            'total_in_dataset': len(filtered_cars),
+
+            'user_specific': user_id is not None
 
         })
 
